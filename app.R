@@ -1,13 +1,9 @@
-#Shiny test
-#install.packages("shiny")
 library(shiny)
 library(shinyWidgets)
 library(tidyverse)
 library(hrbrthemes)
 library(readr)
 
-
-setwd("C:/Users/Emily/Desktop/CTPS_DIDB")
 alldata <- read_csv("data.csv")
 
 ui <- fluidPage(
