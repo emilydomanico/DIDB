@@ -2,8 +2,6 @@ library(tidyverse)
 library(hrbrthemes)
 library(readr)
 
-
-setwd("C:/Users/Emily/Desktop/CTPS_DIDB")
 alldata <- read_csv("data.csv")
 
 #metric selected from selectInput dropdown
@@ -24,7 +22,9 @@ data <- alldata %>%
   filter(metric == metric_filter)
 #the hyphen causes some problems when if becomes a column name, so replace the value with an underscore to clean up code further down
 data[data=="no-build"] <- "no_build"
-
+data[data=="Low-income"] <- "Low_income"
+data[data=="Non-low-income"] <- "Non_low_income"
+data[data=="Non-minority"] <- "Non_minority"
 ##Calculate error and scale by dim1. Use result to calculate upper and lower bounds for build & no-build scenarios
 ##Calculate impact and scale by dim2 for each population
 
@@ -67,30 +67,88 @@ data <- data %>%
   mutate(percent_change= round(delta/no_build*100, digits = 1)) %>%
   mutate(impact_perctdiff = case_when (abs(percent_change) > dim2/.01 ~ "Impact",
                                        TRUE ~ "No Impact"))
-#Set impact and burden methods
-##not in use yet
-#impact_option <- "impact_percentdiff" # impact_absolute, impact_scaled
-#burden_option <- "burden_1" #burden2, burden_3 
 
-#make an impact table
+
+#make an impact table, bring together all impact option by population in a table
 impact_table <- data %>%
-  select( population,delta, starts_with("impact"))
+  select( population,delta,percent_change, starts_with("impact"))
+
+####idea: working from impact_table, get organized into controled way
+#seperate by m and l
+# create function like case_when statment below
+# use lapply to find impact_types for each impact method.
+#store the list in dataframe with corresponding impact method.
+
+#see if there is an opportunity to add benefit / burden (dependent on cat/metric and delta)
+
+
+# investigate by specific impact method
+# loop through by impact method
+impact_method <- c("impact_original", "impact_scaled", "impact_absolute", "impact_perctdiff")
+impact_types <- list()
+
+for (i in impact_method) {
+  impact_types[,]<- impact_table %>%
+    select( population, impact_method) %>%
+    mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
+                                 str_detect(population, ".ncome") ~ "i",
+                                 TRUE ~ "NA")) %>%
+    # go through by impact type...
+    select(poptype, population, impact_method) %>%
+    arrange(factor(poptype)) %>%
+    spread(population, impact_original) %>%
+    mutate(impact_type = case_when( 
+      (Minority == "Impact" & Non_minority  == "Impact") | (Low_income == "Impact" & Non_low_income == "Impact") ~ "Impacts both",
+      (Minority == "Impact" & Non_minority == "No Impact") | (Low_income == "Impact" & Non_low_income == "No Impact") ~ "Only Impacts protected population",
+      (Minority == "No Impact" & Non_minority == "Impact") | (Low_income == "No Impact" & Non_low_income == "Impact") ~"Only Impacts non-protected population",
+      (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
+      TRUE ~ "something elese happend"))
+} 
+
+
+
+
+# assign type of impact
+impact_type_1 <- impact_table %>%
+  select( population, impact_method) %>%
+  mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
+                               str_detect(population, ".ncome") ~ "i",
+                               TRUE ~ "NA")) %>%
+  # go through by impact type...
+  select(poptype, population, impact_method) %>%
+  arrange(factor(poptype)) %>%
+  spread(population, impact_original) %>%
+  mutate(impact_type = case_when( 
+                          (Minority == "Impact" & Non_minority  == "Impact") | (Low_income == "Impact" & Non_low_income == "Impact") ~ "Impacts both",
+                          (Minority == "Impact" & Non_minority == "No Impact") | (Low_income == "Impact" & Non_low_income == "No Impact") ~ "Only Impacts protected population",
+                          (Minority == "No Impact" & Non_minority == "Impact") | (Low_income == "No Impact" & Non_low_income == "Impact") ~"Only Impacts non-protected population",
+                          (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
+                           TRUE ~ "something elese happend"))
+
+
+
+
+
 
 
 #Benefit or burden
-y <- impact_table %>%
-  filter(str_detect(population, ".inority"))
-ty <- t(y)
+min_impact <- impact_table %>%
+  filter(str_detect(population, ".inority")) %>%
+  arrange(factor(population, levels = c("Minority", "Non-minority")))
 
-colnames(ty)
-rownames(ty)
+t_min_impact <- transpose(min_impact)
+colnames(t_min_impact) <- c("protected_pop","pop")
+  
 
-  mutate(impact_effect = case_when( ~ "Benefit for both",
-                                           ~ "Min/low burden, non benefit",
-                                           ~ "Non burden, min/low benefit",
-                                           ~ "Burden for both"
-                                           ~ NA
-  )) %>%
+t_min_impact <- t_min_impact %>%
+  mutate(effect = paste(protected_pop, pop))
+           
+           case_when( ((protected_pop == "Impact") & (pop == "Impact")) ~ "Benefit for both",
+                             (protected_pop == "") ~ "Min/low burden, non benefit",
+                             ~ "Non burden, min/low benefit",
+                             ~ "Burden for both"
+                             ~ NA 
+                             )) %>%
 #Disproportionality option 1:
   mutate(abs_diff = ) %>%
 #Disproportionality option 2:
