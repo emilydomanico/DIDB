@@ -7,7 +7,7 @@ library(readr)
 alldata <- read_csv("data.csv")
 
 ui <- fluidPage(
-  titlePanel("DI DB Thresholds"),
+  titlePanel("DI DB Thresholds_ TESTING"),
   setSliderColor(c(rep("DimGray",3)), c(1,2,3)),
   chooseSliderSkin("Flat"),
   sidebarLayout(
