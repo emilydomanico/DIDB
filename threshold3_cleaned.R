@@ -13,7 +13,7 @@ metric_filter <- c("Retail amenities")
 #dim1<- input$Dim1*0.01
 #dim2<- input$Dim2*0.01
 #dim3<- input$Dim3*0.01
-dim1 <- .47
+dim1 <- .10
 dim2 <- .92
 dim3 <- .8
 
@@ -38,6 +38,8 @@ data[data=="Non-minority"] <- "Non_minority"
 data <- data %>%
   spread( scenario, model_result, drop = TRUE)
 data <- data %>%
+  #slider1 sets confidence interval, use this to control error
+  mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
   #step 1 from spreadsheet
   mutate(delta = build - no_build) %>%
   #scaling delta by dim2 slider
