@@ -17,6 +17,7 @@ dim1 <- .47
 dim2 <- .92
 dim3 <- .8
 
+
 data <- alldata %>%
   filter(metric == metric_filter)
 #clean data so no hyphens
@@ -185,18 +186,21 @@ impact_perctdiff <- impact_table %>%
 #Benefit or burden
 
 #Disproportionality option 1:
-  mutate(abs_diff = ) %>%
+#  mutate(abs_diff = ) %>%
 #Disproportionality option 2:
-  mutate(percent_diff = ) %>%
+#  mutate(percent_diff = ) %>%
 #Disproportionality option 3:
-  mutate(ratio = ) %>%
+#  mutate(ratio = ) %>%
 
 
 
 #factor population with levels to control display order in plot
-data$population <- factor(data$population, levels = c("Non-minority", "Minority","Non-low-income", "Low-income"))  
+data$population <- factor(data$population, levels = c("Non_minority", "Minority","Non_low_income", "Low_income"))  
 #extract unit for horizontal axis label
 metric_unit <- data$metric_unit[1]
+
+im_method <- "impact_scaled"
+
 
 ##DRAW THE PLOT
 
@@ -208,10 +212,9 @@ metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
   geom_point( aes(x=population, y=build), shape=20, size=1, show.legend = TRUE)+
   geom_point( aes(x=population, y=no_build), shape=20, size=1, show.legend = TRUE)+
   #render delta
-  geom_segment( aes(x=as.numeric(population) +.2, xend=as.numeric(population)+.2, y=no_build, yend= build)) +
-  #render delta-scaled
+  geom_segment( aes(x=as.numeric(population) +.2, xend=as.numeric(population)+.2, y=no_build, yend= build), color = "black") +
   #Impact text, note: should depend on selected impact method
-  geom_text(aes(x=as.numeric(population) +.3, y= no_build ,label= paste(impact_perctdiff, ", ", percent_change, "%")),hjust="inward", size= 4)+
+  geom_text(aes(x=as.numeric(population) +.3, y= no_build , label= im_method),hjust="inward", size= 4)+
   coord_flip()+
   theme_minimal() +
   theme(
@@ -242,7 +245,6 @@ impact_plot <- ggplot(data, aes(x= population))+
   #ylim(-(dim2/0.01),dim2/0.01)
 print(impact_plot)
   
-u <- renderTable(impact_table)
   
 
 
