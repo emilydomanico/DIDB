@@ -354,7 +354,7 @@ server <- function(input, output) {
       select(poptype, population, delta, percent_change, impact_original, impact_scaled, impact_absolute, impact_perctdiff) %>%
       # control order of entries
       arrange(factor(population, levels = c("Low_income","Non_low_income", "Minority","Non_minority")))
-    impact_table()
+    print(impact_table)
   })
   
   
