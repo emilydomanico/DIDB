@@ -71,8 +71,32 @@ data <- data %>%
 
 #make an impact table, bring together all impact option by population in a table
 impact_table <- data %>%
-  select( population,delta,percent_change, starts_with("impact"))
+  select( population,delta,percent_change, starts_with("impact"))%>%
+  mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
+                               str_detect(population, ".ncome") ~ "i",
+                               TRUE ~ "NA")) %>%
+  select(poptype, population, delta, percent_change, impact_original, impact_scaled, impact_absolute, impact_perctdiff) %>%
+  # control order of entries
+  arrange(factor(population, levels = c("Low_income","Non_low_income", "Minority","Non_minority"))) #%>%
+  
+#test3 <- cast(impact_table, poptype~
+  
+  
+#  mutate(impact_type = case_when( 
+#   (Minority == "Impact" & Non_minority  == "Impact") | (Low_income == "Impact" & Non_low_income == "Impact") ~ "Impacts both",
+#    (Minority == "Impact" & Non_minority == "No Impact") | (Low_income == "Impact" & Non_low_income == "No Impact") ~ "Only Impacts protected population",
+#    (Minority == "No Impact" & Non_minority == "Impact") | (Low_income == "No Impact" & Non_low_income == "Impact") ~"Only Impacts non-protected population",
+#    (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
+#    TRUE ~ "something elese happend"))
+  
 
+#use lapply to compare vertically
+#test <- lapply(impact_table, function(x) paste(x))
+
+#test["impact_original"]
+#test2 <- matrix(unlist(test))
+
+#impact_effect <- data.frame()
 ####idea: working from impact_table, get organized into controled way
 #seperate by m and l
 # create function like case_when statment below
@@ -84,17 +108,17 @@ impact_table <- data %>%
 
 # investigate by specific impact method
 # loop through by impact method
-impact_method <- c("impact_original", "impact_scaled", "impact_absolute", "impact_perctdiff")
-impact_types <- list()
+#impact_method <- c("impact_original", "impact_scaled", "impact_absolute", "impact_perctdiff")
 
-for (i in impact_method) {
-  impact_types[,]<- impact_table %>%
-    select( population, impact_method) %>%
+
+  impact_types<- impact_table %>%
+    select( population, impact_original) %>%
     mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                  str_detect(population, ".ncome") ~ "i",
                                  TRUE ~ "NA")) %>%
+
     # go through by impact type...
-    select(poptype, population, impact_method) %>%
+    select(poptype, population, impact_original) %>%
     arrange(factor(poptype)) %>%
     spread(population, impact_original) %>%
     mutate(impact_type = case_when( 
@@ -103,7 +127,6 @@ for (i in impact_method) {
       (Minority == "No Impact" & Non_minority == "Impact") | (Low_income == "No Impact" & Non_low_income == "Impact") ~"Only Impacts non-protected population",
       (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
       TRUE ~ "something elese happend"))
-} 
 
 
 
@@ -207,7 +230,7 @@ impact_plot <- ggplot(data, aes(x= population))+
   #ylim(-(dim2/0.01),dim2/0.01)
 print(impact_plot)
   
-impact_table <-
+u <- renderTable(impact_table)
   
 
 
