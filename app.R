@@ -14,7 +14,7 @@ ui <- fluidPage(
     sidebarPanel(
       selectInput("metric", "Metric:",
                   choices = c("Retail amenities", "Higher education","Healthcare facilities", "Jobs by transit","Congested VMT","Carbon monoxide emissions", "Average attraction - highway", "Average production - highway","Average attraction - transit",
-                              "Average production - transit")),
+                              "Average production - transit"), selected = "Carbon monoxide emissions"),
       
       hr(),
       
