@@ -3,7 +3,9 @@ DI DB Threshold explorer is an intractive application to help set meaningful the
 
 The application was build in R using the Shiny Package.
 
-To run the application from RStudio: 1) install the Shiny package and 2) run "runGitHub("DIDB", "emilydomanico")"
+Current working version is up at https://erdomanico.shinyapps.io/DIDB/.
+
+To run the the most recent version from RStudio: 1) install the Shiny package and 2) run "runGitHub("DIDB", "emilydomanico")"
 
 
 
