@@ -105,18 +105,21 @@ dispro <- diff %>%
   mutate(DIDB = case_when(
     #note, check spelling....
     #note, more conditions to bring in 
-    ratio > 1 + dim3 ~ "Protected population changes disproportionately",
-    ratio < 1 - dim3 ~ "Non-protected population changes disproportionely",
+    ratio > 1 + dim3 ~ "Protected population changes more",
+    ratio < 1 - dim3 ~ "Non-protected population changes more",
     1- dim3 < ratio | ratio < 1 +dim3 ~ "Disproportionality within threshold",
     TRUE ~ "Something else happened. problem!"
   ))
-  
-  
 
-
+dispro$poptype <- factor(dispro$poptype, levels = c("m","i"))
+  
+#change underscores back to hyphens
+data[data=="Low_income"] <- "Low-income"
+data[data=="Non_low_income"] <- "Non-low-income"
+data[data=="Non_minority"] <- "Non-minority"
 
 #factor population with levels to control display order in plot
-data$population <- factor(data$population, levels = c("Non_minority", "Minority","Non_low_income", "Low_income"))  
+data$population <- factor(data$population, levels = c("Non-minority", "Minority","Non-low-income", "Low-income"))  
 #extract unit for horizontal axis label
 metric_unit <- data$metric_unit[1]
 
@@ -174,7 +177,7 @@ burden_plot <- ggplot(dispro, aes(x = poptype))+
   theme_minimal()+
   theme(legend.position = "bottom")+
   labs(title= "Ratio by population type")+
-  ylab("Ratio, protected population/non-protected population")+
+  ylab("Ratio,  (% change protected population) / (% change non-protected population)")+
   xlab("Population type")
 print(burden_plot)
   

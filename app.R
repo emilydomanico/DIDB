@@ -30,7 +30,7 @@ ui <- fluidPage(
       hr(),
       
       sliderInput("Dim3", label = "Burden Threshold:", min = 0, max = 100, value = 5),
-      selectInput("dis_method", label = "Disproportionality method to visualize:", choices = c("Percent Difference", "Ratio"), selected = "Ratio")
+      #selectInput("dis_method", label = "Disproportionality method to visualize:", choices = c("Percent Difference", "Ratio"), selected = "Ratio")
     ),
   
   mainPanel(
@@ -118,9 +118,13 @@ server <- function(input, output) {
         (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
         TRUE ~ "something elese happend"))
     
+    #change underscores back to hyphens
+    data[data=="Low_income"] <- "Low-income"
+    data[data=="Non_low_income"] <- "Non-low-income"
+    data[data=="Non_minority"] <- "Non-minority"
 
     #factor population with levels to control display order in plot
-    data$population <- factor(data$population, levels = c("Non_minority", "Minority","Non_low_income", "Low_income"))  
+    data$population <- factor(data$population, levels = c("Non-minority", "Minority","Non-low-income", "Low-income"))  
     #extract unit for horizontal axis label
     metric_unit <- data$metric_unit[1]
     
@@ -219,9 +223,13 @@ server <- function(input, output) {
         (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
         TRUE ~ "something elese happend"))
     
+    #change underscores back to hyphens
+    data[data=="Low_income"] <- "Low-income"
+    data[data=="Non_low_income"] <- "Non-low-income"
+    data[data=="Non_minority"] <- "Non-minority"
     
     #factor population with levels to control display order in plot
-    data$population <- factor(data$population, levels = c("Non_minority", "Minority","Non_low_income", "Low_income"))  
+    data$population <- factor(data$population, levels = c("Non-minority", "Minority","Non-low-income", "Low-income"))  
     
     
     # Plot the percentage change introduced by building, and how that changes with the impact threshold
@@ -233,7 +241,7 @@ server <- function(input, output) {
       geom_text(aes(x=as.numeric(population) +.3, y= delta/no_build ,label= impact),hjust="inward", size= 4)+
       scale_y_continuous(labels = scales::percent)+
       coord_flip()+
-      theme_minimal()+
+      #theme_minimal()+
       labs(title = paste("Percent change", "by population"))+
       ylab("")+
       xlab("Population")
@@ -339,13 +347,15 @@ server <- function(input, output) {
         TRUE ~ "Something else happened. problem!"
       ))
     
+    dispro$poptype <- factor(dispro$poptype, levels = c("m","i"))
+    
     burden_plot <- ggplot(dispro, aes(x = poptype))+
       geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DIDB), shape = 20, size = 4)+
       geom_hline(aes(yintercept = 1+dim3), color = "red")+
       geom_hline(aes(yintercept = 1-dim3), color = "red")+
       geom_hline(aes(yintercept= 1), alpha= .5, color= "black")+
       coord_flip()+
-      theme_minimal()+
+      #theme_minimal()+
       theme(legend.position = "bottom")+
       labs(title= "Ratio by population type")+
       ylab("Ratio, protected population/non-protected population")+
