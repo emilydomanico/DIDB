@@ -62,7 +62,7 @@ impact_table <- data %>%
                                TRUE ~ "NA")) %>%
   select(poptype, population, delta, impact) %>%
   # control order of entries
-  arrange(factor(population, levels = c("Low_income","Non_low_income", "Minority","Non_minority"))) #%>%
+  arrange(factor(population, levels = c("Low_income","Non_low_income", "Minority","Non_minority")))
 
 # investigate what kind of impact
 impact_type <- impact_table %>%
@@ -103,7 +103,7 @@ metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
   geom_point( aes(x=population, y=build), shape=20, size=1, show.legend = TRUE)+
   geom_point( aes(x=population, y=no_build), shape=20, size=1, show.legend = TRUE)+
   #render delta
-  geom_segment( aes(x=as.numeric(population) +.2, xend=as.numeric(population)+.2, y=no_build, yend= build), color = "black") +
+  #geom_segment( aes(x=as.numeric(population) +.2, xend=as.numeric(population)+.2, y=no_build, yend= build), color = "black") +
   #Impact text, note: should depend on selected impact method
   geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=impact),hjust="inward", size= 4)+
   coord_flip()+
