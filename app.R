@@ -134,9 +134,6 @@ server <- function(input, output) {
       geom_point( aes(x=population, y=no_build), color = "#56B4E9", shape="square", size=4, show.legend = TRUE) +
       geom_point( aes(x=population, y=build), shape=20, size=1, show.legend = TRUE)+
       geom_point( aes(x=population, y=no_build), shape=20, size=1, show.legend = TRUE)+
-      #render delta
-      geom_segment( aes(x=as.numeric(population) +.2, xend=as.numeric(population)+.2, y=no_build, yend= build), color = "black") +
-      #Impact text, note: should depend on selected impact method
       geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=impact),hjust="inward", size= 4)+
       coord_flip()+
       theme_minimal() +
@@ -234,6 +231,7 @@ server <- function(input, output) {
       geom_hline( aes(yintercept = -dim2), color = "red")+
       geom_hline(aes(yintercept = 0), alpha=.5, color = "black")+
       geom_text(aes(x=as.numeric(population) +.3, y= delta/no_build ,label= impact),hjust="inward", size= 4)+
+      scale_y_continuous(labels = scales::percent)+
       coord_flip()+
       theme_minimal()+
       labs(title = paste("Percent change", "by population"))+
