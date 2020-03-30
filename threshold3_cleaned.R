@@ -1,6 +1,8 @@
 library(tidyverse)
 library(hrbrthemes)
 library(readr)
+library(gridExtra)
+
 
 alldata <- read_csv("data.csv")
 
@@ -94,6 +96,9 @@ metric_unit <- data$metric_unit[1]
 
 
 ##DRAW THE PLOT
+## Note, opportunitiy to draw metric_plot and impact_plot together with shared horizontal axis 
+## Similar to :https://stackoverflow.com/questions/18265941/two-horizontal-bar-charts-with-shared-axis-in-ggplot2-similar-to-population-pyr
+
 
 metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
   geom_segment( aes(x=population, xend=population, y=LB_b, yend=UB_b, ), color= "#E69F00", alpha=.65, size= 10, show.legend = TRUE) +
@@ -102,14 +107,10 @@ metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
   geom_point( aes(x=population, y=no_build), color = "#56B4E9", shape="square", size=4, show.legend = TRUE) +
   geom_point( aes(x=population, y=build), shape=20, size=1, show.legend = TRUE)+
   geom_point( aes(x=population, y=no_build), shape=20, size=1, show.legend = TRUE)+
-  #render delta
-  #geom_segment( aes(x=as.numeric(population) +.2, xend=as.numeric(population)+.2, y=no_build, yend= build), color = "black") +
-  #Impact text, note: should depend on selected impact method
   geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=impact),hjust="inward", size= 4)+
   coord_flip()+
-  theme_minimal() +
+  #theme_minimal() +
   theme(
-    #legend.position = "none",
     axis.ticks.y=element_blank(),
     #axis.text.y= element_blank()
   )+
@@ -130,6 +131,7 @@ impact_plot <- ggplot(data, aes(x= population))+
   geom_hline( aes(yintercept = -dim2), color = "red")+
   geom_hline(aes(yintercept = 0), alpha=.5, color = "black")+
   geom_text(aes(x=as.numeric(population) +.3, y= delta/no_build ,label= impact),hjust="inward", size= 4)+
+  scale_y_continuous(labels = scales::percent)+
   coord_flip()+
   theme_minimal()+
   labs(title = paste("Percent change", "by population"))+
