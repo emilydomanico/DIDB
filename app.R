@@ -20,7 +20,7 @@ ui <- fluidPage(
       
       #Sliders to toggle sensitivity
     
-      sliderInput("Dim1", label = "Forcasting Error Threshold:", min = 0, max = 100, value = 10),
+      sliderInput("Dim1", label = "Forecasting Error Threshold:", min = 0, max = 100, value = 10),
       p(""),
       hr(),
   
