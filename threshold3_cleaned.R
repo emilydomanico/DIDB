@@ -58,13 +58,31 @@ data <- data %>%
   
 #make an impact table, bring together all impact option by population in a table
 impact_table <- data %>%
-  select( population,delta, impact)%>%
+  select( population,delta, no_build, impact)%>%
   mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                str_detect(population, ".ncome") ~ "i",
                                TRUE ~ "NA")) %>%
-  select(poptype, population, delta, impact) %>%
+  mutate( per_change = delta/no_build) %>%
+  select(poptype, population, per_change, impact) %>%
   # control order of entries
   arrange(factor(population, levels = c("Low_income","Non_low_income", "Minority","Non_minority")))
+
+diff <- impact_table %>%
+  select(poptype, population, per_change) %>%
+  arrange(factor(poptype)) %>%
+  spread(population, per_change) %>%
+  mutate(difference = case_when(
+    (is.na(Low_income) & is.na(Non_low_income)) ~ Minority - Non_minority,
+    (is.na(Minority) & is.na(Non_minority)) ~ Low_income - Non_low_income,
+    # must be a numeric error
+    TRUE ~ 999999)) %>%
+  mutate(ratio = case_when(
+    #potentially take the absolute value in the outputs
+    (is.na(Low_income) & is.na(Non_low_income)) ~ abs(Minority)/abs(Non_minority),
+    (is.na(Minority) & is.na(Non_minority)) ~ abs(Low_income)/abs(Non_low_income),
+    # must be a numeric error
+    TRUE ~ 999999)) %>%
+  select(poptype, difference, ratio)
 
 # investigate what kind of impact
 impact_type <- impact_table %>%
@@ -79,13 +97,21 @@ impact_type <- impact_table %>%
     (Minority == "No Impact" & Non_minority == "Benefit") | (Low_income == "No Impact" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
     (Minority == "No Impact" & Non_minority == "Burden") | (Low_income == "No Impact" & Non_low_income == "Burden") ~"Only burdens non-protected population",
     (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
-    TRUE ~ "something elese happend"))
+    TRUE ~ "something else happend")) %>%
+  select(poptype, type)
 
-
-#Disproportionality option 1:
-#  mutate(percent_diff = ) %>%
-#Disproportionality option 2:
-#  mutate(ratio = ) %>%
+dispro <- diff %>%
+  left_join(impact_type) %>%
+  mutate(DIDB = case_when(
+    #note, check spelling....
+    #note, more conditions to bring in 
+    ratio > 1 + dim3 ~ "Protected population changes disproportionately",
+    ratio < 1 - dim3 ~ "Non-protected population changes disproportionely",
+    1- dim3 < ratio | ratio < 1 +dim3 ~ "Disproportionality within threshold",
+    TRUE ~ "Something else happened. problem!"
+  ))
+  
+  
 
 
 
@@ -139,10 +165,19 @@ impact_plot <- ggplot(data, aes(x= population))+
   xlab("Population")
 print(impact_plot)
   
+burden_plot <- ggplot(dispro, aes(x = poptype))+
+  geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DIDB), shape = 20, size = 4)+
+  geom_hline(aes(yintercept = 1+dim3), color = "red")+
+  geom_hline(aes(yintercept = 1-dim3), color = "red")+
+  geom_hline(aes(yintercept= 1), alpha= .5, color= "black")+
+  coord_flip()+
+  theme_minimal()+
+  theme(legend.position = "bottom")+
+  labs(title= "Ratio by population type")+
+  ylab("Ratio, protected population/non-protected population")+
+  xlab("Population type")
+print(burden_plot)
   
-
-
-
-#burden_plot <- 
+  
 
 
