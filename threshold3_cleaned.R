@@ -13,9 +13,12 @@ metric_filter <- c("Retail amenities")
 #dim1<- input$Dim1*0.01
 #dim2<- input$Dim2*0.01
 #dim3<- input$Dim3*0.01
-dim1 <- .10
-dim2 <- .92
+dim1 <- .1
+dim2 <- .01
 dim3 <- .8
+
+
+#dispro_method <- input$dis_method
 
 
 data <- alldata %>%
@@ -34,9 +37,6 @@ data <- data %>%
   mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
   #step 1 from spreadsheet
   mutate(delta = build - no_build) %>%
-  #scaling delta by dim2 slider
-  #note: this use of dim2 could be wrong/ not useful
-  #mutate(delta_scaled = delta*dim2) %>%
   mutate(error_b = build*error_aug) %>%
   mutate(error_nb =no_build*error_aug) %>%
   mutate(LB_b = build-error_b) %>%
@@ -48,11 +48,11 @@ data <- data %>%
   #step 2 from spreadsheet
 
   #Impact option 1b: impact as calculated in speadsheet + accounting for threshold sliders
-  mutate(impact = case_when (abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Positive Impact",
-                             abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Positive Impact",
-                             abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Negative Impact",
-                             abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Negative Impact",
-                             TRUE ~ "No Imapact"))
+  mutate(impact = case_when (abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit",
+                             abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
+                             abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
+                             abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
+                             TRUE ~ "No Impact"))
   
 #make an impact table, bring together all impact option by population in a table
 impact_table <- data %>%
@@ -70,23 +70,19 @@ impact_type <- impact_table %>%
   arrange(factor(poptype)) %>%
   spread(population, impact) %>%
   mutate(type = case_when( 
-    (Minority == "Positive Impact" & Non_minority  == "Positive Impact") | (Low_income == "Positive Impact" & Non_low_income == "Positive Impact") ~ "Benefit for both",
-    (Minority == "Negative Impact" & Non_minority  == "Negative Impact") | (Low_income == "Negative Impact" & Non_low_income == "Negative Impact") ~ "Burden for both",
-    (Minority == "Positive Impact" & Non_minority == "No Impact") | (Low_income == "Positive Impact" & Non_low_income == "No Impact") ~ "Only benefits protected population",
-    (Minority == "Negative Impact" & Non_minority == "No Impact") | (Low_income == "Negative Impact" & Non_low_income == "No Impact") ~ "Only burdens protected population",
-    (Minority == "No Impact" & Non_minority == "Positive Impact") | (Low_income == "No Impact" & Non_low_income == "Positive Impact") ~"Only benefits non-protected population",
-    (Minority == "No Impact" & Non_minority == "Negative Impact") | (Low_income == "No Impact" & Non_low_income == "Negative Impact") ~"Only burdens non-protected population",
+    (Minority == "Benefit" & Non_minority  == "Benefit") | (Low_income == "Benefit" & Non_low_income == "Benefit") ~ "Benefit for both",
+    (Minority == "Burden" & Non_minority  == "Burden") | (Low_income == "Burden" & Non_low_income == "Burden") ~ "Burden for both",
+    (Minority == "Benefit" & Non_minority == "No Impact") | (Low_income == "Benefit" & Non_low_income == "No Impact") ~ "Only benefits protected population",
+    (Minority == "Burden" & Non_minority == "No Impact") | (Low_income == "Burden" & Non_low_income == "No Impact") ~ "Only burdens protected population",
+    (Minority == "No Impact" & Non_minority == "Benefit") | (Low_income == "No Impact" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
+    (Minority == "No Impact" & Non_minority == "Burden") | (Low_income == "No Impact" & Non_low_income == "Burden") ~"Only burdens non-protected population",
     (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
-    
     TRUE ~ "something elese happend"))
 
-#Benefit or burden
 
 #Disproportionality option 1:
-#  mutate(abs_diff = ) %>%
-#Disproportionality option 2:
 #  mutate(percent_diff = ) %>%
-#Disproportionality option 3:
+#Disproportionality option 2:
 #  mutate(ratio = ) %>%
 
 
@@ -122,7 +118,6 @@ metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
   xlab("Population")
 print(metric_plot)
 
-print(impact_table)
 
 
 
@@ -130,14 +125,16 @@ print(impact_table)
 
 
 impact_plot <- ggplot(data, aes(x= population))+
-  geom_segment( aes(x=population, xend= population, y= 0,yend=percent_change), shape=20, size=1, show.legend = TRUE)+
-  geom_text(aes(x=as.numeric(population) +.3, y= percent_change ,label= paste(impact_perctdiff, ", ", percent_change, "%")),hjust="inward", size= 4)+
+  geom_segment( aes(x=population, xend= population, y= 0,yend=delta/no_build), shape=20, size=4, show.legend = TRUE)+
+  geom_hline( aes(yintercept = dim2), color = "red")+
+  geom_hline( aes(yintercept = -dim2), color = "red")+
+  geom_hline(aes(yintercept = 0), alpha=.5, color = "black")+
+  geom_text(aes(x=as.numeric(population) +.3, y= delta/no_build ,label= impact),hjust="inward", size= 4)+
   coord_flip()+
   theme_minimal()+
-  labs(title = paste(metric_filter, "by population"))+
+  labs(title = paste("Percent change", "by population"))+
   ylab("")+
   xlab("Population")
-  #ylim(-(dim2/0.01),dim2/0.01)
 print(impact_plot)
   
   
