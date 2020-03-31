@@ -7,6 +7,15 @@ library(readr)
 alldata <- read_csv("data.csv")
 
 ui <- fluidPage(
+  tags$head(
+    tags$style(HTML("
+    p {
+    font-size: 10px
+    }
+    ")
+      
+    )
+  ),
   titlePanel("DI DB Thresholds"),
   setSliderColor(c(rep("DimGray",3)), c(1,2,3)),
   chooseSliderSkin("Flat"),
@@ -21,16 +30,20 @@ ui <- fluidPage(
       #Sliders to toggle sensitivity
     
       sliderInput("Dim1", label = "Forecasting Error Threshold:", min = 0, max = 100, value = 10, step = .5),
-      p(""),
+      p("This threshold sets the sensitivity for detecting if a real change exists, given the amount of forecasting error in the model. This slider sets the confidence interval."),
       hr(),
   
       sliderInput("Dim2", label = "Impact Threshold:", min = 0, max = 100, value = 1, step = .5),
-      p("How much impact is meaningful?"),
+      p("This threshold sets the sensitivity to determining if a meaningful impact is introduced between the build and no-build scenarios. At zero, any change introduced by building is considered impactful. As the threshold increases, we decrease sensitivity to indicating whether a change is impactful. Change between scenarios is calculated as a percent: "),
+      p("((Build - (No-build) ) / (No-build))*100."),
+      p("If impact is reported, we indicate whether it is a benefit or a burden based on the metric."),
       #can fix names of options later on.
       hr(),
       
-      sliderInput("Dim3", label = "Burden Threshold:", min = 0, max = 100, value = 5, step = .5),
+      sliderInput("Dim3", label = "Disproportionality Threshold:", min = 0, max = 100, value = 5, step = .5),
       #selectInput("dis_method", label = "Disproportionality method to visualize:", choices = c("Percent Difference", "Ratio"), selected = "Ratio")
+      p("Set the sensitivity to determine if there is a disproportionate change introduced between populations.
+Disproportionality is calculated as a ratio comparing percent change in the protected population to the percent change in the non-protected population. At a ratio of 1, both protected and non-protected populations experience the same percent of change."),
     ),
   
   mainPanel(
