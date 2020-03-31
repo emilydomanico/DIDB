@@ -45,23 +45,23 @@ data <- data %>%
   mutate(UB_b = build+error_b) %>%
   mutate(LB_nb = no_build - error_nb)%>%
   mutate(UB_nb = no_build + error_nb) %>%
+  #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
+  #im_th_amt "impact threshold amount"
   mutate(im_th_amt = no_build*dim2) %>%
-  
-  #step 2 from spreadsheet
-
-  #Impact option 1b: impact as calculated in speadsheet + accounting for threshold sliders
+  #compares delta to impact threshold amount
   mutate(impact = case_when (abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit",
                              abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
                              abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
                              abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
                              TRUE ~ "No Impact"))
   
-#make an impact table, bring together all impact option by population in a table
+#make an impact table, bring together all impact options by population in a table
 impact_table <- data %>%
   select( population,delta, no_build, impact)%>%
   mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                str_detect(population, ".ncome") ~ "i",
                                TRUE ~ "NA")) %>%
+  #find percent change between no_build and build
   mutate( per_change = delta/no_build) %>%
   select(poptype, population, per_change, impact) %>%
   # control order of entries
@@ -77,7 +77,6 @@ diff <- impact_table %>%
     # must be a numeric error
     TRUE ~ 999999)) %>%
   mutate(ratio = case_when(
-    #potentially take the absolute value in the outputs
     (is.na(Low_income) & is.na(Non_low_income)) ~ abs(Minority)/abs(Non_minority),
     (is.na(Minority) & is.na(Non_minority)) ~ abs(Low_income)/abs(Non_low_income),
     # must be a numeric error
@@ -138,7 +137,7 @@ metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
   geom_point( aes(x=population, y=no_build), shape=20, size=1, show.legend = TRUE)+
   geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=impact),hjust="inward", size= 4)+
   coord_flip()+
-  #theme_minimal() +
+  theme_minimal()+
   theme(
     axis.ticks.y=element_blank(),
     #axis.text.y= element_blank()
@@ -155,11 +154,13 @@ print(metric_plot)
 
 
 impact_plot <- ggplot(data, aes(x= population))+
-  geom_segment( aes(x=population, xend= population, y= 0,yend=delta/no_build), shape=20, size=4, show.legend = TRUE)+
-  geom_hline( aes(yintercept = dim2), color = "red")+
-  geom_hline( aes(yintercept = -dim2), color = "red")+
-  geom_hline(aes(yintercept = 0), alpha=.5, color = "black")+
-  geom_text(aes(x=as.numeric(population) +.3, y= delta/no_build ,label= impact),hjust="inward", size= 4)+
+  geom_rect( aes(xmin = -Inf, xmax = Inf, ymin= -dim2, ymax= dim2), alpha= 0.08, color ="#ededed")+
+  #geom_hline( aes(yintercept = dim2), size= .75,color = "#6e6e6e")+
+  #geom_hline( aes(yintercept = -dim2), size=.75, color = "#6e6e6e")+
+  geom_segment( aes(x=population, xend= population, y= 0,yend=delta/no_build, color= impact), shape=20, size=4, show.legend = FALSE)+
+  scale_colour_manual(values = c("No Impact" = "#858585", "Benefit" = "#4a4a4a","Burden" = "#ff6666"))+
+  geom_text(aes(x=as.numeric(population) +.2, y= delta/no_build ,label= impact),hjust="inward", size= 4)+
+  geom_hline(aes(yintercept = 0), size= 1, color = "black")+
   scale_y_continuous(labels = scales::percent)+
   coord_flip()+
   theme_minimal()+
@@ -169,13 +170,16 @@ impact_plot <- ggplot(data, aes(x= population))+
 print(impact_plot)
   
 burden_plot <- ggplot(dispro, aes(x = poptype))+
-  geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DIDB), shape = 20, size = 4)+
-  geom_hline(aes(yintercept = 1+dim3), color = "red")+
-  geom_hline(aes(yintercept = 1-dim3), color = "red")+
-  geom_hline(aes(yintercept= 1), alpha= .5, color= "black")+
+  geom_rect( aes(xmin = -Inf, xmax = Inf, ymin= 1-dim3, ymax= 1+dim3), alpha= 0.08, color ="#ededed")+
+  #geom_hline(aes(yintercept = 1+dim3), size= .75,color = "#6e6e6e")+
+  #geom_hline(aes(yintercept = 1-dim3), size= .75,color = "#6e6e6e")+
+  geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DIDB), shape = 20, size = 4, show.legned = FALSE)+
+  scale_color_manual(values = c("Disproportionality within threshold"= "#858585", "Protected population changes more"= "#ff6666", "Non-protected population changes more"= "#4a4a4a"))+
+  geom_hline(aes(yintercept = 1), size= 1, color = "black")+
+  geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = DIDB ), hjust= "inward", size = 4)+
   coord_flip()+
   theme_minimal()+
-  theme(legend.position = "bottom")+
+  theme(legend.position = "None")+
   labs(title= "Ratio by population type")+
   ylab("Ratio,  (% change protected population) / (% change non-protected population)")+
   xlab("Population type")
