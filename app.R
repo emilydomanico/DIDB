@@ -177,13 +177,14 @@ server <- function(input, output) {
     ##DRAW THE PLOT
     
     metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
-      geom_segment( aes(x=population, xend=population, y=LB_b, yend=UB_b, ), color= "#E69F00", alpha=.65, size= 10) +
-      geom_segment( aes(x=population, xend=population, y=LB_nb, yend=UB_nb),color= "#56B4E9", alpha=.5, size= 10) +
-      geom_point( aes(x=population, y=build),color= "#E69F00", shape="square", size=4, show.legend = TRUE) +
-      geom_point( aes(x=population, y=no_build), color = "#56B4E9", shape="square", size=4, show.legend = TRUE) +
+      geom_segment( aes(x=population, xend=population, y=LB_b, yend=UB_b, color= "Build"), alpha=.65, size= 10) +
+      geom_segment( aes(x=population, xend=population, y=LB_nb, yend=UB_nb, color = "No-build"), alpha=.5, size= 10) +
+      geom_point( aes(x=population, y=build, color = "Build"), shape="square", size=4) +
+      geom_point( aes(x=population, y=no_build, color= "No-build"), shape="square", size=4) +
       geom_point( aes(x=population, y=build), shape=20, size=1, show.legend = TRUE)+
       geom_point( aes(x=population, y=no_build), shape=20, size=1, show.legend = TRUE)+
       geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=impact),hjust="inward", size= 4)+
+      scale_color_manual(name= "Scenario", values= c("Build" = "#E69F00", "No-build" = "#56B4E9"))+
       coord_flip()+
       theme_minimal() +
       theme(
