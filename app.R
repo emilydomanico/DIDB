@@ -139,7 +139,7 @@ server <- function(input, output) {
     
     dispro <- diff %>%
       left_join(impact_type) %>%
-      mutate(DIDB = case_when(
+      mutate(DB = case_when(
         #note, check spelling....
         #note, more conditions to bring in 
         ratio > 1 + dim3 ~ "Protected population changes more",
@@ -164,8 +164,8 @@ server <- function(input, output) {
     ##DRAW THE PLOT
     
     metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
-      geom_segment( aes(x=population, xend=population, y=LB_b, yend=UB_b, ), color= "#E69F00", alpha=.65, size= 10, show.legend = TRUE) +
-      geom_segment( aes(x=population, xend=population, y=LB_nb, yend=UB_nb),color= "#56B4E9", alpha=.5, size= 10, show.legend = TRUE) +
+      geom_segment( aes(x=population, xend=population, y=LB_b, yend=UB_b, ), color= "#E69F00", alpha=.65, size= 10) +
+      geom_segment( aes(x=population, xend=population, y=LB_nb, yend=UB_nb),color= "#56B4E9", alpha=.5, size= 10) +
       geom_point( aes(x=population, y=build),color= "#E69F00", shape="square", size=4, show.legend = TRUE) +
       geom_point( aes(x=population, y=no_build), color = "#56B4E9", shape="square", size=4, show.legend = TRUE) +
       geom_point( aes(x=population, y=build), shape=20, size=1, show.legend = TRUE)+
@@ -275,7 +275,7 @@ server <- function(input, output) {
     
     dispro <- diff %>%
       left_join(impact_type) %>%
-      mutate(DIDB = case_when(
+      mutate(DB = case_when(
         #note, check spelling....
         #note, more conditions to bring in 
         ratio > 1 + dim3 ~ "Protected population changes more",
@@ -409,7 +409,7 @@ server <- function(input, output) {
     
     dispro <- diff %>%
       left_join(impact_type) %>%
-      mutate(DIDB = case_when(
+      mutate(DB = case_when(
         #note, check spelling....
         #note, more conditions to bring in 
         ratio > 1 + dim3 ~ "Protected population changes more",
@@ -435,10 +435,10 @@ server <- function(input, output) {
       geom_rect( aes(xmin = -Inf, xmax = Inf, ymin= 1-dim3, ymax= 1+dim3), alpha= 0.08, color ="#ededed")+
       #geom_hline(aes(yintercept = 1+dim3), size= .75,color = "#6e6e6e")+
       #geom_hline(aes(yintercept = 1-dim3), size= .75,color = "#6e6e6e")+
-      geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DIDB), shape = 20, size = 4, show.legned = FALSE)+
+      geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DB), shape = 20, size = 4, show.legned = FALSE)+
       scale_color_manual(values = c("Disproportionality within threshold"= "#858585", "Protected population changes more"= "#ff6666", "Non-protected population changes more"= "#ff6666"))+
       geom_hline(aes(yintercept = 1), size= 1, color = "black")+
-      geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = str_wrap(DIDB, width = 20)), hjust= "inward", size = 4)+
+      geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = str_wrap(DB, width = 20)), hjust= "inward", size = 4)+
       coord_flip()+
       theme_minimal()+
       theme(legend.position = "None", plot.title = element_text(face= "bold"))+
