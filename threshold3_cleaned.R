@@ -91,6 +91,8 @@ impact_type <- impact_table %>%
   mutate(type = case_when( 
     (Minority == "Benefit" & Non_minority  == "Benefit") | (Low_income == "Benefit" & Non_low_income == "Benefit") ~ "Benefit for both",
     (Minority == "Burden" & Non_minority  == "Burden") | (Low_income == "Burden" & Non_low_income == "Burden") ~ "Burden for both",
+    (Minority == "Benefit" & Non_minority == "Burden") | (Low_income == "Benefit" & Non_low_income == "Burden") ~ "Benefits protected, burdens non-protected",
+    (Minority == "Burden" & Non_minority == "Benefit") | (Low_income == "Burden" & Non_low_income == "Benefit") ~ "Burdens protected, benefits non-protected",
     (Minority == "Benefit" & Non_minority == "No Impact") | (Low_income == "Benefit" & Non_low_income == "No Impact") ~ "Only benefits protected population",
     (Minority == "Burden" & Non_minority == "No Impact") | (Low_income == "Burden" & Non_low_income == "No Impact") ~ "Only burdens protected population",
     (Minority == "No Impact" & Non_minority == "Benefit") | (Low_income == "No Impact" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
@@ -101,13 +103,24 @@ impact_type <- impact_table %>%
 
 dispro <- diff %>%
   left_join(impact_type) %>%
-  mutate(DIDB = case_when(
+  mutate(DB = case_when(
     #note, check spelling....
     #note, more conditions to bring in 
     ratio > 1 + dim3 ~ "Protected population changes more",
     ratio < 1 - dim3 ~ "Non-protected population changes more",
     1- dim3 < ratio | ratio < 1 +dim3 ~ "Disproportionality within threshold",
     TRUE ~ "Something else happened. problem!"
+  )) %>%
+  mutate(DIDB = case_when (
+    type == "Burdens protected, benefits non-protected" ~ "Yes",
+    type == "Benefits protected, burdens non-protected" ~ "No",
+    type == "Benefit for both" & ratio < 1-dim3 ~ "Yes",
+    type == "Benefit for both" & ratio > 1-dim3 ~ "No",
+    type == "Burden for both" & ratio > 1+dim3 ~ "Yes",
+    type == "Burden for both" & ratio < 1+dim3 ~ "No",
+    #type == "Only benefits protected population" ~ ,
+    #ratio == "Dispropotionality within threshold" ~ "No", 
+    TRUE ~ "something elese happend"
   ))
 
 dispro$poptype <- factor(dispro$poptype, levels = c("m","i"))
@@ -129,19 +142,19 @@ metric_unit <- data$metric_unit[1]
 
 
 metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
-  geom_segment( aes(x=population, xend=population, y=LB_b, yend=UB_b, ), color= "#E69F00", alpha=.65, size= 10, show.legend = TRUE) +
-  geom_segment( aes(x=population, xend=population, y=LB_nb, yend=UB_nb),color= "#56B4E9", alpha=.5, size= 10, show.legend = TRUE) +
-  geom_point( aes(x=population, y=build),color= "#E69F00", shape="square", size=4, show.legend = TRUE) +
-  geom_point( aes(x=population, y=no_build), color = "#56B4E9", shape="square", size=4, show.legend = TRUE) +
+  geom_segment( aes(x=population, xend=population, y=LB_b, yend=UB_b, ), color= "#E69F00", alpha=.65, size= 10) +
+  geom_segment( aes(x=population, xend=population, y=LB_nb, yend=UB_nb),color= "#56B4E9", alpha=.5, size= 10) +
+  geom_point( aes(x=population, y=build),color= "#E69F00", shape="square", size=4) +
+  geom_point( aes(x=population, y=no_build), color = "#56B4E9", shape="square", size=4) +
   geom_point( aes(x=population, y=build), shape=20, size=1, show.legend = TRUE)+
   geom_point( aes(x=population, y=no_build), shape=20, size=1, show.legend = TRUE)+
   geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=impact),hjust="inward", size= 4)+
   coord_flip()+
-  theme_minimal()+
+  theme_minimal() +
   theme(
     axis.ticks.y=element_blank(),
     #axis.text.y= element_blank()
-  )+
+    plot.title = element_text(face= "bold"))+
   labs(title = paste(metric_filter, "by population"))+
   ylab(paste(metric_filter, " (", metric_unit, ")"))+
   xlab("Population")
@@ -164,27 +177,38 @@ impact_plot <- ggplot(data, aes(x= population))+
   scale_y_continuous(labels = scales::percent)+
   coord_flip()+
   theme_minimal()+
+  theme(legend.position = "None", plot.title = element_text(face= "bold"))+
   labs(title = paste("Percent change", "by population"))+
   ylab("")+
   xlab("Population")
 print(impact_plot)
+
   
 burden_plot <- ggplot(dispro, aes(x = poptype))+
   geom_rect( aes(xmin = -Inf, xmax = Inf, ymin= 1-dim3, ymax= 1+dim3), alpha= 0.08, color ="#ededed")+
   #geom_hline(aes(yintercept = 1+dim3), size= .75,color = "#6e6e6e")+
   #geom_hline(aes(yintercept = 1-dim3), size= .75,color = "#6e6e6e")+
-  geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DIDB), shape = 20, size = 4, show.legned = FALSE)+
-  scale_color_manual(values = c("Disproportionality within threshold"= "#858585", "Protected population changes more"= "#ff6666", "Non-protected population changes more"= "#4a4a4a"))+
+  geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DB), shape = 20, size = 4, show.legned = FALSE)+
+  scale_color_manual(values = c("Disproportionality within threshold"= "#858585", "Protected population changes more"= "#ff6666", "Non-protected population changes more"= "#ff6666"))+
   geom_hline(aes(yintercept = 1), size= 1, color = "black")+
-  geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = DIDB ), hjust= "inward", size = 4)+
+  geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = str_wrap(DIDB, width = 20)), hjust= "inward", size = 4)+
   coord_flip()+
   theme_minimal()+
-  theme(legend.position = "None")+
+  theme(legend.position = "None", plot.title = element_text(face= "bold"))+
   labs(title= "Ratio by population type")+
-  ylab("Ratio,  (% change protected population) / (% change non-protected population)")+
+  ylab(str_wrap("Ratio,  (% change protected population) / (% change non-protected population)", width = 40))+
   xlab("Population type")
 print(burden_plot)
   
-  
 
+# DIDB count for metric_filter
+count_table <- data.frame (metric_filter) %>%
+  mutate(DIDB_count = 1)
+
+# DIDB count by for all metrics, table
+all_metrics <- c("Retail amenities", "Higher education","Healthcare facilities", "Jobs by transit","Congested VMT","Carbon monoxide emissions", "Average attraction - highway", "Average production - highway","Average attraction - transit",
+                 "Average production - transit")
+
+count_table_all <- data.frame (all_metrics) %>%
+  mutate(DIDB_count = 1:10)
 
