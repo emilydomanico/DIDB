@@ -55,7 +55,7 @@ Disproportionality is calculated as a ratio comparing percent change in the prot
    ),
     column(width = 6,
     plotOutput("burden_plot")),
-   tableOutput("DIDB")
+   DT::dataTableOutput("DIDB")
   )
 ))
 
@@ -71,7 +71,6 @@ server <- function(input, output) {
     dim2 <- input$Dim2*0.01
     dim3 <- input$Dim3*0.01
     
-    dispro_method <- input$dis_method
 
     
     data <- alldata %>%
@@ -465,18 +464,14 @@ server <- function(input, output) {
     
   })
   
-  output$DIDB <- renderTable({
+  output$DIDB <- DT::renderDataTable(DT::datatable({
     #user imputs
-    #metric selected from selectInput dropdown
-    metric_filter <- input$metric 
     # percentage threshold set by slider
     dim1 <- input$Dim1*0.01
     dim2 <- input$Dim2*0.01
     dim3 <- input$Dim3*0.01
     
-    
-    data <- alldata %>%
-      filter(metric == metric_filter)
+    data <- alldata
     #clean data so no hyphens
     data[data=="no-build"] <- "no_build"
     data[data=="Low-income"] <- "Low_income"
@@ -509,18 +504,18 @@ server <- function(input, output) {
     
     #make an impact table, bring together all impact options by population in a table
     impact_table <- data %>%
-      select( population,delta, no_build, impact)%>%
+      select( metric,population,delta, no_build, impact)%>%
       mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                    str_detect(population, ".ncome") ~ "i",
                                    TRUE ~ "NA")) %>%
       #find percent change between no_build and build
       mutate( per_change = delta/no_build) %>%
-      select(poptype, population, per_change, impact) %>%
+      select(metric, poptype, population, per_change, impact) %>%
       # control order of entries
       arrange(factor(population, levels = c("Low_income","Non_low_income", "Minority","Non_minority")))
     
     diff <- impact_table %>%
-      select(poptype, population, per_change) %>%
+      select(metric, poptype, population, per_change) %>%
       arrange(factor(poptype)) %>%
       spread(population, per_change) %>%
       mutate(difference = case_when(
@@ -533,11 +528,11 @@ server <- function(input, output) {
         (is.na(Minority) & is.na(Non_minority)) ~ abs(Low_income)/abs(Non_low_income),
         # must be a numeric error
         TRUE ~ 999999)) %>%
-      select(poptype, difference, ratio)
+      select(metric, poptype, difference, ratio)
     
     # investigate what kind of impact
     impact_type <- impact_table %>%
-      select( poptype, population, impact) %>%
+      select( metric, poptype, population, impact) %>%
       arrange(factor(poptype)) %>%
       spread(population, impact) %>%
       mutate(type = case_when( 
@@ -551,7 +546,7 @@ server <- function(input, output) {
         (Minority == "No Impact" & Non_minority == "Burden") | (Low_income == "No Impact" & Non_low_income == "Burden") ~"Only burdens non-protected population",
         (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
         TRUE ~ "something else happend")) %>%
-      select(poptype, type)
+      select(metric,poptype, type)
     
     dispro <- diff %>%
       left_join(impact_type) %>%
@@ -565,7 +560,7 @@ server <- function(input, output) {
       )) 
     
     DIDB <- dispro %>%
-      select(poptype, ratio, type, DB) %>%
+      select(metric, poptype, ratio, type, DB) %>%
       mutate(instance = case_when (
         # right now, takes first two cases regardless of whether dispropotionality is within the threshold
         type == "Burdens protected, benefits non-protected" ~ "Yes",
@@ -577,18 +572,21 @@ server <- function(input, output) {
         #questions about following cases
         type == "Only benefits protected population" & ratio < 1-dim3 ~ "?",
         type == "Only burdens protected population" & ratio > 1+dim3 ~ "?",
-        type == "Only benefits non-protected population" & ratio   ~ "?",
-        type == "Only burdens non-protected population" & ratio ~ "?",
+        type == "Only benefits non-protected population" & ratio < 1-dim3  ~ "?",
+        type == "Only burdens non-protected population" & ratio > 1+dim3 ~ "?",
         #assuming if no impact, then no DIDB
-        type == "Impacts Neither" ~ "No",
+        #type == "Impacts Neither" & (1- dim3 < ratio | ratio < 1 +dim3) ~ "No",
         # DB == "Disproportionality within threshold" ~ "No",
-        TRUE ~ "something elese happend"
+        TRUE ~ "something else happend"
       ))%>%
-      select(poptype, instance)
+      select(metric, poptype, instance) %>%
+      rename("Population Type" = poptype)%>%
+      rename("Disperate Impact or Disproportionate Burden" = instance)
+
     
-    print(DIDB)
+    DIDB
     
-  })
+  }))
 
 }
 
