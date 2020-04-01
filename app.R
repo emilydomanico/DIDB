@@ -3,6 +3,7 @@ library(shinyWidgets)
 library(tidyverse)
 library(hrbrthemes)
 library(readr)
+library(DT)
 
 alldata <- read_csv("data.csv")
 
@@ -29,18 +30,18 @@ ui <- fluidPage(
       
       #Sliders to toggle sensitivity
     
-      sliderInput("Dim1", label = "Forecasting Error Threshold:", min = 0, max = 100, value = 10, step = .5),
+      sliderInput("Dim1", label = "Forecasting Error Threshold:", min = 0, max = 100, value = 10, step = 1),
       p("This threshold sets the sensitivity for detecting if a real change exists, given the amount of forecasting error in the model. This slider sets the confidence interval."),
       hr(),
   
-      sliderInput("Dim2", label = "Impact Threshold:", min = 0, max = 100, value = 1, step = .5),
+      sliderInput("Dim2", label = "Impact Threshold:", min = 0, max = 20, value = 2, step = .1),
       p("This threshold sets the sensitivity to determining if a meaningful impact is introduced between the build and no-build scenarios. At zero, any change introduced by building is considered impactful. As the threshold increases, we decrease sensitivity to indicating whether a change is impactful. Change between scenarios is calculated as a percent: "),
       p("((Build - (No-build) ) / (No-build))*100."),
       p("If impact is reported, we indicate whether it is a benefit or a burden based on the metric."),
       #can fix names of options later on.
       hr(),
       
-      sliderInput("Dim3", label = "Disproportionality Threshold:", min = 0, max = 100, value = 5, step = .5),
+      sliderInput("Dim3", label = "Disproportionality Threshold:", min = 0, max = 30, value = 5, step = 1),
       #selectInput("dis_method", label = "Disproportionality method to visualize:", choices = c("Percent Difference", "Ratio"), selected = "Ratio")
       p("Set the sensitivity to determine if there is a disproportionate change introduced between populations.
 Disproportionality is calculated as a ratio comparing percent change in the protected population to the percent change in the non-protected population. At a ratio of 1, both protected and non-protected populations experience the same percent of change."),
@@ -55,9 +56,11 @@ Disproportionality is calculated as a ratio comparing percent change in the prot
    ),
     column(width = 6,
     plotOutput("burden_plot")),
-   DT::dataTableOutput("DIDB")
+  column(width = 12,
+  tableOutput("DIDB"))
   )
-))
+) # close sidebarlayout()
+) # close fluidpage()
 
 
 server <- function(input, output) {
@@ -125,13 +128,13 @@ server <- function(input, output) {
         (is.na(Low_income) & is.na(Non_low_income)) ~ Minority - Non_minority,
         (is.na(Minority) & is.na(Non_minority)) ~ Low_income - Non_low_income,
         # must be a numeric error
-        TRUE ~ 999999)) %>%
+        TRUE ~ NA_real_)) %>%
       mutate(ratio = case_when(
         #potentially take the absolute value in the outputs
         (is.na(Low_income) & is.na(Non_low_income)) ~ abs(Minority)/abs(Non_minority),
         (is.na(Minority) & is.na(Non_minority)) ~ abs(Low_income)/abs(Non_low_income),
         # must be a numeric error
-        TRUE ~ 999999)) %>%
+        TRUE ~ NA_real_)) %>%
       select(poptype, difference, ratio)
     
     # investigate what kind of impact
@@ -262,13 +265,13 @@ server <- function(input, output) {
         (is.na(Low_income) & is.na(Non_low_income)) ~ Minority - Non_minority,
         (is.na(Minority) & is.na(Non_minority)) ~ Low_income - Non_low_income,
         # must be a numeric error
-        TRUE ~ 999999)) %>%
+        TRUE ~ NA_real_)) %>%
       mutate(ratio = case_when(
         #potentially take the absolute value in the outputs
         (is.na(Low_income) & is.na(Non_low_income)) ~ abs(Minority)/abs(Non_minority),
         (is.na(Minority) & is.na(Non_minority)) ~ abs(Low_income)/abs(Non_low_income),
         # must be a numeric error
-        TRUE ~ 999999)) %>%
+        TRUE ~ NA_real_)) %>%
       select(poptype, difference, ratio)
     
     # investigate what kind of impact
@@ -456,15 +459,15 @@ server <- function(input, output) {
       coord_flip()+
       theme_minimal()+
       theme(legend.position = "None", plot.title = element_text(face= "bold"))+
-      labs(title= "Ratio by population type")+
+      labs(title= "Ratio by population group")+
       ylab(str_wrap("Ratio,  (% change protected population) / (% change non-protected population)", width = 40))+
-      xlab("Population type")
+      xlab("Population group")
     print(burden_plot)
     
     
   })
   
-  output$DIDB <- DT::renderDataTable(DT::datatable({
+  output$DIDB <- renderTable({
     #user imputs
     # percentage threshold set by slider
     dim1 <- input$Dim1*0.01
@@ -522,12 +525,12 @@ server <- function(input, output) {
         (is.na(Low_income) & is.na(Non_low_income)) ~ Minority - Non_minority,
         (is.na(Minority) & is.na(Non_minority)) ~ Low_income - Non_low_income,
         # must be a numeric error
-        TRUE ~ 999999)) %>%
+        TRUE ~ NA_real_)) %>%
       mutate(ratio = case_when(
         (is.na(Low_income) & is.na(Non_low_income)) ~ abs(Minority)/abs(Non_minority),
         (is.na(Minority) & is.na(Non_minority)) ~ abs(Low_income)/abs(Non_low_income),
         # must be a numeric error
-        TRUE ~ 999999)) %>%
+        TRUE ~ NA_real_)) %>%
       select(metric, poptype, difference, ratio)
     
     # investigate what kind of impact
@@ -580,13 +583,13 @@ server <- function(input, output) {
         TRUE ~ "something else happend"
       ))%>%
       select(metric, poptype, instance) %>%
-      rename("Population Type" = poptype)%>%
+      rename("Population Group" = poptype)%>%
       rename("Disperate Impact or Disproportionate Burden" = instance)
 
     
     DIDB
     
-  }))
+  })
 
 }
 
