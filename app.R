@@ -7,21 +7,30 @@ library(DT)
 
 alldata <- read_csv("data.csv")
 
+
+
 ui <- fluidPage(
   tags$head(
     tags$style(HTML("
     p {
-    font-size: 10px
+    font-size: 10px;
+    }
+    t {
+    font-size: 36px;
+    font-weight: 800px;
     }
     ")
       
     )
   ),
+  withMathJax(),
   titlePanel("DI DB Thresholds"),
   setSliderColor(c(rep("DimGray",3)), c(1,2,3)),
   chooseSliderSkin("Flat"),
   sidebarLayout(
     sidebarPanel(
+      #to fix side panel position
+      style = "position: fixed; width:inherit;",
       selectInput("metric", "Metric:",
                   choices = c("Retail amenities", "Higher education","Healthcare facilities", "Jobs by transit","Congested VMT","Carbon monoxide emissions", "Average attraction - highway", "Average production - highway","Average attraction - transit",
                               "Average production - transit"), selected = "Carbon monoxide emissions"),
@@ -36,15 +45,19 @@ ui <- fluidPage(
   
       sliderInput("Dim2", label = "Impact Threshold:", min = 0, max = 20, value = 2, step = .1),
       p("This threshold sets the sensitivity to determining if a meaningful impact is introduced between the build and no-build scenarios. At zero, any change introduced by building is considered impactful. As the threshold increases, we decrease sensitivity to indicating whether a change is impactful. Change between scenarios is calculated as a percent: "),
-      p("((Build - (No-build) ) / (No-build))*100."),
+      withMathJax("$$\\scriptsize\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build}} \\cdot 100$$"),
+      #withMathJax("\\(\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build} \\cdot 100}\\)"),
+      #p("((Build - (No-build) ) / (No-build))*100."),
+      p(" "),
       p("If impact is reported, we indicate whether it is a benefit or a burden based on the metric."),
       #can fix names of options later on.
       hr(),
       
       sliderInput("Dim3", label = "Disproportionality Threshold:", min = 0, max = 30, value = 5, step = 1),
       #selectInput("dis_method", label = "Disproportionality method to visualize:", choices = c("Percent Difference", "Ratio"), selected = "Ratio")
-      p("Set the sensitivity to determine if there is a disproportionate change introduced between populations.
-Disproportionality is calculated as a ratio comparing percent change in the protected population to the percent change in the non-protected population. At a ratio of 1, both protected and non-protected populations experience the same percent of change."),
+      p("Set the sensitivity to determine if there is a disproportionate change introduced between populations. 
+        Disproportionality is calculated as a ratio comparing percent change in the protected population to the percent change in the non-protected population. 
+        At a ratio of 1, both protected and non-protected populations experience the same percent of change.")
     ),
   
   mainPanel(
@@ -98,23 +111,23 @@ server <- function(input, output) {
       mutate(UB_b = build+error_b) %>%
       mutate(LB_nb = no_build - error_nb)%>%
       mutate(UB_nb = no_build + error_nb) %>%
+      #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
+      #im_th_amt "impact threshold amount"
       mutate(im_th_amt = no_build*dim2) %>%
-      
-      #step 2 from spreadsheet
-      
-      #Impact option 1b: impact as calculated in speadsheet + accounting for threshold sliders
+      #compares delta to impact threshold amount
       mutate(impact = case_when (abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit",
                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
                                  abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
-                                 TRUE ~ "No Impact"))
+                                 TRUE ~ "Impact within threshold"))
     
-    #make an impact table, bring together all impact option by population in a table
+    #make an impact table, bring together all impact options by population in a table
     impact_table <- data %>%
       select( population,delta, no_build, impact)%>%
       mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                    str_detect(population, ".ncome") ~ "i",
                                    TRUE ~ "NA")) %>%
+      #find percent change between no_build and build
       mutate( per_change = delta/no_build) %>%
       select(poptype, population, per_change, impact) %>%
       # control order of entries
@@ -128,9 +141,9 @@ server <- function(input, output) {
         (is.na(Low_income) & is.na(Non_low_income)) ~ Minority - Non_minority,
         (is.na(Minority) & is.na(Non_minority)) ~ Low_income - Non_low_income,
         # must be a numeric error
+        #na real
         TRUE ~ NA_real_)) %>%
       mutate(ratio = case_when(
-        #potentially take the absolute value in the outputs
         (is.na(Low_income) & is.na(Non_low_income)) ~ abs(Minority)/abs(Non_minority),
         (is.na(Minority) & is.na(Non_minority)) ~ abs(Low_income)/abs(Non_low_income),
         # must be a numeric error
@@ -145,24 +158,24 @@ server <- function(input, output) {
       mutate(type = case_when( 
         (Minority == "Benefit" & Non_minority  == "Benefit") | (Low_income == "Benefit" & Non_low_income == "Benefit") ~ "Benefit for both",
         (Minority == "Burden" & Non_minority  == "Burden") | (Low_income == "Burden" & Non_low_income == "Burden") ~ "Burden for both",
-        (Minority == "Benefit" & Non_minority == "No Impact") | (Low_income == "Benefit" & Non_low_income == "No Impact") ~ "Only benefits protected population",
-        (Minority == "Burden" & Non_minority == "No Impact") | (Low_income == "Burden" & Non_low_income == "No Impact") ~ "Only burdens protected population",
-        (Minority == "No Impact" & Non_minority == "Benefit") | (Low_income == "No Impact" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
-        (Minority == "No Impact" & Non_minority == "Burden") | (Low_income == "No Impact" & Non_low_income == "Burden") ~"Only burdens non-protected population",
-        (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
+        (Minority == "Benefit" & Non_minority == "Burden") | (Low_income == "Benefit" & Non_low_income == "Burden") ~ "Benefits protected, burdens non-protected",
+        (Minority == "Burden" & Non_minority == "Benefit") | (Low_income == "Burden" & Non_low_income == "Benefit") ~ "Burdens protected, benefits non-protected",
+        (Minority == "Benefit" & Non_minority == "Impact within threshold") | (Low_income == "Benefit" & Non_low_income == "Impact within threshold") ~ "Only benefits protected population",
+        (Minority == "Burden" & Non_minority == "Impact within threshold") | (Low_income == "Burden" & Non_low_income == "Impact within threshold") ~ "Only burdens protected population",
+        (Minority == "Impact within threshold" & Non_minority == "Benefit") | (Low_income == "Impact within threshold" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
+        (Minority == "Impact within threshold" & Non_minority == "Burden") | (Low_income == "Impact within threshold" & Non_low_income == "Burden") ~"Only burdens non-protected population",
+        (Minority == "Impact within threshold" & Non_minority  == "Impact within threshold") | (Low_income == "Impact within threshold" & Non_low_income == "Impact within threshold") ~ "Impact within threshold for both",
         TRUE ~ "something else happend")) %>%
       select(poptype, type)
     
     dispro <- diff %>%
       left_join(impact_type) %>%
       mutate(DB = case_when(
-        #note, check spelling....
-        #note, more conditions to bring in 
-        ratio > 1 + dim3 ~ "Protected population changes more",
-        ratio < 1 - dim3 ~ "Non-protected population changes more",
-        1- dim3 < ratio | ratio < 1 +dim3 ~ "Disproportionality within threshold",
+        ratio >= (1 + dim3) ~ "Protected population affected more",
+        ratio <= (1 - dim3) ~ "Non-protected population affected more",
+        ((1- dim3) < ratio) | (ratio < (1 +dim3)) ~ "Disproportionality within threshold",
         TRUE ~ "Something else happened. problem!"
-      ))
+      )) 
     
     dispro$poptype <- factor(dispro$poptype, levels = c("m","i"))
     
@@ -178,6 +191,8 @@ server <- function(input, output) {
     
     
     ##DRAW THE PLOT
+    ## Note, opportunitiy to draw metric_plot and impact_plot together with shared horizontal axis 
+    ## Similar to :https://stackoverflow.com/questions/18265941/two-horizontal-bar-charts-with-shared-axis-in-ggplot2-similar-to-population-pyr
     
     metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
       geom_segment( aes(x=population, xend=population, y=LB_b, yend=UB_b, color= "Build"), alpha=.65, size= 10) +
@@ -194,7 +209,9 @@ server <- function(input, output) {
         axis.ticks.y=element_blank(),
         #axis.text.y= element_blank()
         plot.title = element_text(face= "bold"))+
-      labs(title = paste(metric_filter, "by population"))+
+      labs(title = paste(metric_filter, "by population") #,
+           #subtitle = "Test"
+           )+
       ylab(paste(metric_filter, " (", metric_unit, ")"))+
       xlab("Population")
     print(metric_plot)
@@ -210,7 +227,6 @@ server <- function(input, output) {
     dim2 <- input$Dim2*0.01
     dim3 <- input$Dim3*0.01
     
-    dispro_method <- input$dis_method
     
     
     data <- alldata %>%
@@ -235,23 +251,23 @@ server <- function(input, output) {
       mutate(UB_b = build+error_b) %>%
       mutate(LB_nb = no_build - error_nb)%>%
       mutate(UB_nb = no_build + error_nb) %>%
+      #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
+      #im_th_amt "impact threshold amount"
       mutate(im_th_amt = no_build*dim2) %>%
-      
-      #step 2 from spreadsheet
-      
-      #Impact option 1b: impact as calculated in speadsheet + accounting for threshold sliders
+      #compares delta to impact threshold amount
       mutate(impact = case_when (abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit",
                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
                                  abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
-                                 TRUE ~ "No Impact"))
+                                 TRUE ~ "Impact within threshold"))
     
-    #make an impact table, bring together all impact option by population in a table
+    #make an impact table, bring together all impact options by population in a table
     impact_table <- data %>%
       select( population,delta, no_build, impact)%>%
       mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                    str_detect(population, ".ncome") ~ "i",
                                    TRUE ~ "NA")) %>%
+      #find percent change between no_build and build
       mutate( per_change = delta/no_build) %>%
       select(poptype, population, per_change, impact) %>%
       # control order of entries
@@ -265,9 +281,9 @@ server <- function(input, output) {
         (is.na(Low_income) & is.na(Non_low_income)) ~ Minority - Non_minority,
         (is.na(Minority) & is.na(Non_minority)) ~ Low_income - Non_low_income,
         # must be a numeric error
+        #na real
         TRUE ~ NA_real_)) %>%
       mutate(ratio = case_when(
-        #potentially take the absolute value in the outputs
         (is.na(Low_income) & is.na(Non_low_income)) ~ abs(Minority)/abs(Non_minority),
         (is.na(Minority) & is.na(Non_minority)) ~ abs(Low_income)/abs(Non_low_income),
         # must be a numeric error
@@ -282,24 +298,24 @@ server <- function(input, output) {
       mutate(type = case_when( 
         (Minority == "Benefit" & Non_minority  == "Benefit") | (Low_income == "Benefit" & Non_low_income == "Benefit") ~ "Benefit for both",
         (Minority == "Burden" & Non_minority  == "Burden") | (Low_income == "Burden" & Non_low_income == "Burden") ~ "Burden for both",
-        (Minority == "Benefit" & Non_minority == "No Impact") | (Low_income == "Benefit" & Non_low_income == "No Impact") ~ "Only benefits protected population",
-        (Minority == "Burden" & Non_minority == "No Impact") | (Low_income == "Burden" & Non_low_income == "No Impact") ~ "Only burdens protected population",
-        (Minority == "No Impact" & Non_minority == "Benefit") | (Low_income == "No Impact" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
-        (Minority == "No Impact" & Non_minority == "Burden") | (Low_income == "No Impact" & Non_low_income == "Burden") ~"Only burdens non-protected population",
-        (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
+        (Minority == "Benefit" & Non_minority == "Burden") | (Low_income == "Benefit" & Non_low_income == "Burden") ~ "Benefits protected, burdens non-protected",
+        (Minority == "Burden" & Non_minority == "Benefit") | (Low_income == "Burden" & Non_low_income == "Benefit") ~ "Burdens protected, benefits non-protected",
+        (Minority == "Benefit" & Non_minority == "Impact within threshold") | (Low_income == "Benefit" & Non_low_income == "Impact within threshold") ~ "Only benefits protected population",
+        (Minority == "Burden" & Non_minority == "Impact within threshold") | (Low_income == "Burden" & Non_low_income == "Impact within threshold") ~ "Only burdens protected population",
+        (Minority == "Impact within threshold" & Non_minority == "Benefit") | (Low_income == "Impact within threshold" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
+        (Minority == "Impact within threshold" & Non_minority == "Burden") | (Low_income == "Impact within threshold" & Non_low_income == "Burden") ~"Only burdens non-protected population",
+        (Minority == "Impact within threshold" & Non_minority  == "Impact within threshold") | (Low_income == "Impact within threshold" & Non_low_income == "Impact within threshold") ~ "Impact within threshold for both",
         TRUE ~ "something else happend")) %>%
       select(poptype, type)
     
     dispro <- diff %>%
       left_join(impact_type) %>%
       mutate(DB = case_when(
-        #note, check spelling....
-        #note, more conditions to bring in 
-        ratio > 1 + dim3 ~ "Protected population changes more",
-        ratio < 1 - dim3 ~ "Non-protected population changes more",
-        1- dim3 < ratio | ratio < 1 +dim3 ~ "Disproportionality within threshold",
+        ratio >= (1 + dim3) ~ "Protected population affected more",
+        ratio <= (1 - dim3) ~ "Non-protected population affected more",
+        ((1- dim3) < ratio) | (ratio < (1 +dim3)) ~ "Disproportionality within threshold",
         TRUE ~ "Something else happened. problem!"
-      ))
+      )) 
     
     dispro$poptype <- factor(dispro$poptype, levels = c("m","i"))
     
@@ -320,7 +336,7 @@ server <- function(input, output) {
       #geom_hline( aes(yintercept = dim2), size= .75,color = "#6e6e6e")+
       #geom_hline( aes(yintercept = -dim2), size=.75, color = "#6e6e6e")+
       geom_segment( aes(x=population, xend= population, y= 0,yend=delta/no_build, color= impact), shape=20, size=4, show.legend = FALSE)+
-      scale_colour_manual(values = c("No Impact" = "#858585", "Benefit" = "#4a4a4a","Burden" = "#ff6666"))+
+      scale_colour_manual(values = c("Impact within threshold" = "#858585", "Benefit" = "#4a4a4a","Burden" = "#ff6666"))+
       geom_text(aes(x=as.numeric(population) +.2, y= delta/no_build ,label= impact),hjust="inward", size= 4)+
       geom_hline(aes(yintercept = 0), size= 1, color = "black")+
       scale_y_continuous(labels = scales::percent)+
@@ -369,23 +385,23 @@ server <- function(input, output) {
       mutate(UB_b = build+error_b) %>%
       mutate(LB_nb = no_build - error_nb)%>%
       mutate(UB_nb = no_build + error_nb) %>%
+      #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
+      #im_th_amt "impact threshold amount"
       mutate(im_th_amt = no_build*dim2) %>%
-      
-      #step 2 from spreadsheet
-      
-      #Impact option 1b: impact as calculated in speadsheet + accounting for threshold sliders
+      #compares delta to impact threshold amount
       mutate(impact = case_when (abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit",
                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
                                  abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
-                                 TRUE ~ "No Impact"))
+                                 TRUE ~ "Impact within threshold"))
     
-    #make an impact table, bring together all impact option by population in a table
+    #make an impact table, bring together all impact options by population in a table
     impact_table <- data %>%
       select( population,delta, no_build, impact)%>%
       mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                    str_detect(population, ".ncome") ~ "i",
                                    TRUE ~ "NA")) %>%
+      #find percent change between no_build and build
       mutate( per_change = delta/no_build) %>%
       select(poptype, population, per_change, impact) %>%
       # control order of entries
@@ -399,13 +415,13 @@ server <- function(input, output) {
         (is.na(Low_income) & is.na(Non_low_income)) ~ Minority - Non_minority,
         (is.na(Minority) & is.na(Non_minority)) ~ Low_income - Non_low_income,
         # must be a numeric error
-        TRUE ~ 999999)) %>%
+        #na real
+        TRUE ~ NA_real_)) %>%
       mutate(ratio = case_when(
-        #potentially take the absolute value in the outputs
         (is.na(Low_income) & is.na(Non_low_income)) ~ abs(Minority)/abs(Non_minority),
         (is.na(Minority) & is.na(Non_minority)) ~ abs(Low_income)/abs(Non_low_income),
         # must be a numeric error
-        TRUE ~ 999999)) %>%
+        TRUE ~ NA_real_)) %>%
       select(poptype, difference, ratio)
     
     # investigate what kind of impact
@@ -416,24 +432,24 @@ server <- function(input, output) {
       mutate(type = case_when( 
         (Minority == "Benefit" & Non_minority  == "Benefit") | (Low_income == "Benefit" & Non_low_income == "Benefit") ~ "Benefit for both",
         (Minority == "Burden" & Non_minority  == "Burden") | (Low_income == "Burden" & Non_low_income == "Burden") ~ "Burden for both",
-        (Minority == "Benefit" & Non_minority == "No Impact") | (Low_income == "Benefit" & Non_low_income == "No Impact") ~ "Only benefits protected population",
-        (Minority == "Burden" & Non_minority == "No Impact") | (Low_income == "Burden" & Non_low_income == "No Impact") ~ "Only burdens protected population",
-        (Minority == "No Impact" & Non_minority == "Benefit") | (Low_income == "No Impact" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
-        (Minority == "No Impact" & Non_minority == "Burden") | (Low_income == "No Impact" & Non_low_income == "Burden") ~"Only burdens non-protected population",
-        (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
+        (Minority == "Benefit" & Non_minority == "Burden") | (Low_income == "Benefit" & Non_low_income == "Burden") ~ "Benefits protected, burdens non-protected",
+        (Minority == "Burden" & Non_minority == "Benefit") | (Low_income == "Burden" & Non_low_income == "Benefit") ~ "Burdens protected, benefits non-protected",
+        (Minority == "Benefit" & Non_minority == "Impact within threshold") | (Low_income == "Benefit" & Non_low_income == "Impact within threshold") ~ "Only benefits protected population",
+        (Minority == "Burden" & Non_minority == "Impact within threshold") | (Low_income == "Burden" & Non_low_income == "Impact within threshold") ~ "Only burdens protected population",
+        (Minority == "Impact within threshold" & Non_minority == "Benefit") | (Low_income == "Impact within threshold" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
+        (Minority == "Impact within threshold" & Non_minority == "Burden") | (Low_income == "Impact within threshold" & Non_low_income == "Burden") ~"Only burdens non-protected population",
+        (Minority == "Impact within threshold" & Non_minority  == "Impact within threshold") | (Low_income == "Impact within threshold" & Non_low_income == "Impact within threshold") ~ "Impact within threshold for both",
         TRUE ~ "something else happend")) %>%
       select(poptype, type)
     
     dispro <- diff %>%
       left_join(impact_type) %>%
       mutate(DB = case_when(
-        #note, check spelling....
-        #note, more conditions to bring in 
-        ratio > 1 + dim3 ~ "Protected population changes more",
-        ratio < 1 - dim3 ~ "Non-protected population changes more",
-        1- dim3 < ratio | ratio < 1 +dim3 ~ "Disproportionality within threshold",
+        ratio >= (1 + dim3) ~ "Protected population affected more",
+        ratio <= (1 - dim3) ~ "Non-protected population affected more",
+        ((1- dim3) < ratio) | (ratio < (1 +dim3)) ~ "Disproportionality within threshold",
         TRUE ~ "Something else happened. problem!"
-      ))
+      )) 
     
     dispro$poptype <- factor(dispro$poptype, levels = c("m","i"))
     
@@ -453,7 +469,7 @@ server <- function(input, output) {
       #geom_hline(aes(yintercept = 1+dim3), size= .75,color = "#6e6e6e")+
       #geom_hline(aes(yintercept = 1-dim3), size= .75,color = "#6e6e6e")+
       geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DB), shape = 20, size = 4, show.legned = FALSE)+
-      scale_color_manual(values = c("Disproportionality within threshold"= "#858585", "Protected population changes more"= "#ff6666", "Non-protected population changes more"= "#ff6666"))+
+      scale_color_manual(values = c("Disproportionality within threshold"= "#858585", "Protected population affected more"= "#ff6666", "Non-protected population affected more"= "#ff6666"))+
       geom_hline(aes(yintercept = 1), size= 1, color = "black")+
       geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = str_wrap(DB, width = 20)), hjust= "inward", size = 4)+
       coord_flip()+
@@ -503,7 +519,7 @@ server <- function(input, output) {
                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
                                  abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
-                                 TRUE ~ "No Impact"))
+                                 TRUE ~ "Impact within threshold"))
     
     #make an impact table, bring together all impact options by population in a table
     impact_table <- data %>%
@@ -543,22 +559,20 @@ server <- function(input, output) {
         (Minority == "Burden" & Non_minority  == "Burden") | (Low_income == "Burden" & Non_low_income == "Burden") ~ "Burden for both",
         (Minority == "Benefit" & Non_minority == "Burden") | (Low_income == "Benefit" & Non_low_income == "Burden") ~ "Benefits protected, burdens non-protected",
         (Minority == "Burden" & Non_minority == "Benefit") | (Low_income == "Burden" & Non_low_income == "Benefit") ~ "Burdens protected, benefits non-protected",
-        (Minority == "Benefit" & Non_minority == "No Impact") | (Low_income == "Benefit" & Non_low_income == "No Impact") ~ "Only benefits protected population",
-        (Minority == "Burden" & Non_minority == "No Impact") | (Low_income == "Burden" & Non_low_income == "No Impact") ~ "Only burdens protected population",
-        (Minority == "No Impact" & Non_minority == "Benefit") | (Low_income == "No Impact" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
-        (Minority == "No Impact" & Non_minority == "Burden") | (Low_income == "No Impact" & Non_low_income == "Burden") ~"Only burdens non-protected population",
-        (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
+        (Minority == "Benefit" & Non_minority == "Impact within threshold") | (Low_income == "Benefit" & Non_low_income == "Impact within threshold") ~ "Only benefits protected population",
+        (Minority == "Burden" & Non_minority == "Impact within threshold") | (Low_income == "Burden" & Non_low_income == "Impact within threshold") ~ "Only burdens protected population",
+        (Minority == "Impact within threshold" & Non_minority == "Benefit") | (Low_income == "Impact within threshold" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
+        (Minority == "Impact within threshold" & Non_minority == "Burden") | (Low_income == "Impact within threshold" & Non_low_income == "Burden") ~"Only burdens non-protected population",
+        (Minority == "Impact within threshold" & Non_minority  == "Impact within threshold") | (Low_income == "Impact within threshold" & Non_low_income == "Impact within threshold") ~ "Impact within threshold for both",
         TRUE ~ "something else happend")) %>%
       select(metric,poptype, type)
     
     dispro <- diff %>%
       left_join(impact_type) %>%
       mutate(DB = case_when(
-        #note, check spelling....
-        #note, more conditions to bring in 
-        ratio > 1 + dim3 ~ "Protected population changes more",
-        ratio < 1 - dim3 ~ "Non-protected population changes more",
-        1- dim3 < ratio | ratio < 1 +dim3 ~ "Disproportionality within threshold",
+        ratio >= (1 + dim3) ~ "Protected population affected more",
+        ratio <= (1 - dim3) ~ "Non-protected population affected more",
+        ((1- dim3) < ratio) | (ratio < (1 +dim3)) ~ "Disproportionality within threshold",
         TRUE ~ "Something else happened. problem!"
       )) 
     
@@ -566,28 +580,52 @@ server <- function(input, output) {
       select(metric, poptype, ratio, type, DB) %>%
       mutate(instance = case_when (
         # right now, takes first two cases regardless of whether dispropotionality is within the threshold
-        type == "Burdens protected, benefits non-protected" ~ "Yes",
-        type == "Benefits protected, burdens non-protected" ~ "No",
-        type == "Benefit for both" & ratio < 1-dim3 ~ "Yes",
-        type == "Benefit for both" & ratio > 1-dim3 ~ "No",
-        type == "Burden for both" & ratio > 1+dim3 ~ "Yes",
-        type == "Burden for both" & ratio < 1+dim3 ~ "No",
-        #questions about following cases
-        type == "Only benefits protected population" & ratio < 1-dim3 ~ "?",
-        type == "Only burdens protected population" & ratio > 1+dim3 ~ "?",
-        type == "Only benefits non-protected population" & ratio < 1-dim3  ~ "?",
-        type == "Only burdens non-protected population" & ratio > 1+dim3 ~ "?",
-        #assuming if no impact, then no DIDB
-        #type == "Impacts Neither" & (1- dim3 < ratio | ratio < 1 +dim3) ~ "No",
-        # DB == "Disproportionality within threshold" ~ "No",
-        TRUE ~ "something else happend"
-      ))%>%
-      select(metric, poptype, instance) %>%
-      rename("Population Group" = poptype)%>%
+        (type == "Benefit for both") & (DB == "Protected population affected more") ~ "No",
+        (type == "Benefit for both") & (DB == "Non-protected population affected more") ~ "Yes",
+        (type == "Benefit for both") & (DB == "Disproportionality within threshold") ~ "No",
+        
+        (type == "Only benefits protected population") & (DB == "Protected population affected more") ~ "No",
+        (type == "Only benefits protected population") & (DB == "Non-protected population affected more") ~ "No",
+        (type == "Only benefits protected population") & (DB == "Disproportionality within threshold") ~ "No",
+        
+        (type == "Benefits protected, burdens non-protected") & (DB == "Protected population affected more") ~ "No",
+        (type == "Benefits protected, burdens non-protected") & (DB == "Non-protected population affected more") ~ "No",
+        (type == "Benefits protected, burdens non-protected") & (DB == "Disproportionality within threshold") ~ "No",
+        
+        (type == "Only benefits non-protected population") & (DB == "Protected population affected more") ~ "Yes",
+        (type == "Only benefits non-protected population") & (DB == "Non-protected population affected more") ~ "Yes",
+        (type == "Only benefits non-protected population") & (DB == "Disproportionality within threshold") ~ "No",
+        
+        (type == "Only burdens non-protected population") & (DB == "Protected population affected more") ~ "No",
+        (type == "Only burdens non-protected population") & (DB == "Non-protected population affected more") ~ "No",
+        (type == "Only burdens non-protected population") & (DB == "Disproportionality within threshold") ~ "No disproportionality tested",
+        
+        (type == "Impact within threshold for both") & (DB == "Protected population affected more") ~ "No disproportionality tested",
+        (type == "Impact within threshold for both") & (DB == "Non-protected population affected more") ~ "No disproportionality tested",
+        (type == "Impact within threshold for both") & (DB == "Disproportionality within threshold") ~ "No disproportionality tested",
+        
+        (type == "Burdens protected, benefits non-protected") & (DB == "Protected population affected more") ~ "Yes",
+        (type == "Burdens protected, benefits non-protected") & (DB == "Non-protected population affected more") ~ "Yes",
+        (type == "Burdens protected, benefits non-protected") & (DB == "Disproportionality within threshold") ~ "No disproportionality tested",
+        
+        (type == "Only burdens protected population") & (DB == "Protected population affected more") ~ "Yes",
+        (type == "Only burdens protected population") & (DB == "Non-protected population affected more") ~ "No",
+        (type == "Only burdens protected population") & (DB == "Disproportionality within threshold") ~ "No",
+        
+        (type == "Burden for both") & (DB == "Protected population affected more") ~ "Yes",
+        (type == "Burden for both") & (DB == "Non-protected population affected more") ~ "No",
+        (type == "Burden for both") & (DB == "Disproportionality within threshold") ~ "No",
+        
+        TRUE ~ "something elese happend, problem!"))
+    
+    DIDB_clean <- DIDB%>%
+      mutate(Metric = metric)%>%
+      select(Metric, poptype, instance)%>%
+      rename("Population Type" = poptype)%>%
       rename("Disperate Impact or Disproportionate Burden" = instance)
 
     
-    DIDB
+    DIDB_clean
     
   })
 
