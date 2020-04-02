@@ -2,7 +2,7 @@ library(tidyverse)
 library(hrbrthemes)
 library(readr)
 library(gridExtra)
-
+library(DT)
 
 # percentage threshold set by slider
 #dim1<- input$Dim1*0.01
@@ -44,7 +44,7 @@ data <- data %>%
                              abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
                              abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
                              abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
-                             TRUE ~ "No Impact"))
+                             TRUE ~ "Impact within threshold"))
 
 #make an impact table, bring together all impact options by population in a table
 impact_table <- data %>%
@@ -66,12 +66,12 @@ diff <- impact_table %>%
     (is.na(Low_income) & is.na(Non_low_income)) ~ Minority - Non_minority,
     (is.na(Minority) & is.na(Non_minority)) ~ Low_income - Non_low_income,
     # must be a numeric error
-    TRUE ~ 999999)) %>%
+    TRUE ~ NA_real_)) %>%
   mutate(ratio = case_when(
     (is.na(Low_income) & is.na(Non_low_income)) ~ abs(Minority)/abs(Non_minority),
     (is.na(Minority) & is.na(Non_minority)) ~ abs(Low_income)/abs(Non_low_income),
     # must be a numeric error
-    TRUE ~ 999999)) %>%
+    TRUE ~ NA_real_)) %>%
   select(metric, poptype, difference, ratio)
 
 # investigate what kind of impact
@@ -84,22 +84,20 @@ impact_type <- impact_table %>%
     (Minority == "Burden" & Non_minority  == "Burden") | (Low_income == "Burden" & Non_low_income == "Burden") ~ "Burden for both",
     (Minority == "Benefit" & Non_minority == "Burden") | (Low_income == "Benefit" & Non_low_income == "Burden") ~ "Benefits protected, burdens non-protected",
     (Minority == "Burden" & Non_minority == "Benefit") | (Low_income == "Burden" & Non_low_income == "Benefit") ~ "Burdens protected, benefits non-protected",
-    (Minority == "Benefit" & Non_minority == "No Impact") | (Low_income == "Benefit" & Non_low_income == "No Impact") ~ "Only benefits protected population",
-    (Minority == "Burden" & Non_minority == "No Impact") | (Low_income == "Burden" & Non_low_income == "No Impact") ~ "Only burdens protected population",
-    (Minority == "No Impact" & Non_minority == "Benefit") | (Low_income == "No Impact" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
-    (Minority == "No Impact" & Non_minority == "Burden") | (Low_income == "No Impact" & Non_low_income == "Burden") ~"Only burdens non-protected population",
-    (Minority == "No Impact" & Non_minority  == "No Impact") | (Low_income == "No Impact" & Non_low_income == "No Impact") ~ "Impacts Neither",
+    (Minority == "Benefit" & Non_minority == "Impact within threshold") | (Low_income == "Benefit" & Non_low_income == "Impact within threshold") ~ "Only benefits protected population",
+    (Minority == "Burden" & Non_minority == "Impact within threshold") | (Low_income == "Burden" & Non_low_income == "Impact within threshold") ~ "Only burdens protected population",
+    (Minority == "Impact within threshold" & Non_minority == "Benefit") | (Low_income == "Impact within threshold" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
+    (Minority == "Impact within threshold" & Non_minority == "Burden") | (Low_income == "Impact within threshold" & Non_low_income == "Burden") ~"Only burdens non-protected population",
+    (Minority == "Impact within threshold" & Non_minority  == "Impact within threshold") | (Low_income == "Impact within threshold" & Non_low_income == "Impact within threshold") ~ "Impact within threshold for both",
     TRUE ~ "something else happend")) %>%
   select(metric,poptype, type)
 
 dispro <- diff %>%
   left_join(impact_type) %>%
   mutate(DB = case_when(
-    #note, check spelling....
-    #note, more conditions to bring in 
-    ratio > 1 + dim3 ~ "Protected population changes more",
-    ratio < 1 - dim3 ~ "Non-protected population changes more",
-    1- dim3 < ratio | ratio < 1 +dim3 ~ "Disproportionality within threshold",
+    ratio >= (1 + dim3) ~ "Protected population affected more",
+    ratio <= (1 - dim3) ~ "Non-protected population affected more",
+    ((1- dim3) < ratio) | (ratio < (1 +dim3)) ~ "Disproportionality within threshold",
     TRUE ~ "Something else happened. problem!"
   )) 
 
@@ -107,26 +105,50 @@ DIDB <- dispro %>%
   select(metric, poptype, ratio, type, DB) %>%
   mutate(instance = case_when (
     # right now, takes first two cases regardless of whether dispropotionality is within the threshold
-    type == "Burdens protected, benefits non-protected" ~ "Yes",
-    type == "Benefits protected, burdens non-protected" ~ "No",
-    type == "Benefit for both" & ratio < 1-dim3 ~ "Yes",
-    type == "Benefit for both" & ratio > 1-dim3 ~ "No",
-    type == "Burden for both" & ratio > 1+dim3 ~ "Yes",
-    type == "Burden for both" & ratio < 1+dim3 ~ "No",
-    #questions about following cases
-    type == "Only benefits protected population" & ratio < 1-dim3 ~ "?",
-    type == "Only burdens protected population" & ratio > 1+dim3 ~ "?",
-    type == "Only benefits non-protected population" & ratio < 1-dim3  ~ "?",
-    type == "Only burdens non-protected population" & ratio > 1+dim3 ~ "?",
-    #assuming if no impact, then no DIDB
-    #type == "Impacts Neither" & (1- dim3 < ratio | ratio < 1 +dim3) ~ "No",
-    # DB == "Disproportionality within threshold" ~ "No",
-    TRUE ~ "something else happend"
-  ))%>%
-  select(metric, poptype, instance) %>%
+    (type == "Benefit for both") & (DB == "Protected population affected more") ~ "No",
+    (type == "Benefit for both") & (DB == "Non-protected population affected more") ~ "Yes",
+    (type == "Benefit for both") & (DB == "Disproportionality within threshold") ~ "No",
+    
+    (type == "Only benefits protected population") & (DB == "Protected population affected more") ~ "No",
+    (type == "Only benefits protected population") & (DB == "Non-protected population affected more") ~ "No",
+    (type == "Only benefits protected population") & (DB == "Disproportionality within threshold") ~ "No",
+    
+    (type == "Benefits protected, burdens non-protected") & (DB == "Protected population affected more") ~ "No",
+    (type == "Benefits protected, burdens non-protected") & (DB == "Non-protected population affected more") ~ "No",
+    (type == "Benefits protected, burdens non-protected") & (DB == "Disproportionality within threshold") ~ "No",
+    
+    (type == "Only benefits non-protected population") & (DB == "Protected population affected more") ~ "Yes",
+    (type == "Only benefits non-protected population") & (DB == "Non-protected population affected more") ~ "Yes",
+    (type == "Only benefits non-protected population") & (DB == "Disproportionality within threshold") ~ "No",
+    
+    (type == "Only burdens non-protected population") & (DB == "Protected population affected more") ~ "No",
+    (type == "Only burdens non-protected population") & (DB == "Non-protected population affected more") ~ "No",
+    (type == "Only burdens non-protected population") & (DB == "Disproportionality within threshold") ~ "No disproportionality tested",
+    
+    (type == "Impact within threshold for both") & (DB == "Protected population affected more") ~ "No disproportionality tested",
+    (type == "Impact within threshold for both") & (DB == "Non-protected population affected more") ~ "No disproportionality tested",
+    (type == "Impact within threshold for both") & (DB == "Disproportionality within threshold") ~ "No disproportionality tested",
+    
+    (type == "Burdens protected, benefits non-protected") & (DB == "Protected population affected more") ~ "Yes",
+    (type == "Burdens protected, benefits non-protected") & (DB == "Non-protected population affected more") ~ "Yes",
+    (type == "Burdens protected, benefits non-protected") & (DB == "Disproportionality within threshold") ~ "No disproportionality tested",
+    
+    (type == "Only burdens protected population") & (DB == "Protected population affected more") ~ "Yes",
+    (type == "Only burdens protected population") & (DB == "Non-protected population affected more") ~ "No",
+    (type == "Only burdens protected population") & (DB == "Disproportionality within threshold") ~ "No",
+    
+    (type == "Burden for both") & (DB == "Protected population affected more") ~ "Yes",
+    (type == "Burden for both") & (DB == "Non-protected population affected more") ~ "No",
+    (type == "Burden for both") & (DB == "Disproportionality within threshold") ~ "No",
+    
+    TRUE ~ "something elese happend, problem!"))
+
+DIDB_clean <- DIDB%>%
+  mutate(Metric = metric)%>%
+  select(Metric, poptype, instance)%>%
   rename("Population Type" = poptype)%>%
   rename("Disperate Impact or Disproportionate Burden" = instance)
-
+  
 #######################
 
 
