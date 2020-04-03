@@ -1,8 +1,6 @@
 library(tidyverse)
 library(hrbrthemes)
 library(readr)
-library(gridExtra)
-library(interval)
 
 
 alldata <- read_csv("data.csv")
@@ -21,9 +19,6 @@ dim2 <- .01
 dim3 <- .8
 
 
-#dispro_method <- input$dis_method
-
-
 data <- alldata %>%
   filter(metric == metric_filter)
 #clean data so no hyphens
@@ -38,7 +33,6 @@ data <- data %>%
 data <- data %>%
   #slider1 sets confidence interval, use this to control error
   mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
-  #step 1 from spreadsheet
   mutate(delta = build - no_build) %>%
   mutate(error_b = build*error_aug) %>%
   mutate(error_nb =no_build*error_aug) %>%
@@ -112,8 +106,24 @@ impact_type <- impact_table %>%
     TRUE ~ "something else happend")) %>%
   select(poptype, type)
 
+change_type <- data %>%
+  select( population,real_change)%>%
+  mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
+                               str_detect(population, ".ncome") ~ "i",
+                               TRUE ~ "NA")) %>%
+  arrange(factor(poptype)) %>%
+  spread(population, real_change) %>%
+  mutate(change_type = case_when( 
+    (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Real change for both",
+    (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No real change for both",
+    (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only real change for protected population",
+    (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only real change for non-protected population",
+    TRUE ~ "something else happend")) %>%
+  select(poptype, change_type)
+
 dispro <- diff %>%
   left_join(impact_type) %>%
+  left_join(change_type) %>%
   mutate(DB = case_when(
     ratio >= (1 + dim3) ~ "Protected population affected more",
     ratio <= (1 - dim3) ~ "Non-protected population affected more",
@@ -176,13 +186,13 @@ data$population <- factor(data$population, levels = c("Non-minority", "Minority"
 #extract unit for horizontal axis label
 metric_unit <- data$metric_unit[1]
 
-data <- data %>%
+data_metric <- data %>%
   mutate(subtitle= case_when(
     category == "Accessibility" ~ "An increase introduced by building is a benefit. A decrease introduced by buiding is a burden.",
     category != "Accessibility" ~ "An increase introduced by building is a burden. A decrease introduced by building is a benefit.",
     TRUE ~ "Error!"
   ))
-subtitle <- data$subtitle[1]
+subtitle <- data_metric$subtitle[1]
 
 ##DRAW THE PLOT
 ## Note, opportunitiy to draw metric_plot and impact_plot together with shared horizontal axis 
@@ -241,7 +251,7 @@ burden_plot <- ggplot(dispro, aes(x = poptype))+
   scale_color_manual(values = c("Disproportionality within threshold"= "#858585", "Protected population affected more"= "#ff6666", "Non-protected population affected more"= "#ff6666"))+
   geom_hline(aes(yintercept = 1), size= 1, color = "black")+
   geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = str_wrap(DB, width = 20)), hjust= "inward", size = 4)+
-  scale_x_discrete(labels= c("i"= str_wrap("low-income / non-low-income", width = 15), "m"= str_wrap("minority / non-minority",width = 12)))+
+  scale_x_discrete(labels= c("i"= str_wrap("Low-income / Non-low-income", width = 15), "m"= str_wrap("Minority / Non-minority",width = 12)))+
   coord_flip()+
   theme_minimal()+
   theme(legend.position = "None", plot.title = element_text(face= "bold"))+
