@@ -110,7 +110,16 @@ server <- function(input, output) {
       mutate(LB_b = build-error_b) %>%
       mutate(UB_b = build+error_b) %>%
       mutate(LB_nb = no_build - error_nb)%>%
-      mutate(UB_nb = no_build + error_nb) %>%
+      mutate(UB_nb = no_build + error_nb)%>%
+      # check if b range distinct from nb
+      mutate(real_change = case_when(
+        (UB_b < LB_nb) | (UB_nb < LB_b) ~ TRUE,
+        TRUE ~ FALSE
+      ))%>%
+      mutate(change_label = case_when(
+        real_change == TRUE ~ "Real change",
+        real_change == FALSE ~ "No real change"
+      )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
       mutate(im_th_amt = no_build*dim2) %>%
@@ -120,64 +129,6 @@ server <- function(input, output) {
                                  abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
                                  TRUE ~ "Impact within threshold"))
-    
-    #make an impact table, bring together all impact options by population in a table
-    impact_table <- data %>%
-      select( population,delta, no_build, impact)%>%
-      mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
-                                   str_detect(population, ".ncome") ~ "i",
-                                   TRUE ~ "NA")) %>%
-      #find percent change between no_build and build
-      mutate( per_change = delta/no_build) %>%
-      select(poptype, population, per_change, impact) %>%
-      # control order of entries
-      arrange(factor(population, levels = c("Low_income","Non_low_income", "Minority","Non_minority")))
-    
-    diff <- impact_table %>%
-      select(poptype, population, per_change) %>%
-      arrange(factor(poptype)) %>%
-      spread(population, per_change) %>%
-      mutate(difference = case_when(
-        (is.na(Low_income) & is.na(Non_low_income)) ~ Minority - Non_minority,
-        (is.na(Minority) & is.na(Non_minority)) ~ Low_income - Non_low_income,
-        # must be a numeric error
-        #na real
-        TRUE ~ NA_real_)) %>%
-      mutate(ratio = case_when(
-        (is.na(Low_income) & is.na(Non_low_income)) ~ abs(Minority)/abs(Non_minority),
-        (is.na(Minority) & is.na(Non_minority)) ~ abs(Low_income)/abs(Non_low_income),
-        # must be a numeric error
-        TRUE ~ NA_real_)) %>%
-      select(poptype, difference, ratio)
-    
-    # investigate what kind of impact
-    impact_type <- impact_table %>%
-      select( poptype, population, impact) %>%
-      arrange(factor(poptype)) %>%
-      spread(population, impact) %>%
-      mutate(type = case_when( 
-        (Minority == "Benefit" & Non_minority  == "Benefit") | (Low_income == "Benefit" & Non_low_income == "Benefit") ~ "Benefit for both",
-        (Minority == "Burden" & Non_minority  == "Burden") | (Low_income == "Burden" & Non_low_income == "Burden") ~ "Burden for both",
-        (Minority == "Benefit" & Non_minority == "Burden") | (Low_income == "Benefit" & Non_low_income == "Burden") ~ "Benefits protected, burdens non-protected",
-        (Minority == "Burden" & Non_minority == "Benefit") | (Low_income == "Burden" & Non_low_income == "Benefit") ~ "Burdens protected, benefits non-protected",
-        (Minority == "Benefit" & Non_minority == "Impact within threshold") | (Low_income == "Benefit" & Non_low_income == "Impact within threshold") ~ "Only benefits protected population",
-        (Minority == "Burden" & Non_minority == "Impact within threshold") | (Low_income == "Burden" & Non_low_income == "Impact within threshold") ~ "Only burdens protected population",
-        (Minority == "Impact within threshold" & Non_minority == "Benefit") | (Low_income == "Impact within threshold" & Non_low_income == "Benefit") ~"Only benefits non-protected population",
-        (Minority == "Impact within threshold" & Non_minority == "Burden") | (Low_income == "Impact within threshold" & Non_low_income == "Burden") ~"Only burdens non-protected population",
-        (Minority == "Impact within threshold" & Non_minority  == "Impact within threshold") | (Low_income == "Impact within threshold" & Non_low_income == "Impact within threshold") ~ "Impact within threshold for both",
-        TRUE ~ "something else happend")) %>%
-      select(poptype, type)
-    
-    dispro <- diff %>%
-      left_join(impact_type) %>%
-      mutate(DB = case_when(
-        ratio >= (1 + dim3) ~ "Protected population affected more",
-        ratio <= (1 - dim3) ~ "Non-protected population affected more",
-        ((1- dim3) < ratio) | (ratio < (1 +dim3)) ~ "Disproportionality within threshold",
-        TRUE ~ "Something else happened. problem!"
-      )) 
-    
-    dispro$poptype <- factor(dispro$poptype, levels = c("m","i"))
     
     #change underscores back to hyphens
     data[data=="Low_income"] <- "Low-income"
@@ -201,7 +152,7 @@ server <- function(input, output) {
       geom_point( aes(x=population, y=no_build, color= "No-build"), shape="square", size=4) +
       geom_point( aes(x=population, y=build), shape=20, size=1, show.legend = TRUE)+
       geom_point( aes(x=population, y=no_build), shape=20, size=1, show.legend = TRUE)+
-      #geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=impact),hjust="inward", size= 4)+
+      geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=change_label),hjust="inward", size= 4)+
       scale_color_manual(name= "Scenario", values= c("Build" = "#E69F00", "No-build" = "#56B4E9"))+
       coord_flip()+
       theme_minimal() +
@@ -472,7 +423,7 @@ server <- function(input, output) {
       scale_color_manual(values = c("Disproportionality within threshold"= "#858585", "Protected population affected more"= "#ff6666", "Non-protected population affected more"= "#ff6666"))+
       geom_hline(aes(yintercept = 1), size= 1, color = "black")+
       geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = str_wrap(DB, width = 20)), hjust= "inward", size = 4)+
-      scale_x_discrete(labels= c("i"= str_wrap("low-income / non-low-income", width = 15), "m"= str_wrap("minority / non-minority",width = 12)))+
+      scale_x_discrete(labels= c("i"= str_wrap("Low-income / Non-low-income", width = 15), "m"= str_wrap("Minority / Non-minority",width = 12)))+
       coord_flip()+
       theme_minimal()+
       theme(legend.position = "None", plot.title = element_text(face= "bold"))+
