@@ -2,6 +2,7 @@ library(tidyverse)
 library(hrbrthemes)
 library(readr)
 library(gridExtra)
+library(interval)
 
 
 alldata <- read_csv("data.csv")
@@ -45,6 +46,11 @@ data <- data %>%
   mutate(UB_b = build+error_b) %>%
   mutate(LB_nb = no_build - error_nb)%>%
   mutate(UB_nb = no_build + error_nb) %>%
+  #mutate(interval_b = interval(LB_b %--% UB_b))
+  #test if ranges overlap to determine if real change
+ # mutate(real_change_b = case_when(
+  #  int_overlaps(LB_b, UB_b)
+  #)) %>%
   #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
   #im_th_amt "impact threshold amount"
   mutate(im_th_amt = no_build*dim2) %>%
@@ -153,12 +159,6 @@ DIDB <- dispro %>%
     TRUE ~ "something elese happend, problem!"))%>%
   select(poptype, instance)
 
-DIDB_clean <- DIDB%>%
-  mutate(Metric = metric_filter)%>%
-  select(Metric, poptype, instance)%>%
-  rename("Population Type" = poptype)%>%
-  rename("Disperate Impact or Disproportionate Burden" = instance)
-
 
 dispro$poptype <- factor(dispro$poptype, levels = c("m","i"))
   
@@ -226,10 +226,10 @@ burden_plot <- ggplot(dispro, aes(x = poptype))+
   geom_rect( aes(xmin = -Inf, xmax = Inf, ymin= 1-dim3, ymax= 1+dim3), alpha= 0.08, color ="#ededed")+
   #geom_hline(aes(yintercept = 1+dim3), size= .75,color = "#6e6e6e")+
   #geom_hline(aes(yintercept = 1-dim3), size= .75,color = "#6e6e6e")+
-  #geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DB), shape = 20, size = 4, show.legned = FALSE)+
+  geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DB), shape = 20, size = 4, show.legned = FALSE)+
   scale_color_manual(values = c("Disproportionality within threshold"= "#858585", "Protected population affected more"= "#ff6666", "Non-protected population affected more"= "#ff6666"))+
   geom_hline(aes(yintercept = 1), size= 1, color = "black")+
-  geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = str_wrap(DIDB, width = 20)), hjust= "inward", size = 4)+
+  geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = str_wrap(DB, width = 20)), hjust= "inward", size = 4)+
   coord_flip()+
   theme_minimal()+
   theme(legend.position = "None", plot.title = element_text(face= "bold"))+
@@ -239,6 +239,12 @@ burden_plot <- ggplot(dispro, aes(x = poptype))+
 print(burden_plot)
 
 
+
+DIDB_clean <- DIDB%>%
+  mutate(Metric = metric_filter)%>%
+  select(Metric, poptype, instance)%>%
+  rename("Population Group" = poptype)%>%
+  rename("Disperate Impact or Disproportionate Burden" = instance)
 
 
 DIDB_count <- DIDB %>%

@@ -472,6 +472,7 @@ server <- function(input, output) {
       scale_color_manual(values = c("Disproportionality within threshold"= "#858585", "Protected population affected more"= "#ff6666", "Non-protected population affected more"= "#ff6666"))+
       geom_hline(aes(yintercept = 1), size= 1, color = "black")+
       geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = str_wrap(DB, width = 20)), hjust= "inward", size = 4)+
+      scale_x_discrete(labels= c("i"= str_wrap("low-income / non-low-income", width = 15), "m"= str_wrap("minority / non-minority",width = 12)))+
       coord_flip()+
       theme_minimal()+
       theme(legend.position = "None", plot.title = element_text(face= "bold"))+
@@ -621,7 +622,7 @@ server <- function(input, output) {
     DIDB_clean <- DIDB%>%
       mutate(Metric = metric)%>%
       select(Metric, poptype, instance)%>%
-      rename("Population Type" = poptype)%>%
+      rename("Population Group" = poptype)%>%
       rename("Disperate Impact or Disproportionate Burden" = instance)
 
     
