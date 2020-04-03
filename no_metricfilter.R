@@ -35,7 +35,16 @@ data <- data %>%
   mutate(LB_b = build-error_b) %>%
   mutate(UB_b = build+error_b) %>%
   mutate(LB_nb = no_build - error_nb)%>%
-  mutate(UB_nb = no_build + error_nb) %>%
+  mutate(UB_nb = no_build + error_nb)%>%
+  # check if b range distinct from nb
+  mutate(real_change = case_when(
+    (UB_b < LB_nb) | (UB_nb < LB_b) ~ TRUE,
+    TRUE ~ FALSE
+  ))%>%
+  mutate(change_label = case_when(
+    real_change == TRUE ~ "Real change",
+    real_change == FALSE ~ "No real change"
+  )) %>%
   #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
   #im_th_amt "impact threshold amount"
   mutate(im_th_amt = no_build*dim2) %>%
