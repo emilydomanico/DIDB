@@ -45,12 +45,16 @@ data <- data %>%
   mutate(LB_b = build-error_b) %>%
   mutate(UB_b = build+error_b) %>%
   mutate(LB_nb = no_build - error_nb)%>%
-  mutate(UB_nb = no_build + error_nb) %>%
-  #mutate(interval_b = interval(LB_b %--% UB_b))
-  #test if ranges overlap to determine if real change
- # mutate(real_change_b = case_when(
-  #  int_overlaps(LB_b, UB_b)
-  #)) %>%
+  mutate(UB_nb = no_build + error_nb)%>%
+  # check if b range distinct from nb
+  mutate(real_change = case_when(
+    (UB_b < LB_nb) | (UB_nb < LB_b) ~ TRUE,
+    TRUE ~ FALSE
+  ))%>%
+  mutate(change_label = case_when(
+    real_change == TRUE ~ "Real change",
+    real_change == FALSE ~ "No real change"
+  )) %>%
   #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
   #im_th_amt "impact threshold amount"
   mutate(im_th_amt = no_build*dim2) %>%
@@ -63,13 +67,13 @@ data <- data %>%
   
 #make an impact table, bring together all impact options by population in a table
 impact_table <- data %>%
-  select( population,delta, no_build, impact)%>%
+  select( population,delta, no_build,real_change, impact)%>%
   mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                str_detect(population, ".ncome") ~ "i",
                                TRUE ~ "NA")) %>%
   #find percent change between no_build and build
   mutate( per_change = delta/no_build) %>%
-  select(poptype, population, per_change, impact) %>%
+  select(poptype, population, real_change, per_change, impact) %>%
   # control order of entries
   arrange(factor(population, levels = c("Low_income","Non_low_income", "Minority","Non_minority")))
 
@@ -184,7 +188,7 @@ metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
   geom_point( aes(x=population, y=no_build, color= "No-build"), shape="square", size=4) +
   geom_point( aes(x=population, y=build), shape=20, size=1, show.legend = TRUE)+
   geom_point( aes(x=population, y=no_build), shape=20, size=1, show.legend = TRUE)+
-  #geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=impact),hjust="inward", size= 4)+
+  geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=change_label),hjust="inward", size= 4)+
   scale_color_manual(name= "Scenario", values= c("Build" = "#E69F00", "No-build" = "#56B4E9"))+
   coord_flip()+
   theme_minimal() +
@@ -230,6 +234,7 @@ burden_plot <- ggplot(dispro, aes(x = poptype))+
   scale_color_manual(values = c("Disproportionality within threshold"= "#858585", "Protected population affected more"= "#ff6666", "Non-protected population affected more"= "#ff6666"))+
   geom_hline(aes(yintercept = 1), size= 1, color = "black")+
   geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = str_wrap(DB, width = 20)), hjust= "inward", size = 4)+
+  scale_x_discrete(labels= c("i"= str_wrap("low-income / non-low-income", width = 15), "m"= str_wrap("minority / non-minority",width = 12)))+
   coord_flip()+
   theme_minimal()+
   theme(legend.position = "None", plot.title = element_text(face= "bold"))+
