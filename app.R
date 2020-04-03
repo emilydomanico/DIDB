@@ -136,13 +136,13 @@ server <- function(input, output) {
     #extract unit for horizontal axis label
     metric_unit <- data$metric_unit[1]
     
-    data <- data %>%
+    data_metric <- data %>%
       mutate(subtitle= case_when(
         category == "Accessibility" ~ "An increase introduced by building is a benefit. A decrease introduced by buiding is a burden.",
         category != "Accessibility" ~ "An increase introduced by building is a burden. A decrease introduced by building is a benefit.",
         TRUE ~ "Error!"
       ))
-    subtitle <- data$subtitle[1]
+    subtitle <- data_metric$subtitle[1]
     
     ##DRAW THE PLOT
     ## Note, opportunitiy to draw metric_plot and impact_plot together with shared horizontal axis 
@@ -203,7 +203,16 @@ server <- function(input, output) {
       mutate(LB_b = build-error_b) %>%
       mutate(UB_b = build+error_b) %>%
       mutate(LB_nb = no_build - error_nb)%>%
-      mutate(UB_nb = no_build + error_nb) %>%
+      mutate(UB_nb = no_build + error_nb)%>%
+      # check if b range distinct from nb
+      mutate(real_change = case_when(
+        (UB_b < LB_nb) | (UB_nb < LB_b) ~ TRUE,
+        TRUE ~ FALSE
+      ))%>%
+      mutate(change_label = case_when(
+        real_change == TRUE ~ "Real change",
+        real_change == FALSE ~ "No real change"
+      )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
       mutate(im_th_amt = no_build*dim2) %>%
@@ -337,7 +346,16 @@ server <- function(input, output) {
       mutate(LB_b = build-error_b) %>%
       mutate(UB_b = build+error_b) %>%
       mutate(LB_nb = no_build - error_nb)%>%
-      mutate(UB_nb = no_build + error_nb) %>%
+      mutate(UB_nb = no_build + error_nb)%>%
+      # check if b range distinct from nb
+      mutate(real_change = case_when(
+        (UB_b < LB_nb) | (UB_nb < LB_b) ~ TRUE,
+        TRUE ~ FALSE
+      ))%>%
+      mutate(change_label = case_when(
+        real_change == TRUE ~ "Real change",
+        real_change == FALSE ~ "No real change"
+      )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
       mutate(im_th_amt = no_build*dim2) %>%
