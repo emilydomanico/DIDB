@@ -16,7 +16,7 @@ metric_filter <- c("Retail amenities")
 #dim1<- input$Dim1*0.01
 #dim2<- input$Dim2*0.01
 #dim3<- input$Dim3*0.01
-dim1 <- .1
+dim1 <- .001
 dim2 <- .01
 dim3 <- .8
 
@@ -176,6 +176,13 @@ data$population <- factor(data$population, levels = c("Non-minority", "Minority"
 #extract unit for horizontal axis label
 metric_unit <- data$metric_unit[1]
 
+data <- data %>%
+  mutate(subtitle= case_when(
+    category == "Accessibility" ~ "An increase introduced by building is a benefit. A decrease introduced by buiding is a burden.",
+    category != "Accessibility" ~ "An increase introduced by building is a burden. A decrease introduced by building is a benefit.",
+    TRUE ~ "Error!"
+  ))
+subtitle <- data$subtitle[1]
 
 ##DRAW THE PLOT
 ## Note, opportunitiy to draw metric_plot and impact_plot together with shared horizontal axis 
@@ -197,7 +204,7 @@ metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
     #axis.text.y= element_blank()
     plot.title = element_text(face= "bold"))+
   labs(title = paste(metric_filter, "by population"),
-       subtitle = "Test")+
+       subtitle = str_wrap(subtitle, width = 48))+
   ylab(paste(metric_filter, " (", metric_unit, ")"))+
   xlab("Population")
 print(metric_plot)
