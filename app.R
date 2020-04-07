@@ -4,6 +4,7 @@ library(tidyverse)
 library(hrbrthemes)
 library(readr)
 library(DT)
+library(shinyBS)
 
 alldata <- read_csv("data.csv")
 
@@ -13,7 +14,7 @@ ui <- fluidPage(
   tags$head(
     tags$style(HTML("
     p {
-    font-size: 10px;
+    font-size: 11px;
     }
     ")
       
@@ -26,7 +27,7 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       #to fix side panel position
-      style = "position: fixed; width:inherit;",
+      #style = "position: fixed; width:inherit;",
       selectInput("metric", "Metric:",
                   choices = c("Retail amenities", "Higher education","Healthcare facilities", "Jobs by transit","Congested VMT","Carbon monoxide emissions", "Average attraction - highway", "Average production - highway","Average attraction - transit",
                               "Average production - transit"), selected = "Carbon monoxide emissions"),
@@ -35,44 +36,69 @@ ui <- fluidPage(
       
       #Sliders to toggle sensitivity
     
-      sliderInput("Dim1", label = "Forecasting Error Threshold:", min = 0, max = 100, value = 10, step = 1),
-      p("This threshold sets the sensitivity for detecting if a real change exists, given the amount of forecasting error in the model. This slider sets the confidence interval."),
-      hr(),
+      sliderInput("Dim1", label = "Forecasting Error Confidence Interval Threshold:", min = 0, max = 100, value = 10, step = 1),
+      p("This threshold sets the sensitivity for detecting if a real change exists. The slider represents the confidence interval — a higher percentage produces a greater range of likely values, and a less of a chance of identifying a real change."),
+      #bsPopover("Dim1", "Confidence Interval Threshold:", "This threshold sets the sensitivity for detecting if a real change exists. The slider represents the confidence interval — a higher percentage produces a greater range of likely values, and a less of a chance of identifying a real change.", "bottom"),
+      br(),
   
       sliderInput("Dim2", label = "Impact Threshold:", min = 0, max = 20, value = 2, step = .1),
-      p("This threshold sets the sensitivity to determining if a meaningful impact is introduced between the build and no-build scenarios. At zero, any change introduced by building is considered impactful. As the threshold increases, we decrease sensitivity to indicating whether a change is impactful. Change between scenarios is calculated as a percent: "),
+      p("This threshold sets the sensitivity for determining if an impact is between the build and no-build scenarios is meaningful. The slider represents a percent change tolerance.. At zero, any change between the build and no-build scenarios is considered an impact. As the threshold increases, the likelihood of identifying an adverse effect decreases. Change between scenarios is calculated as percent change:"),
       withMathJax("$$\\scriptsize\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build}} \\cdot 100$$"),
       #withMathJax("\\(\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build} \\cdot 100}\\)"),
       #p("((Build - (No-build) ) / (No-build))*100."),
       p(" "),
-      p("If impact is reported, we indicate whether it is a benefit or a burden based on the metric."),
+      p("If an impact is found, we indicate whether it is a benefit or a burden based on the directionality of the metric (i.e., whether an increase is a benefit or a burden)."),
       #can fix names of options later on.
-      hr(),
+      br(),
       
       sliderInput("Dim3", label = "Disproportionality Threshold:", min = 0, max = 30, value = 5, step = 1),
       #selectInput("dis_method", label = "Disproportionality method to visualize:", choices = c("Percent Difference", "Ratio"), selected = "Ratio")
-      p("Set the sensitivity to determine if there is a disproportionate change introduced between populations. 
-        Disproportionality is calculated as a ratio comparing percent change in the protected population to the percent change in the non-protected population. 
-        At a ratio of 1, both protected and non-protected populations experience the same percent of change.")
+      p("This threshold determines if the impacts found in the previous step disproportionately affect the minority or low-income population more than the nonminority or non-low-income population."),
+      p("Disproportionality is calculated as a ratio, comparing the absolute value of the percent change for the protected population (from the second step) to the absolute value of the percent change non-protected population.")
     ),
   
   mainPanel(
-    column( width = 12,
-    plotOutput(outputId = "metric_plot")
-    ),
-    column(width = 6,
-   plotOutput("impact_plot")
-   ),
-    column(width = 6,
-    plotOutput("burden_plot")),
-  column(width = 12,
-  tableOutput("DIDB"))
-  )
+    tabsetPanel( type = "tabs",
+      tabPanel("Investigate by Metric",
+              br(),
+              p("Step 1: We need to test if there is a real change present. If there is a real change for either the protected population or the non-protected population, we will proceed to analyze the impact."),
+              plotOutput(outputId = "metric_plot"),
+              #textOutput(), note:
+              tableOutput("change_result"),
+              br(),
+              textOutput("change"),
+              #p("PLACEHOLDER : Reactive text indicating if there is a real change for one or more metrics. If so proceed to next step. Or default DIDB."),
+              hr(),
+              column(width = 6,
+              p("Step 2: Where there is a real change indicated, what kind of impact is present between the Build and No-Build scenarios? How does building impact the different populations?"),
+              plotOutput("impact_plot"),
+              br(),
+              #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DIDB.")
+              ),
+              column(width = 6,
+              p("Step 3: If there is a disperate impact found within a population group, which population does it impact more?"),
+              plotOutput("burden_plot"),
+              br(),
+              #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work accross all metric in the next tab.")
+              )),
+     tabPanel("All Metrics",
+              br(),
+              p("The table below will show instances of DIDB for the current threshold settings accross all metrics."),
+              tableOutput("DIDB")),
+     tabPanel("DIDB Rules",
+              br(),
+              p("Definitions:"),
+              p("Step 1:"),
+              p("Step 2:"),
+              p("Step 3:"))
+    ) #close tabsetPanel()
+  ) # close mainpanel()
 ) # close sidebarlayout()
 ) # close fluidpage()
 
 
-server <- function(input, output) {
+server <- function(input, output, session) {
+  
   output$metric_plot <- renderPlot({
     
     #user imputs
@@ -99,7 +125,6 @@ server <- function(input, output) {
     data <- data %>%
       #slider1 sets confidence interval, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
-      #step 1 from spreadsheet
       mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
       mutate(error_nb =no_build*error_aug) %>%
@@ -124,7 +149,11 @@ server <- function(input, output) {
                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
                                  abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
-                                 TRUE ~ "Impact within threshold"))
+                                 abs(delta) < abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit within threshold",
+                                 abs(delta) < abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit within threshold",
+                                 abs(delta) < abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden within threshold",
+                                 abs(delta) < abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden within threshold",
+                                 TRUE ~ "Error"))
     
     #change underscores back to hyphens
     data[data=="Low_income"] <- "Low-income"
@@ -145,8 +174,6 @@ server <- function(input, output) {
     subtitle <- data_metric$subtitle[1]
     
     ##DRAW THE PLOT
-    ## Note, opportunitiy to draw metric_plot and impact_plot together with shared horizontal axis 
-    ## Similar to :https://stackoverflow.com/questions/18265941/two-horizontal-bar-charts-with-shared-axis-in-ggplot2-similar-to-population-pyr
     
     metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
       geom_segment( aes(x=population, xend=population, y=LB_b, yend=UB_b, color= "Build"), alpha=.65, size= 10) +
@@ -167,8 +194,88 @@ server <- function(input, output) {
            subtitle = str_wrap(subtitle, width = 48))+
       ylab(paste(metric_filter, " (", metric_unit, ")"))+
       xlab("Population")
+    
     print(metric_plot)
     
+  })
+  output$change <- renderText({
+    
+    #user imputs
+    #metric selected from selectInput dropdown
+    metric_filter <- input$metric 
+    # percentage threshold set by slider
+    dim1 <- input$Dim1*0.01
+    dim2 <- input$Dim2*0.01
+    dim3 <- input$Dim3*0.01
+    
+    
+    
+    data <- alldata %>%
+      filter(metric == metric_filter)
+    #clean data so no hyphens
+    data[data=="no-build"] <- "no_build"
+    data[data=="Low-income"] <- "Low_income"
+    data[data=="Non-low-income"] <- "Non_low_income"
+    data[data=="Non-minority"] <- "Non_minority"
+    
+    
+    data <- data %>%
+      spread( scenario, model_result, drop = TRUE)
+    data <- data %>%
+      #slider1 sets confidence interval, use this to control error
+      mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
+      mutate(delta = build - no_build) %>%
+      mutate(error_b = build*error_aug) %>%
+      mutate(error_nb =no_build*error_aug) %>%
+      mutate(LB_b = build-error_b) %>%
+      mutate(UB_b = build+error_b) %>%
+      mutate(LB_nb = no_build - error_nb)%>%
+      mutate(UB_nb = no_build + error_nb)%>%
+      # check if b range distinct from nb
+      mutate(real_change = case_when(
+        (UB_b < LB_nb) | (UB_nb < LB_b) ~ TRUE,
+        TRUE ~ FALSE
+      ))%>%
+      mutate(change_label = case_when(
+        real_change == TRUE ~ "Real change",
+        real_change == FALSE ~ "No real change"
+      )) %>%
+      #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
+      #im_th_amt "impact threshold amount"
+      mutate(im_th_amt = no_build*dim2) %>%
+      #compares delta to impact threshold amount
+      mutate(impact = case_when (abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit",
+                                 abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
+                                 abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
+                                 abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
+                                 abs(delta) < abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit within threshold",
+                                 abs(delta) < abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit within threshold",
+                                 abs(delta) < abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden within threshold",
+                                 abs(delta) < abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden within threshold",
+                                 TRUE ~ "Error"))
+    
+    change_type <- data %>%
+      select( population,real_change)%>%
+      mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
+                                   str_detect(population, ".ncome") ~ "i",
+                                   TRUE ~ "NA")) %>%
+      arrange(factor(poptype)) %>%
+      spread(population, real_change) %>%
+      mutate(change_type = case_when( 
+        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Real change for both populations",
+        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No real change for both populations",
+        (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only real change for the protected population",
+        (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only real change for the non-protected population",
+        TRUE ~ "something else happend")) %>%
+      select(poptype, change_type)
+    
+    change <- change_type
+  
+    income_change <- change$change_type[ change$poptype=="i"]
+    min_change <- change$change_type [ change$poptype=="m"]
+    
+    paste("For the metric ", tolower(metric_filter), "at the confidence interval of ", input$Dim1, "%, ", "there is ", tolower(income_change), " in the income population group, and there is", tolower(min_change), " in the minority population group." )
+  
   })
   
   output$impact_plot <- renderPlot({
@@ -339,7 +446,6 @@ server <- function(input, output) {
     data <- data %>%
       #slider1 sets confidence interval, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
-      #step 1 from spreadsheet
       mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
       mutate(error_nb =no_build*error_aug) %>%
@@ -368,13 +474,13 @@ server <- function(input, output) {
     
     #make an impact table, bring together all impact options by population in a table
     impact_table <- data %>%
-      select( population,delta, no_build, impact)%>%
+      select( population,delta, no_build,real_change, impact)%>%
       mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                    str_detect(population, ".ncome") ~ "i",
                                    TRUE ~ "NA")) %>%
       #find percent change between no_build and build
       mutate( per_change = delta/no_build) %>%
-      select(poptype, population, per_change, impact) %>%
+      select(poptype, population, real_change, per_change, impact) %>%
       # control order of entries
       arrange(factor(population, levels = c("Low_income","Non_low_income", "Minority","Non_minority")))
     
@@ -413,8 +519,24 @@ server <- function(input, output) {
         TRUE ~ "something else happend")) %>%
       select(poptype, type)
     
+    change_type <- data %>%
+      select( population,real_change)%>%
+      mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
+                                   str_detect(population, ".ncome") ~ "i",
+                                   TRUE ~ "NA")) %>%
+      arrange(factor(poptype)) %>%
+      spread(population, real_change) %>%
+      mutate(change_type = case_when( 
+        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Real change for both",
+        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No real change for both",
+        (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only real change for protected population",
+        (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only real change for non-protected population",
+        TRUE ~ "something else happend")) %>%
+      select(poptype, change_type)
+    
     dispro <- diff %>%
       left_join(impact_type) %>%
+      left_join(change_type) %>%
       mutate(DB = case_when(
         ratio >= (1 + dim3) ~ "Protected population affected more",
         ratio <= (1 - dim3) ~ "Non-protected population affected more",
@@ -423,16 +545,6 @@ server <- function(input, output) {
       )) 
     
     dispro$poptype <- factor(dispro$poptype, levels = c("m","i"))
-    
-    #change underscores back to hyphens
-    data[data=="Low_income"] <- "Low-income"
-    data[data=="Non_low_income"] <- "Non-low-income"
-    data[data=="Non_minority"] <- "Non-minority"
-    
-    #factor population with levels to control display order in plot
-    data$population <- factor(data$population, levels = c("Non-minority", "Minority","Non-low-income", "Low-income"))  
-    #extract unit for horizontal axis label
-    metric_unit <- data$metric_unit[1]
     
     
     burden_plot <- ggplot(dispro, aes(x = poptype))+
@@ -451,7 +563,6 @@ server <- function(input, output) {
       ylab(str_wrap("Ratio,  (% change protected population) / (% change non-protected population)", width = 40))+
       xlab("Population group")
     print(burden_plot)
-    
     
   })
   
@@ -600,7 +711,9 @@ server <- function(input, output) {
     DIDB_clean
     
   })
-
+addPopover(session, "metric_plot", "Change confidence interval:", "To change the confidence interval applied to the forecasting error, use the Forecasting Error Confidence Inverval threshold slider to the right.", trigger = "hover")
+addPopover(session, "impact_plot", "Change impact threshold:", "To change the impact threshold tolerance (gray polygon), use the Impact Threshold slider to the right.", trigger = "hover")
+addPopover(session, "burden_plot", "Change disproportionality threshold:", "To change the disproportionality tolerance (gray polygon), use the Disproportionality Threshold slider to the right.", trigger = "hover")
 }
 
 shinyApp(ui, server)
