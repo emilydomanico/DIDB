@@ -20,7 +20,7 @@ ui <- fluidPage(
     font-weight: bold;
     }
     ")
-      
+               
     )
   ),
   withMathJax(),
@@ -38,12 +38,12 @@ ui <- fluidPage(
       hr(),
       
       #Sliders to toggle sensitivity
-    
+      
       sliderInput("Dim1", label = "Step 1: Forecasting Error Confidence Interval Threshold", min = 0, max = 100, post= " %", value = 10, step = 1),
       p("This threshold sets the sensitivity for detecting if a real change exists. The slider represents the confidence interval — a higher percentage produces a greater range of likely values, and a less of a chance of identifying a real change."),
       #bsPopover("Dim1", "Confidence Interval Threshold:", "This threshold sets the sensitivity for detecting if a real change exists. The slider represents the confidence interval — a higher percentage produces a greater range of likely values, and a less of a chance of identifying a real change.", "bottom"),
       br(),
-  
+      
       sliderInput("Dim2", label = "Step 2: Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
       p("This threshold sets the sensitivity for determining if an impact is between the build and no-build scenarios is meaningful. The slider represents a percent change tolerance.. At zero, any change between the build and no-build scenarios is considered an impact. As the threshold increases, the likelihood of identifying an adverse effect decreases. Change between scenarios is calculated as percent change:"),
       withMathJax("$$\\scriptsize\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build}} \\cdot 100$$"),
@@ -59,59 +59,59 @@ ui <- fluidPage(
       p("This threshold determines if the impacts found in the previous step disproportionately affect the minority or low-income population more than the nonminority or non-low-income population."),
       p("Disproportionality is calculated as a ratio, comparing the absolute value of the percent change for the protected population (from the second step) to the absolute value of the percent change non-protected population.")
     ),
-  
-  mainPanel(
-    tabsetPanel( type = "tabs",
-      tabPanel("Investigate by Metric",
-              br(),
-              h5("Step 1:"),
-              p("We need to test if there is a real change present. If there is a real change for either the protected population or the non-protected population, we will proceed to step 2."),
-              plotOutput(outputId = "metric_plot"),
-              #textOutput(), note:
-              tableOutput("change_result"),
-              br(),
-              textOutput("change"),
-              #p("PLACEHOLDER : Reactive text indicating if there is a real change for one or more metrics. If so proceed to next step. Or default DIDB."),
-              hr(),
-              column(width = 6,
-              h5("Step 2:"),
-              p("Where there is a real change indicated, what kind of impact is projected between the Build and No-build scenarios? How does the No-build scenario impact each population?"),
-              plotOutput("impact_plot"),
-              br(),
-              #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DIDB.")
-              ),
-              column(width = 6,
-              h5("Step 3:"),
-              p("How much of a benefit or burden would the protected population receive compared to the non-protected population? Does that difference constitute a disparate impact or disproportionate burden?"),
-              plotOutput("burden_plot"),
-              br(),
-              #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work accross all metric in the next tab.")
-              )),
-     tabPanel("Results for all Metrics",
-              br(),
-              p("The table below will show instances of DIDB for the current threshold settings accross all metrics."),
-              formattableOutput("DIDB"),
-              p("Note: I = Low-income and Non-low-income pair. M = Minority and Non-minority pair.")),
-     tabPanel("DIDB Rules",
-              br(),
-              p("Definitions:"),
-              p("A disparate impact is a facially neutral policy or practice that disproportionately affects
-members of a group identified by race, color, or national origin, where the policy or
-practice lacks a substantial legitimate justification, and where there exists one or more
-alternatives that would serve the same legitimate objectives but with a less
-disproportionate effect. A minority person is one who identifies as Black or African
-American; American Indian or Alaskan Native; Asian; Native Hawaiian or other Pacific
-Islander; and/or Hispanic or Latino/a/x."),
-              p("A disproportionate burden is a neutral policy or practice that disproportionately affects
-low-income populations more than non-low income populations. The MPO considers a
-person as low income as one whose family income is at or below 200% of the poverty
-level for their family size."), 
-              p("Step 1:"),
-              p("Step 2:"),
-              p("Step 3:"))
-    ) #close tabsetPanel()
-  ) # close mainpanel()
-) # close sidebarlayout()
+    
+    mainPanel(
+      tabsetPanel( type = "tabs",
+                   tabPanel("Investigate by Metric",
+                            br(),
+                            h5("Step 1:"),
+                            p("We need to test if there is a real change present. If there is a real change for either the protected population or the non-protected population, we will proceed to step 2."),
+                            plotOutput(outputId = "metric_plot"),
+                            #textOutput(), note:
+                            tableOutput("change_result"),
+                            br(),
+                            textOutput("change"),
+                            #p("PLACEHOLDER : Reactive text indicating if there is a real change for one or more metrics. If so proceed to next step. Or default DIDB."),
+                            hr(),
+                            column(width = 6,
+                                   h5("Step 2:"),
+                                   p("Where there is a real change indicated, what kind of impact is projected between the Build and No-build scenarios? How does the No-build scenario impact each population?"),
+                                   plotOutput("impact_plot"),
+                                   br(),
+                                   #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DIDB.")
+                            ),
+                            column(width = 6,
+                                   h5("Step 3:"),
+                                   p("How much of a benefit or burden would the protected population receive compared to the non-protected population? Does that difference constitute a disparate impact or disproportionate burden?"),
+                                   plotOutput("burden_plot"),
+                                   br(),
+                                   #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work accross all metric in the next tab.")
+                            )),
+                   tabPanel("Results for all Metrics",
+                            br(),
+                            p("The table below will show instances of DIDB for the current threshold settings accross all metrics."),
+                            formattableOutput("DIDB"),
+                            p("Note: I = Low-income and Non-low-income pair. M = Minority and Non-minority pair.")) #,
+#                    tabPanel("DIDB Rules",
+#                             br(),
+#                             p("Definitions:"),
+#                             p("A disparate impact is a facially neutral policy or practice that disproportionately affects
+# members of a group identified by race, color, or national origin, where the policy or
+# practice lacks a substantial legitimate justification, and where there exists one or more
+# alternatives that would serve the same legitimate objectives but with a less
+# disproportionate effect. A minority person is one who identifies as Black or African
+# American; American Indian or Alaskan Native; Asian; Native Hawaiian or other Pacific
+# Islander; and/or Hispanic or Latino/a/x."),
+#                             p("A disproportionate burden is a neutral policy or practice that disproportionately affects
+# low-income populations more than non-low income populations. The MPO considers a
+# person as low income as one whose family income is at or below 200% of the poverty
+# level for their family size."), 
+#                             p("Step 1:"),
+#                             p("Step 2:"),
+#                             p("Step 3:"))
+      ) #close tabsetPanel()
+    ) # close mainpanel()
+  ) # close sidebarlayout()
 ) # close fluidpage()
 
 
@@ -127,7 +127,7 @@ server <- function(input, output, session) {
     dim2 <- input$Dim2*0.01
     dim3 <- input$Dim3*0.01
     
-
+    
     
     data <- alldata %>%
       filter(metric == metric_filter)
@@ -288,12 +288,12 @@ server <- function(input, output, session) {
       select(poptype, change_type)
     
     change <- change_type
-  
+    
     income_change <- change$change_type[ change$poptype=="i"]
     min_change <- change$change_type [ change$poptype=="m"]
     
     paste("For the metric ", tolower(metric_filter), "at the confidence interval of ", input$Dim1, "%, ", "there is projected to be ", tolower(income_change), " in the income population group, and there is projected to be ", tolower(min_change), " in the minority population group." )
-  
+    
   })
   
   output$impact_plot <- renderPlot({
@@ -380,7 +380,7 @@ server <- function(input, output, session) {
       xlab("Population")
     print(impact_plot)
     
-  
+    
   })
   
   output$burden_plot <- renderPlot({
@@ -745,47 +745,47 @@ server <- function(input, output, session) {
         (change_type == "No real change for both") ~ "No real change present for either population",
         # Note, might need to add change_type != "No real change for both" to all further conditions...
         
-        (type == "Benefit for both") & (DB == "Protected population affected more") ~ "Step 3",
-        (type == "Benefit for both") & (DB == "Non-protected population affected more") ~ "Step 3",
-        (type == "Benefit for both") & (DB == "Disproportionality within threshold") ~ "Step 3",
+        (type == "Benefit for both") & (DB == "Protected population affected more") ~ "Does not exceed the disproportionality threshold",
+        (type == "Benefit for both") & (DB == "Non-protected population affected more") ~ "Exceeds the disproportionality threshold",
+        (type == "Benefit for both") & (DB == "Disproportionality within threshold") ~ "Does not exceed the disproportionality threshold",
         
-        (type == "Only benefits protected population, benefits non-protected population within threshold") & (DB == "Protected population affected more") ~ "Step 3",
-        (type == "Only benefits protected population, benefits non-protected population within threshold") & (DB == "Non-protected population affected more") ~ "Step 3",
-        (type == "Only benefits protected population, benefits non-protected population within threshold") & (DB == "Disproportionality within threshold") ~ "Step 3",
+        (type == "Only benefits protected population, benefits non-protected population within threshold") & (DB == "Protected population affected more") ~ "Does not exceed the disproportionality threshold",
+        (type == "Only benefits protected population, benefits non-protected population within threshold") & (DB == "Non-protected population affected more") ~ "Exceeds the disproportionality threshold",
+        (type == "Only benefits protected population, benefits non-protected population within threshold") & (DB == "Disproportionality within threshold") ~ "Does not exceed the disproportionality threshold",
         
         (type == "Benefits protected population, burdens non-protected population") ~ "No adverse impact for protected population",
         
         (type == "Only benefits protected population, burdens non-protected population within threshold") ~ "No adverse impact for protected population",
         
-        (type == "Only benefits non-protected population, benefits protected population within the threshold") & (DB == "Protected population affected more") ~ "Step 3",
-        (type == "Only benefits non-protected population, benefits protected population within the threshold") & (DB == "Non-protected population affected more") ~ "Step 3",
-        (type == "Only benefits non-protected population, benefits protected population within the threshold") & (DB == "Disproportionality within threshold") ~ "Step 3",
+        (type == "Only benefits non-protected population, benefits protected population within the threshold") & (DB == "Protected population affected more") ~ "Exceeds the disproportionality threshold",
+        (type == "Only benefits non-protected population, benefits protected population within the threshold") & (DB == "Non-protected population affected more") ~ "Exceeds the disproportionality threshold",
+        (type == "Only benefits non-protected population, benefits protected population within the threshold") & (DB == "Disproportionality within threshold") ~ "Does not exceed the disproportionality threshold",
         
-        (type == "Only benefits non-protected population, burdens protected population within threshold") & (DB == "Protected population affected more") ~ "Step 3",
-        (type == "Only benefits non-protected population, burdens protected population within threshold") & (DB == "Non-protected population affected more") ~ "Step 3",
-        (type == "Only benefits non-protected population, burdens protected population within threshold") & (DB == "Disproportionality within threshold") ~ "Step 3",
+        (type == "Only benefits non-protected population, burdens protected population within threshold") & (DB == "Protected population affected more") ~ "Exceeds the disproportionality threshold",
+        (type == "Only benefits non-protected population, burdens protected population within threshold") & (DB == "Non-protected population affected more") ~ "Exceeds the disproportionality threshold",
+        (type == "Only benefits non-protected population, burdens protected population within threshold") & (DB == "Disproportionality within threshold") ~ "Does not exceed the disproportionality threshold",
         
         (type == "Only burdens non-protected population, benefits protected population within threshold") ~ "No adverse impact for protected population",
         
-        (type == "Only burdens non-protected population, burdens protected population within the threshold") & (DB == "Protected population affected more") ~ "Step 3",
-        (type == "Only burdens non-protected population, burdens protected population within the threshold") & (DB == "Non-protected population affected more") ~ "Step 3",
-        (type == "Only burdens non-protected population, burdens protected population within the threshold") & (DB == "Disproportionality within threshold") ~ "Step 3",
+        (type == "Only burdens non-protected population, burdens protected population within the threshold") & (DB == "Protected population affected more") ~ "Does not exceed the disproportionality threshold",
+        (type == "Only burdens non-protected population, burdens protected population within the threshold") & (DB == "Non-protected population affected more") ~ "Does not exceed the disproportionality threshold",
+        (type == "Only burdens non-protected population, burdens protected population within the threshold") & (DB == "Disproportionality within threshold") ~ "Does not exceed the disproportionality threshold",
         
         (type == "Impact within threshold for both") ~ "Does not exceed impact threshold",
         
         (type == "Burdens protected population, benefits non-protected population") ~ "Adverse impact for protected population",
         
-        (type == "Only burdens protected population, benefits non-protected population within threshold") & (DB == "Protected population affected more") ~ "Step 3",
-        (type == "Only burdens protected population, benefits non-protected population within threshold") & (DB == "Non-protected population affected more") ~ "Step 3",
-        (type == "Only burdens protected population, benefits non-protected population within threshold") & (DB == "Disproportionality within threshold") ~ "Step 3",
+        (type == "Only burdens protected population, benefits non-protected population within threshold") & (DB == "Protected population affected more") ~ "Exceeds the disproportionality threshold",
+        (type == "Only burdens protected population, benefits non-protected population within threshold") & (DB == "Non-protected population affected more") ~ "Exceeds the disproportionality threshold",
+        (type == "Only burdens protected population, benefits non-protected population within threshold") & (DB == "Disproportionality within threshold") ~ "Does not exceed the disproportionality threshold",
         
-        (type == "Only burdens protected population, burdens non-protected population within threshold") & (DB == "Protected population affected more") ~ "Step 3",
-        (type == "Only burdens protected population, burdens non-protected population within threshold") & (DB == "Non-protected population affected more") ~ "Step 3",
-        (type == "Only burdens protected population, burdens non-protected population within threshold") & (DB == "Disproportionality within threshold") ~ "Step 3",
+        (type == "Only burdens protected population, burdens non-protected population within threshold") & (DB == "Protected population affected more") ~ "Exceeds the disproportionality threshold",
+        (type == "Only burdens protected population, burdens non-protected population within threshold") & (DB == "Non-protected population affected more") ~ "Exceeds the disproportionality threshold",
+        (type == "Only burdens protected population, burdens non-protected population within threshold") & (DB == "Disproportionality within threshold") ~ "Does not exceed the disproportionality threshold",
         
-        (type == "Burden for both") & (DB == "Protected population affected more") ~ "Step 3",
-        (type == "Burden for both") & (DB == "Non-protected population affected more") ~ "Step 3",
-        (type == "Burden for both") & (DB == "Disproportionality within threshold") ~ "Step 3",
+        (type == "Burden for both") & (DB == "Protected population affected more") ~ "Exceeds the disproportionality threshold",
+        (type == "Burden for both") & (DB == "Non-protected population affected more") ~ "Does not exceed the disproportionality threshold",
+        (type == "Burden for both") & (DB == "Disproportionality within threshold") ~ "Does not exceed the disproportionality threshold",
         
         TRUE ~ "something elese happend, problem!"))%>%
       select(metric, poptype, instance, DB_reason)
@@ -799,19 +799,20 @@ server <- function(input, output, session) {
       rename("Population Group" = poptype)%>%
       rename("DIDB" = instance) %>%
       rename("Reason"= DB_reason)
-
+    
     
     formattable(DIDB_clean,
-                align= c("l", "l", "l"),
-                list(`Metric` = formatter(
-                  
-                  "span", style = ~ style(color = "black")) 
+                align= c("l", "c", "c", "l"),
+                list(
+                  `DIDB`= formatter("span", 
+                                    style = x ~ ifelse(x == "Yes", style(color= "red", font.weight= "bold"), style(color="green"))
+                  ) 
                   
                 ))
   })
-#addPopover(session, "metric_plot", "Change confidence interval:", "To change the confidence interval applied to the forecasting error, use the Forecasting Error Confidence Inverval threshold slider to the right.", trigger = "hover")
-#addPopover(session, "impact_plot", "Change impact threshold:", "To change the impact threshold tolerance (gray polygon), use the Impact Threshold slider to the right.", trigger = "hover")
-#addPopover(session, "burden_plot", "Change disproportionality threshold:", "To change the disproportionality tolerance (gray polygon), use the Disproportionality Threshold slider to the right.", trigger = "hover")
+  #addPopover(session, "metric_plot", "Change confidence interval:", "To change the confidence interval applied to the forecasting error, use the Forecasting Error Confidence Inverval threshold slider to the right.", trigger = "hover")
+  #addPopover(session, "impact_plot", "Change impact threshold:", "To change the impact threshold tolerance (gray polygon), use the Impact Threshold slider to the right.", trigger = "hover")
+  #addPopover(session, "burden_plot", "Change disproportionality threshold:", "To change the disproportionality tolerance (gray polygon), use the Disproportionality Threshold slider to the right.", trigger = "hover")
 }
 
 shinyApp(ui, server)
