@@ -1,0 +1,11 @@
+﻿category,metric,metric_name,unit
+Environmental,CO_sqmi,Carbon monoxide emissions,kilograms per square mile
+Environmental,CongVMT,Congested vehicle miles traveled,per square mile
+Accessibility,Retl60Trn,Access to retail amenities by transit,count
+Accessibility,Jobs60Trn,Access to jobs by transit,count
+Accessibility,HEdu40Trn,Access to higher education by transit,count
+Accessibility,Heal40Trn,Access to healthcare facilities by transit,count
+Mobility,HwyAttrTm,Average attraction - highway travel time,minutes
+Mobility,TrnAttrTm,Average attraction - transit travel time,minutes
+Mobility,HwyProdTm,Average production - highway travel time,minutes
+Mobility,TrnProdTm,Average production - transit travel time,minutes
