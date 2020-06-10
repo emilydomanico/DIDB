@@ -9,7 +9,9 @@ library(sf)
 library(ggthemes)
 library(formattable)
 
+#git hub edit check
 #prep for non-map related tasks
+#read metric result data
 alldata <- read_csv("data.csv")
 data <- alldata 
 #clean data so no hyphens
