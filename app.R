@@ -9,7 +9,8 @@ library(sf)
 library(ggthemes)
 library(formattable)
 
-#git hub edit check
+
+
 #prep for non-map related tasks
 #read metric result data
 alldata <- read_csv("data.csv")
@@ -129,7 +130,7 @@ ui <- fluidPage(
       p("Disproportionality is calculated as a ratio, comparing the absolute value of the percent change for the protected population (from the second step) to the absolute value of the percent change non-protected population."),
      br(), 
      h5("Forecasting Error Confidence Level"),
-      p("This threshold sets the sensitivity for detecting if a real change exists. The slider represents the confidence interval — a higher percentage produces a greater range of likely values, and a less of a chance of identifying a real change.")
+      p("This threshold sets the sensitivity for detecting if a real change exists. The options represent different confidence intervals — a higher percentage produces a greater range of likely values, and a less of a chance of identifying a real change.")
      #bsPopover("Dim1", "Confidence Interval Threshold:", "This threshold sets the sensitivity for detecting if a real change exists. The slider represents the confidence interval — a higher percentage produces a greater range of likely values, and a less of a chance of identifying a real change.", "bottom"),
      ),
 # Main Panel UI ######################################################    
@@ -423,25 +424,26 @@ ui <- fluidPage(
                             formattableOutput("DIDBMob"),
                             p("Note: I = Low-income and Non-low-income pair. M = Minority and Non-minority pair."),
                             
+                            ),
+                   tabPanel("DIDB Rules",
+                            br(),
+                            p("Definitions:"),
+                            p("A disparate impact is a facially neutral policy or practice that disproportionately affects
+members of a group identified by race, color, or national origin, where the policy or
+practice lacks a substantial legitimate justification, and where there exists one or more
+alternatives that would serve the same legitimate objectives but with a less
+disproportionate effect. A minority person is one who identifies as Black or African
+American; American Indian or Alaskan Native; Asian; Native Hawaiian or other Pacific
+Islander; and/or Hispanic or Latino/a/x."),
+                            p("A disproportionate burden is a neutral policy or practice that disproportionately affects
+low-income populations more than non-low income populations. The MPO considers a
+person as low income as one whose family income is at or below 200% of the poverty
+level for their family size."),
+                            # p("Step 1:"),
+                            # p("Step 2:"),
+                            # p("Step 3:"),
+                            # grVizOutput('case_chart')
                             )
-#                    tabPanel("DIDB Rules",
-#                             br(),
-#                             p("Definitions:"),
-#                             p("A disparate impact is a facially neutral policy or practice that disproportionately affects
-# members of a group identified by race, color, or national origin, where the policy or
-# practice lacks a substantial legitimate justification, and where there exists one or more
-# alternatives that would serve the same legitimate objectives but with a less
-# disproportionate effect. A minority person is one who identifies as Black or African
-# American; American Indian or Alaskan Native; Asian; Native Hawaiian or other Pacific
-# Islander; and/or Hispanic or Latino/a/x."),
-#                             p("A disproportionate burden is a neutral policy or practice that disproportionately affects
-# low-income populations more than non-low income populations. The MPO considers a
-# person as low income as one whose family income is at or below 200% of the poverty
-# level for their family size."),
-#                             p("Step 1:"),
-#                             p("Step 2:"),
-#                             p("Step 3:"),
-#                             plotOutput("counts"))
       ) #close tabsetPanel()
     ) # close mainpanel()
   ) # close sidebarlayout()
@@ -3668,6 +3670,14 @@ server <- function(input, output) {
     theme(legend.position = "None")+
     coord_flip()
 })
+  # output$case_chart <- rendergrViz({
+  #   
+  #   grViz("digraph test{
+  #          A[tooltip='A word']; 
+  #          B[tooltip='Another word'];
+  #          A -> B;}")
+  #   
+  # })
   
   #addPopover(session, "metric_plot", "Change confidence interval:", "To change the confidence interval applied to the forecasting error, use the Forecasting Error Confidence Inverval threshold slider to the right.", trigger = "hover")
   #addPopover(session, "impact_plot", "Change impact threshold:", "To change the impact threshold tolerance (gray polygon), use the Impact Threshold slider to the right.", trigger = "hover")
