@@ -13,7 +13,7 @@ library(formattable)
 
 #prep for non-map related tasks
 #read metric result data
-alldata <- read_csv("data.csv")
+alldata <- read_csv("data/data.csv")
 data <- alldata 
 #clean data so no hyphens
 data[data=="no-build"] <- "no_build"
@@ -424,26 +424,27 @@ ui <- fluidPage(
                             formattableOutput("DIDBMob"),
                             p("Note: I = Low-income and Non-low-income pair. M = Minority and Non-minority pair."),
                             
-                            ),
-                   tabPanel("DIDB Rules",
-                            br(),
-                            p("Definitions:"),
-                            p("A disparate impact is a facially neutral policy or practice that disproportionately affects
-members of a group identified by race, color, or national origin, where the policy or
-practice lacks a substantial legitimate justification, and where there exists one or more
-alternatives that would serve the same legitimate objectives but with a less
-disproportionate effect. A minority person is one who identifies as Black or African
-American; American Indian or Alaskan Native; Asian; Native Hawaiian or other Pacific
-Islander; and/or Hispanic or Latino/a/x."),
-                            p("A disproportionate burden is a neutral policy or practice that disproportionately affects
-low-income populations more than non-low income populations. The MPO considers a
-person as low income as one whose family income is at or below 200% of the poverty
-level for their family size."),
-                            # p("Step 1:"),
-                            # p("Step 2:"),
-                            # p("Step 3:"),
-                            # grVizOutput('case_chart')
                             )
+#                    ,
+#                    tabPanel("DIDB Rules",
+#                             br(),
+#                             p("Definitions:"),
+#                             p("A disparate impact is a facially neutral policy or practice that disproportionately affects
+# members of a group identified by race, color, or national origin, where the policy or
+# practice lacks a substantial legitimate justification, and where there exists one or more
+# alternatives that would serve the same legitimate objectives but with a less
+# disproportionate effect. A minority person is one who identifies as Black or African
+# American; American Indian or Alaskan Native; Asian; Native Hawaiian or other Pacific
+# Islander; and/or Hispanic or Latino/a/x."),
+#                             p("A disproportionate burden is a neutral policy or practice that disproportionately affects
+# low-income populations more than non-low income populations. The MPO considers a
+# person as low income as one whose family income is at or below 200% of the poverty
+# level for their family size."),
+#                             # p("Step 1:"),
+#                             # p("Step 2:"),
+#                             # p("Step 3:"),
+#                             # grVizOutput('case_chart')
+#                             )
       ) #close tabsetPanel()
     ) # close mainpanel()
   ) # close sidebarlayout()

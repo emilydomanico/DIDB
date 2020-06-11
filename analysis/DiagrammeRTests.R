@@ -55,34 +55,80 @@ grViz("digraph {
       tab19 [label = '@@19']
       tab20 [label = '@@20']
       tab21 [label = '@@21']
-      tab22 [label = '@@22', shape= rectangle,tooltip= 'Test 3']
-      tab23 [label = '@@23']
-      tab24 [label = '@@24']
-      tab25 [label = '@@25']
-      tab26 [label = '@@26', shape= rectangle,tooltip= 'Test 3']
-      tab27 [label = '@@27']
-      tab28 [label = '@@28']
-      tab29 [label = '@@29']
-      tab30 [label = '@@30', shape= rectangle,tooltip= 'Test 3']
-      tab31 [label = '@@31']
-      tab32 [label = '@@32']
-      tab33 [label = '@@33']
-      
-      
+      tab22 [label = '@@18', shape= rectangle,tooltip= 'Test 3']
+      tab23 [label = '@@19']
+      tab24 [label = '@@20']
+      tab25 [label = '@@21']
+      tab26 [label = '@@18', shape= rectangle,tooltip= 'Test 3']
+      tab27 [label = '@@19']
+      tab28 [label = '@@20']
+      tab29 [label = '@@21']
+      tab30 [label = '@@18', shape= rectangle,tooltip= 'Test 3']
+      tab31 [label = '@@19']
+      tab32 [label = '@@20']
+      tab33 [label = '@@21']
+      tab34 [label = '@@18', shape= rectangle,tooltip= 'Test 3']
+      tab35 [label = '@@19']
+      tab36 [label = '@@20']
+      tab37 [label = '@@21']
+      tab38 [label = '@@18', shape= rectangle,tooltip= 'Test 3']
+      tab39 [label = '@@19']
+      tab40 [label = '@@20']
+      tab41 [label = '@@21']
+      tab42 [label = '@@18', shape= rectangle,tooltip= 'Test 3']
+      tab43 [label = '@@19']
+      tab44 [label = '@@20']
+      tab45 [label = '@@21']
+      tab46 [label = '@@18', shape= rectangle,tooltip= 'Test 3']
+      tab47 [label = '@@19']
+      tab48 [label = '@@20']
+      tab49 [label = '@@21']
+      tab50 [label = '@@18', shape= rectangle,tooltip= 'Test 3']
+      tab51 [label = '@@19']
+      tab52 [label = '@@20']
+      tab53 [label = '@@21']
+      tab54 [label = '@@18', shape= rectangle,tooltip= 'Test 3']
+      tab55 [label = '@@19']
+      tab56 [label = '@@20']
+      tab57 [label = '@@21']
+      tab58 [label = '@@18', shape= rectangle,tooltip= 'Test 3']
+      tab59 [label = '@@19']
+      tab60 [label = '@@20']
+      tab61 [label = '@@21']
+      tab62 [label = '@@18', shape= rectangle,tooltip= 'Test 3']
+      tab63 [label = '@@19']
+      tab64 [label = '@@20']
+      tab65 [label = '@@21']
   
 
       # edge definitions with the node IDs
       tab1 -> tab2;
       tab1 -> tab3 -> tab4;
-      tab4 -> tab5;
-      tab4 -> tab6;
-      tab4 -> tab7;
-      tab4 -> tab8;
-      tab4 -> tab9;
-      tab4 -> tab10;
+      tab4 -> tab5 -> tab62 -> tab63;
+      tab62 -> tab64;
+      tab62 -> tab65;
+      tab4 -> tab6 -> tab58 -> tab59;
+      tab58 -> tab60;
+      tab58 -> tab61;
+      tab4 -> tab7 -> tab54 -> tab55;
+      tab54 -> tab56;
+      tab54 -> tab57;
+      tab4 -> tab8 -> tab50 -> tab51;
+      tab50 -> tab52;
+      tab50 -> tab53;
+      tab4 -> tab9-> tab46 -> tab47;
+      tab46 -> tab48;
+      tab46 -> tab49;
+      tab4 -> tab10 -> tab42 -> tab43;
+      tab42 -> tab44;
+      tab42-> tab45;
       tab4 -> tab11;
-      tab4 -> tab12;
-      tab4 -> tab13;
+      tab4 -> tab12 -> tab38 -> tab39;
+      tab38 -> tab40;
+      tab38 -> tab41;
+      tab4 -> tab13-> tab34 -> tab35;
+      tab34 -> tab36;
+      tab34 -> tab37;
       tab4 -> tab14-> tab30 -> tab31;
       tab30 -> tab32;
       tab30 -> tab33;
@@ -118,18 +164,6 @@ grViz("digraph {
       [19]: 'Protected more affected'
       [20]: 'Non-protected more affected'
       [21]: 'Disproportionality within threshold'
-      [22]: 'Who is impacted more?'
-      [23]: 'Protected more affected'
-      [24]: 'Non-protected more affected'
-      [25]: 'Disproportionality within threshold'
-      [26]: 'Who is impacted more?'
-      [27]: 'Protected more affected'
-      [28]: 'Non-protected more affected'
-      [29]: 'Disproportionality within threshold'
-      [30]: 'Who is impacted more?'
-      [31]: 'Protected more affected'
-      [32]: 'Non-protected more affected'
-      [33]: 'Disproportionality within threshold'
       ")
 
 
