@@ -61,13 +61,13 @@ ui <- fluidPage(
     )
   ),
   withMathJax(),
-  #titlePanel("DI DB Thresholds"),
+  #titlePanel("DI/DB Thresholds"),
   setSliderColor(c(rep("DimGray",6)), c(1,2,3,4,5,6)),
   chooseSliderSkin("Flat"),
 # SideBar Panel UI ######################################
   sidebarLayout(
     sidebarPanel(width= 3,
-      h2("DI DB Thresholds"),
+      h2("DI/DB Thresholds"),
       br(),
       h5("Threshold Summary"),
       h6("Accessibility Metrics:"),
@@ -136,69 +136,69 @@ ui <- fluidPage(
 # Main Panel UI ######################################################    
     mainPanel(
       tabsetPanel( type = "tabs",
-                   tabPanel("Map by Metric", 
-                            br(),
-                            selectInput("metric_map", "Metric:",
-                                        choices = list(
-                                          Accessibility= c("Access to retail amenities by transit", "Access to higher education by transit","Access to healthcare facilities by transit", "Access to jobs by transit"),
-                                          Environmental= c("Congested vehicle miles traveled","Carbon monoxide emissions"),
-                                          Mobility= c("Average attraction - highway travel time", "Average production - highway travel time","Average attraction - transit travel time",
-                                                      "Average production - transit travel time")
-                                        ), selected = "Carbon monoxide emissions"),
-                            column(width = 6,
-                            h5("Filter with histogram") ,
-                            br(),
-                            br(),
-                            plotOutput("TAZ_hist", brush= brushOpts(id= "plot_brush", fill= "#c47d47", direction= "x"),
-                                       height= 350), 
-                            #verbatimTextOutput("plotbrush_raw"),
-                            htmlOutput("plotbrush_txt")
-                            ),
-                            column(width= 6, 
-                            # plotOutput("TAZ_hist_diff", brush= brushOpts(id= "plot_brush_dif", fill="#88bfaf", direction= "x"),
-                            #            height= 350),
-                            radioButtons("pct_taz", "Percent of TAZ's included in selection:",
-                                         c("50 %"= 50,
-                                           "60 %"= 60,
-                                           "70 %"= 70,
-                                           "80 %"= 80,
-                                           "90 %"= 90,
-                                           "95 %"= 95,
-                                           "97 %"= 97,
-                                           "98 %"= 98,
-                                           "99 %"= 99),
-                                         selected= 98,
-                                         inline= TRUE),
-                            # selectInput("pct_taz", "Percent of TAZ's included in selection:",
-                            #             choices= c(50, 60, 70, 80, 95,97,98, 99),
-                            #             
-                            #             selected= 98),
-                            plotOutput("TAZ_hist_diff",
-                                       height= 350),
-                            #NOTE: plotbrust_txt_dif used as select input reactive text for pct_taz selection
-                            htmlOutput("plotbrush_txt_dif"),
-                            p("Note: Selected range is inclusive.")
-                            ),
-                            #textOutput("plotbrush_txt"),
-                            #textOutput("plotbrush_txt_dif"),
-                            br(),
-                            column(width=8,
-                                   h5("Traffic Analysis Zones"),
-                                   h6("To zoom, select a region on the map below"),
-                                   p("Purple regions have a model output of 0 for the No-Build scenario and cannot be calculated as a percent difference"),
-                                   plotOutput(outputId = "TAZ_map",
-                                              height = 550,
-                                              brush= brushOpts(
-                                                id="plot2_brush",
-                                                resetOnNew = TRUE
-                                              ))
-                                   ),
-                            column(width= 4, 
-                                   h5(""),
-                                   plotOutput(outputId = "TAZ_map2",
-                                              height = 600)
-                                   )
-                            ),
+                   # tabPanel("Change by TAZ", 
+                   #          br(),
+                   #          selectInput("metric_map", "Metric:",
+                   #                      choices = list(
+                   #                        Accessibility= c("Access to retail amenities by transit", "Access to higher education by transit","Access to healthcare facilities by transit", "Access to jobs by transit"),
+                   #                        Environmental= c("Congested vehicle miles traveled","Carbon monoxide emissions"),
+                   #                        Mobility= c("Average attraction - highway travel time", "Average production - highway travel time","Average attraction - transit travel time",
+                   #                                    "Average production - transit travel time")
+                   #                      ), selected = "Carbon monoxide emissions"),
+                   #          column(width = 6,
+                   #          h5("Filter with histogram") ,
+                   #          br(),
+                   #          br(),
+                   #          plotOutput("TAZ_hist", brush= brushOpts(id= "plot_brush", fill= "#c47d47", direction= "x"),
+                   #                     height= 350), 
+                   #          #verbatimTextOutput("plotbrush_raw"),
+                   #          htmlOutput("plotbrush_txt")
+                   #          ),
+                   #          column(width= 6, 
+                   #          # plotOutput("TAZ_hist_diff", brush= brushOpts(id= "plot_brush_dif", fill="#88bfaf", direction= "x"),
+                   #          #            height= 350),
+                   #          radioButtons("pct_taz", "Percent of TAZ's included in selection:",
+                   #                       c("50 %"= 50,
+                   #                         "60 %"= 60,
+                   #                         "70 %"= 70,
+                   #                         "80 %"= 80,
+                   #                         "90 %"= 90,
+                   #                         "95 %"= 95,
+                   #                         "97 %"= 97,
+                   #                         "98 %"= 98,
+                   #                         "99 %"= 99),
+                   #                       selected= 98,
+                   #                       inline= TRUE),
+                   #          # selectInput("pct_taz", "Percent of TAZ's included in selection:",
+                   #          #             choices= c(50, 60, 70, 80, 95,97,98, 99),
+                   #          #             
+                   #          #             selected= 98),
+                   #          plotOutput("TAZ_hist_diff",
+                   #                     height= 350),
+                   #          #NOTE: plotbrust_txt_dif used as select input reactive text for pct_taz selection
+                   #          htmlOutput("plotbrush_txt_dif"),
+                   #          p("Note: Selected range is inclusive.")
+                   #          ),
+                   #          #textOutput("plotbrush_txt"),
+                   #          #textOutput("plotbrush_txt_dif"),
+                   #          br(),
+                   #          column(width=8,
+                   #                 h5("Traffic Analysis Zones"),
+                   #                 h6("To zoom, select a region on the map below"),
+                   #                 p("Purple regions have a model output of 0 for the No-Build scenario and cannot be calculated as a percent difference"),
+                   #                 plotOutput(outputId = "TAZ_map",
+                   #                            height = 550,
+                   #                            brush= brushOpts(
+                   #                              id="plot2_brush",
+                   #                              resetOnNew = TRUE
+                   #                            ))
+                   #                 ),
+                   #          column(width= 4, 
+                   #                 h5(""),
+                   #                 plotOutput(outputId = "TAZ_map2",
+                   #                            height = 600)
+                   #                 )
+                   #          ),
                    # tabPanel("Map by Population Type", 
                    #          br(),
                    #          selectInput("metric_mappop", "Metric:",
@@ -229,6 +229,25 @@ ui <- fluidPage(
                    #                            height = 750)
                    #          )
                    # ),
+#                    tabPanel("DIDB Rules",
+#                             br(),
+#                             p("Definitions:"),
+#                             p("A disparate impact is a facially neutral policy or practice that disproportionately affects
+# members of a group identified by race, color, or national origin, where the policy or
+# practice lacks a substantial legitimate justification, and where there exists one or more
+# alternatives that would serve the same legitimate objectives but with a less
+# disproportionate effect. A minority person is one who identifies as Black or African
+# American; American Indian or Alaskan Native; Asian; Native Hawaiian or other Pacific
+# Islander; and/or Hispanic or Latino/a/x."),
+#                             p("A disproportionate burden is a neutral policy or practice that disproportionately affects
+# low-income populations more than non-low income populations. The MPO considers a
+# person as low income as one whose family income is at or below 200% of the poverty
+# level for their family size."),
+#                             # p("Step 1:"),
+#                             # p("Step 2:"),
+#                             # p("Step 3:"),
+#                             # grVizOutput('case_chart')
+#                    ),
                    # UI by metric ################################
                    # tabPanel("Investigate by Metric",
                    #          br(),
@@ -424,8 +443,71 @@ ui <- fluidPage(
                             formattableOutput("DIDBMob"),
                             p("Note: I = Low-income and Non-low-income pair. M = Minority and Non-minority pair."),
                             
+                            ),
+                   tabPanel("Change by TAZ", 
+                            br(),
+                            selectInput("metric_map", "Metric:",
+                                        choices = list(
+                                          Accessibility= c("Access to retail amenities by transit", "Access to higher education by transit","Access to healthcare facilities by transit", "Access to jobs by transit"),
+                                          Environmental= c("Congested vehicle miles traveled","Carbon monoxide emissions"),
+                                          Mobility= c("Average attraction - highway travel time", "Average production - highway travel time","Average attraction - transit travel time",
+                                                      "Average production - transit travel time")
+                                        ), selected = "Carbon monoxide emissions"),
+                            column(width = 6,
+                                   h5("Filter with histogram") ,
+                                   br(),
+                                   br(),
+                                   plotOutput("TAZ_hist", brush= brushOpts(id= "plot_brush", fill= "#c47d47", direction= "x"),
+                                              height= 350), 
+                                   #verbatimTextOutput("plotbrush_raw"),
+                                   htmlOutput("plotbrush_txt")
+                            ),
+                            column(width= 6, 
+                                   # plotOutput("TAZ_hist_diff", brush= brushOpts(id= "plot_brush_dif", fill="#88bfaf", direction= "x"),
+                                   #            height= 350),
+                                   radioButtons("pct_taz", "Percent of TAZ's included in selection:",
+                                                c("50 %"= 50,
+                                                  "60 %"= 60,
+                                                  "70 %"= 70,
+                                                  "80 %"= 80,
+                                                  "90 %"= 90,
+                                                  "95 %"= 95,
+                                                  "97 %"= 97,
+                                                  "98 %"= 98,
+                                                  "99 %"= 99),
+                                                selected= 98,
+                                                inline= TRUE),
+                                   # selectInput("pct_taz", "Percent of TAZ's included in selection:",
+                                   #             choices= c(50, 60, 70, 80, 95,97,98, 99),
+                                   #             
+                                   #             selected= 98),
+                                   plotOutput("TAZ_hist_diff",
+                                              height= 350),
+                                   #NOTE: plotbrust_txt_dif used as select input reactive text for pct_taz selection
+                                   htmlOutput("plotbrush_txt_dif"),
+                                   p("Note: Selected range is inclusive.")
+                            ),
+                            #textOutput("plotbrush_txt"),
+                            #textOutput("plotbrush_txt_dif"),
+                            br(),
+                            column(width=8,
+                                   h5("Traffic Analysis Zones"),
+                                   h6("To zoom, select a region on the map below"),
+                                   p("Purple regions have a model output of 0 for the No-Build scenario and cannot be calculated as a percent difference"),
+                                   plotOutput(outputId = "TAZ_map",
+                                              height = 550,
+                                              brush= brushOpts(
+                                                id="plot2_brush",
+                                                resetOnNew = TRUE
+                                              ))
+                            ),
+                            column(width= 4, 
+                                   h5(""),
+                                   plotOutput(outputId = "TAZ_map2",
+                                              height = 600)
                             )
-#                    ,
+                   )
+                   #,
 #                    tabPanel("DIDB Rules",
 #                             br(),
 #                             p("Definitions:"),
@@ -448,7 +530,7 @@ ui <- fluidPage(
       ) #close tabsetPanel()
     ) # close mainpanel()
   ) # close sidebarlayout()
-) # close fluidpage()
+) # close fluidpage() 
 
 # Server##########################################
 
