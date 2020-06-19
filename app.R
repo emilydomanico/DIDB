@@ -115,13 +115,10 @@ ui <- fluidPage(
       
      # sliderInput("Dim2", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
      h5("Impact Threshold"), 
-     p("This threshold sets the sensitivity for determining if an impact is between the build and no-build scenarios is meaningful. The slider represents a percent change tolerance. At zero, any change between the build and no-build scenarios is considered an impact. As the threshold increases, the likelihood of identifying an adverse effect decreases. Change between scenarios is calculated as percent change:"),
+     p("This threshold sets the sensitivity for determining if the impacts of implementing the build-scenario would be meaningful. The slide represents a percent change. At 0%, any change between the build and no-build scenario would be considered a meaningful impact. As the threshold increase, the likelihood of identifying an adverse effect decreases. The impact is calculated as the percent change between scenarios:"),
       withMathJax("$$\\scriptsize\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build}} \\cdot 100$$"),
-      #withMathJax("\\(\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build} \\cdot 100}\\)"),
-      #p("((Build - (No-build) ) / (No-build))*100."),
       p(" "),
-      p("If an impact is found, we indicate whether it is a benefit or a burden based on the directionality of the metric (i.e., whether an increase is a benefit or a burden)."),
-      #can fix names of options later on.
+      p("If an impact is found, it is categorized as a benefit or a burden based on the directionality of the metric. (For example, an increase in carbon monoxide emissions is a burden, while an increase in access to jobs is a benefit."),
       br(),
      h5("Disproportionality Threshold"), 
       #sliderInput("Dim3", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
@@ -129,9 +126,9 @@ ui <- fluidPage(
       p("This threshold determines if the impacts found in the previous step disproportionately affect the minority or low-income population more than the nonminority or non-low-income population."),
       p("Disproportionality is calculated as a ratio, comparing the absolute value of the percent change for the protected population (from the second step) to the absolute value of the percent change non-protected population."),
      br(), 
-     h5("Forecasting Error Confidence Level"),
-      p("This threshold sets the sensitivity for detecting if a real change exists. The options represent different confidence intervals — a higher percentage produces a greater range of likely values, and a less of a chance of identifying a real change.")
-     #bsPopover("Dim1", "Confidence Interval Threshold:", "This threshold sets the sensitivity for detecting if a real change exists. The slider represents the confidence interval — a higher percentage produces a greater range of likely values, and a less of a chance of identifying a real change.", "bottom"),
+     h5("Baseline Uncertainty Confidence Level"),
+      p("This threshold sets set the sensitivity for detecting the likelihood of the model outputs for the build and no-build scenarios. The radio buttons represent confidence intervals - a higher percentage would result in a greater range of likely values — as indicated by the blue and red bars — and less of a chance of identifying a likely impact to the population groups.")
+     
      ),
 # Main Panel UI ######################################################    
     mainPanel(
@@ -309,7 +306,7 @@ ui <- fluidPage(
                             column(width = 6,
                                    #h5("Impact Threshold"),
                                    sliderInput("Dim2Acc", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                   p("Where there is a real change indicated, what kind of impact is projected between the Build and No-build scenarios? How does the No-build scenario impact each population?"),
+                                   p("Where a likely impact is indicated, is the impact meaningful for each population?"),
                                    plotOutput("impact_plotAcc"),
                                    br(),
                                    #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DIDB.")
@@ -317,16 +314,16 @@ ui <- fluidPage(
                             column(width = 6,
                                    #h5("Disproportionality Threshold"),
                                    sliderInput("Dim3Acc", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
-                                   p("How much of a benefit or burden would the protected population receive compared to the non-protected population? Does that difference constitute a disparate impact or disproportionate burden?"),
+                                   p("Where there is a likely meaningful impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotAcc"),
                                    br(),
                                    #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work accross all metric in the next tab.")
                             
                                    ),
                             column(width = 12,
-                            h5("Forecasting Error"),
-                            p("We need to test if there is a real change present. If there is a real change for either the protected population or the non-protected population, we will proceed to step 2."),
-                            radioButtons("Dim1Acc", "Forecasting Error Confidence Interval Threshold",
+                            h5("Baseline Uncertainty Test"),
+                            p("If a change between the build and no-build scenario forh either the protected or non-protected populations, proceed to the Impact Threshold."),
+                            radioButtons("Dim1Acc", "I want to set the confidence interval to:",
                                          c("0 %"=0,
                                            "10 %"= 10,
                                            "90 %"=90,
@@ -355,7 +352,7 @@ ui <- fluidPage(
                             column(width = 6,
                                    #h5("Impact Threshold"),
                                    sliderInput("Dim2Env", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                   p("Where there is a real change indicated, what kind of impact is projected between the Build and No-build scenarios? How does the No-build scenario impact each population?"),
+                                   p("Where a likely impact is indicated, is the impact meaningful for each population?"),
                                    plotOutput("impact_plotEnv"),
                                    br(),
                                    #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DIDB.")
@@ -363,16 +360,16 @@ ui <- fluidPage(
                             column(width = 6,
                                    #h5("Disproportionality Threshold"),
                                    sliderInput("Dim3Env", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
-                                   p("How much of a benefit or burden would the protected population receive compared to the non-protected population? Does that difference constitute a disparate impact or disproportionate burden?"),
+                                   p("Where there is a likely meaningful impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotEnv"),
                                    br(),
                                    #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work accross all metric in the next tab.")
                                    
                             ),
                             column(width = 12,
-                                   h5("Forecasting Error"),
-                                   p("We need to test if there is a real change present. If there is a real change for either the protected population or the non-protected population, we will proceed to step 2."),
-                                   radioButtons("Dim1Env", "Forecasting Error Confidence Interval Threshold",
+                                   h5("Baseline Uncertainty Test"),
+                                   p("If a change between the build and no-build scenario forh either the protected or non-protected populations, proceed to the Impact Threshold."),
+                                   radioButtons("Dim1Env", "I want to set the confidence interval to:",
                                                 c("0 %"=0,
                                                   "10 %"= 10,
                                                   "90 %"=90,
@@ -401,7 +398,7 @@ ui <- fluidPage(
                             column(width = 6,
                                    #h5("Impact Threshold"),
                                    sliderInput("Dim2Mob", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                   p("Where there is a real change indicated, what kind of impact is projected between the Build and No-build scenarios? How does the No-build scenario impact each population?"),
+                                   p("Where a likely impact is indicated, is the impact meaningful for each population?"),
                                    plotOutput("impact_plotMob"),
                                    br(),
                                    #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DIDB.")
@@ -409,16 +406,16 @@ ui <- fluidPage(
                             column(width = 6,
                                    #h5("Disproportionality Threshold"),
                                    sliderInput("Dim3Mob", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
-                                   p("How much of a benefit or burden would the protected population receive compared to the non-protected population? Does that difference constitute a disparate impact or disproportionate burden?"),
+                                   p("Where there is a likely meaningful impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotMob"),
                                    br(),
                                    #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work accross all metric in the next tab.")
                                    
                             ),
                             column(width = 12,
-                                   h5("Forecasting Error"),
-                                   p("We need to test if there is a real change present. If there is a real change for either the protected population or the non-protected population, we will proceed to step 2."),
-                                   radioButtons("Dim1Mob", "Forecasting Error Confidence Interval Threshold",
+                                   h5("Baseline Uncertainty Test"),
+                                   p("If a change between the build and no-build scenario forh either the protected or non-protected populations, proceed to the Impact Threshold."),
+                                   radioButtons("Dim1Mob", "I want to set the confidence interval to:",
                                                 c("0 %"=0,
                                                   "10 %"= 10,
                                                   "90 %"=90,
@@ -1160,8 +1157,8 @@ server <- function(input, output) {
     
     data_metric <- data %>%
       mutate(subtitle= case_when(
-        category == "Accessibility" ~ "An increase introduced by the build scenario is a benefit. A decrease introduced by the build scenario is a burden.",
-        category != "Accessibility" ~ "An increase introduced by the build scenario is a burden. A decrease introduced by the build scenario is a benefit.",
+        category == "Accessibility" ~ "An increase represents a benefit. A decrease represents a burden.",
+        category != "Accessibility" ~ "An increase represents a burden. A decrease represents a benefit.",
         TRUE ~ "Error!"
       ))
     subtitle <- data_metric$subtitle[1]
@@ -1184,7 +1181,7 @@ server <- function(input, output) {
         #axis.text.y= element_blank()
         plot.title = element_text(face= "bold"))+
       labs(title = paste(metric_filter, "by population"),
-           subtitle = str_wrap(subtitle, width = 58))+
+           subtitle = str_wrap(subtitle, width = 33))+
       ylab(paste(metric_filter, " (", metric_unit, ")"))+
       xlab("Population")
     
@@ -1247,8 +1244,8 @@ server <- function(input, output) {
     
     data_metric <- data %>%
       mutate(subtitle= case_when(
-        category == "Accessibility" ~ "An increase introduced by the build scenario is a benefit. A decrease introduced by the build scenario is a burden.",
-        category != "Accessibility" ~ "An increase introduced by the build scenario is a burden. A decrease introduced by the build scenario is a benefit.",
+        category == "Accessibility" ~ "An increase represents a benefit. A decrease represents a burden.",
+        category != "Accessibility" ~ "An increase represents a burden. A decrease represents a benefit.",
         TRUE ~ "Error!"
       ))
     subtitle <- data_metric$subtitle[1]
@@ -1271,7 +1268,7 @@ server <- function(input, output) {
         #axis.text.y= element_blank()
         plot.title = element_text(face= "bold"))+
       labs(title = paste(metric_filter, "by population"),
-           subtitle = str_wrap(subtitle, width = 58))+
+           subtitle = str_wrap(subtitle, width = 33))+
       ylab(paste(metric_filter, " (", metric_unit, ")"))+
       xlab("Population")
     
@@ -1334,8 +1331,8 @@ server <- function(input, output) {
     
     data_metric <- data %>%
       mutate(subtitle= case_when(
-        category == "Accessibility" ~ "An increase introduced by the build scenario is a benefit. A decrease introduced by the build scenario is a burden.",
-        category != "Accessibility" ~ "An increase introduced by the build scenario is a burden. A decrease introduced by the build scenario is a benefit.",
+        category == "Accessibility" ~ "An increase represents a benefit. A decrease represents a burden.",
+        category != "Accessibility" ~ "An increase represents a burden. A decrease represents a benefit.",
         TRUE ~ "Error!"
       ))
     subtitle <- data_metric$subtitle[1]
@@ -1358,7 +1355,7 @@ server <- function(input, output) {
         #axis.text.y= element_blank()
         plot.title = element_text(face= "bold"))+
       labs(title = paste(metric_filter, "by population"),
-           subtitle = str_wrap(subtitle, width = 58))+
+           subtitle = str_wrap(subtitle, width = 33))+
       ylab(paste(metric_filter, " (", metric_unit, ")"))+
       xlab("Population")
     
@@ -1421,8 +1418,8 @@ server <- function(input, output) {
     
     data_metric <- data %>%
       mutate(subtitle= case_when(
-        category == "Accessibility" ~ "An increase introduced by the build scenario is a benefit. A decrease introduced by the build scenario is a burden.",
-        category != "Accessibility" ~ "An increase introduced by the build scenario is a burden. A decrease introduced by the build scenario is a benefit.",
+        category == "Accessibility" ~ "An increase represents a benefit. A decrease represents a burden.",
+        category != "Accessibility" ~ "An increase represents a burden. A decrease represents a benefit.",
         TRUE ~ "Error!"
       ))
     subtitle <- data_metric$subtitle[1]
@@ -1445,7 +1442,7 @@ server <- function(input, output) {
         #axis.text.y= element_blank()
         plot.title = element_text(face= "bold"))+
       labs(title = paste(metric_filter, "by population"),
-           subtitle = str_wrap(subtitle, width = 58))+
+           subtitle = str_wrap(subtitle, width = 33))+
       ylab(paste(metric_filter, " (", metric_unit, ")"))+
       xlab("Population")
     
