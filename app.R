@@ -89,7 +89,7 @@ ui <- fluidPage(
       #                           "Average production - transit travel time")
       #             ), selected = "Carbon monoxide emissions"),
       
-      hr(),
+      #hr(),
       
       #Sliders to toggle sensitivity
       #Confidence Interval input option 1
@@ -111,7 +111,7 @@ ui <- fluidPage(
       #                               choices = c(0,10,90,95,100),grid=TRUE,width=110, dragRange = TRUE, post = " %"),
       #sliderInput("Dim1", label = "Step 1: Forecasting Error Confidence Interval Threshold", min = 0, max = 100, post= " %", value = 10, step = 1),
     
-      br(),
+      #br(),
       
      # sliderInput("Dim2", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
      h5("Impact Threshold"), 
@@ -295,11 +295,11 @@ ui <- fluidPage(
                             column(width=12,
                                      selectInput("metricAcc", "Metric:",
                                                  choices = list(
-                                                   Accessibility= c("Access to retail amenities by transit", 
+                                                   Accessibility= c("Access to retail opportunities by transit", 
                                                                     "Access to higher education by transit",
                                                                     "Access to healthcare facilities by transit", 
                                                                     "Access to jobs by transit")),
-                                                  selected = "Access to retail amenities by transit"),
+                                                  selected = "Access to retail opportunities by transit"),
                                      #sliderInput("Dim2Acc", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
                                      #sliderInput("Dim3Acc", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1)
                             ),
@@ -1519,7 +1519,7 @@ server <- function(input, output) {
   })
 # Impact plot #####################################################  
   output$impact_plot <- renderPlot({
-    #user imputs
+    #user inputs
     #metric selected from selectInput dropdown
     metric_filter <- input$metric 
     # percentage threshold set by slider
