@@ -115,7 +115,7 @@ ui <- fluidPage(
       
      # sliderInput("Dim2", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
      h5("Impact Threshold"), 
-     p("This threshold sets the sensitivity for determining if the impacts of implementing the build-scenario would be meaningful. The slide represents a percent change. At 0%, any change between the build and no-build scenario would be considered a meaningful impact. As the threshold increase, the likelihood of identifying an adverse effect decreases. The impact is calculated as the percent change between scenarios:"),
+     p("This threshold sets the sensitivity for determining if the impacts of implementing the build-scenario would be meaningful. The slider represents a percent change. At 0%, any change between the build and no-build scenario would be considered a meaningful impact. As the threshold increase, the likelihood of identifying an adverse effect decreases. The impact is calculated as the percent change between scenarios:"),
       withMathJax("$$\\scriptsize\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build}} \\cdot 100$$"),
       p(" "),
       p("If an impact is found, it is categorized as a benefit or a burden based on the directionality of the metric. (For example, an increase in carbon monoxide emissions is a burden, while an increase in access to jobs is a benefit."),
@@ -322,13 +322,13 @@ ui <- fluidPage(
                                    ),
                             column(width = 12,
                             h5("Baseline Uncertainty Test"),
-                            p("If a change between the build and no-build scenario forh either the protected or non-protected populations, proceed to the Impact Threshold."),
+                            p("If a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Impact Threshold."),
                             radioButtons("Dim1Acc", "I want to set the confidence interval to:",
-                                         c("0 %"=0,
-                                           "10 %"= 10,
-                                           "90 %"=90,
-                                           "95 %"= 95),
-                                         selected= 10,
+                                         c("No uncertainty"=0,
+                                           "Moderate uncertainty"= 50,
+                                           #"90 %"=90,
+                                           "High uncertainty"= 95),
+                                         selected= 50,
                                          inline= TRUE),
                             plotOutput(outputId = "metric_plotAcc"),
                             #textOutput(), note:
@@ -368,13 +368,13 @@ ui <- fluidPage(
                             ),
                             column(width = 12,
                                    h5("Baseline Uncertainty Test"),
-                                   p("If a change between the build and no-build scenario forh either the protected or non-protected populations, proceed to the Impact Threshold."),
+                                   p("If a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Impact Threshold."),
                                    radioButtons("Dim1Env", "I want to set the confidence interval to:",
-                                                c("0 %"=0,
-                                                  "10 %"= 10,
-                                                  "90 %"=90,
-                                                  "95 %"= 95),
-                                                selected= 10,
+                                                c("No uncertainty"=0,
+                                                  "Moderate uncertainty"= 50,
+                                                  #"90 %"=90,
+                                                  "High uncertainty"= 95),
+                                                selected= 50,
                                                 inline= TRUE),
                                    plotOutput(outputId = "metric_plotEnv"),
                                    #textOutput(), note:
@@ -414,13 +414,13 @@ ui <- fluidPage(
                             ),
                             column(width = 12,
                                    h5("Baseline Uncertainty Test"),
-                                   p("If a change between the build and no-build scenario forh either the protected or non-protected populations, proceed to the Impact Threshold."),
+                                   p("If a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Impact Threshold."),
                                    radioButtons("Dim1Mob", "I want to set the confidence interval to:",
-                                                c("0 %"=0,
-                                                  "10 %"= 10,
-                                                  "90 %"=90,
-                                                  "95 %"= 95),
-                                                selected= 10,
+                                                c("No uncertainty"=0,
+                                                  "Moderate uncertainty"= 50,
+                                                  #"90 %"=90,
+                                                  "High uncertainty"= 95),
+                                                selected= 50,
                                                 inline= TRUE),
                                    plotOutput(outputId = "metric_plotMob"),
                                    #textOutput(), note:
@@ -1128,8 +1128,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1215,8 +1215,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1302,8 +1302,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1389,8 +1389,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1477,8 +1477,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1545,8 +1545,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1625,8 +1625,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1705,8 +1705,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1785,8 +1785,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1867,8 +1867,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -2030,8 +2030,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -2193,8 +2193,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -2356,8 +2356,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -2515,8 +2515,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -2763,8 +2763,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -3012,8 +3012,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -3261,8 +3261,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Real change",
-        real_change == FALSE ~ "No real change"
+        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+        real_change == FALSE ~ "No likely impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -3498,8 +3498,8 @@ server <- function(input, output) {
       TRUE ~ FALSE
     ))%>%
     mutate(change_label = case_when(
-      real_change == TRUE ~ "Real change",
-      real_change == FALSE ~ "No real change"
+      real_change == TRUE ~ "Exceeds baseline \nuncertainty",
+      real_change == FALSE ~ "No likely impact"
     )) %>%
     #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
     #im_th_amt "impact threshold amount"
