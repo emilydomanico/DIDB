@@ -2908,9 +2908,14 @@ server <- function(input, output) {
     
     
     kable(DIDB_clean, format = "html", escape= FALSE)%>%
+      column_spec(1,width= "20em")%>%
+      column_spec(2:4, width= "5em")%>%
+      column_spec(5, width= "20em")%>%
+      column_spec(6, width= "5em")%>%
+      column_spec(7, width= "20em")%>%
       kable_styling(font_size = 12,
                     bootstrap_options = c( "hover", "condensed")
-                    )
+      )
   })
   # DIDB count table Env###########################################  
   output$DIDBEnv <- output$DIDBEnv2 <-  renderText({
@@ -3210,6 +3215,11 @@ server <- function(input, output) {
     
     
     kable(DIDB_clean, format = "html", escape= FALSE)%>%
+      column_spec(1,width= "20em")%>%
+      column_spec(2:4, width= "5em")%>%
+      column_spec(5, width= "20em")%>%
+      column_spec(6, width= "5em")%>%
+      column_spec(7, width= "20em")%>%
       kable_styling(font_size = 12,
                     bootstrap_options = c( "hover", "condensed")
       )
@@ -3513,6 +3523,11 @@ server <- function(input, output) {
     
     
     kable(DIDB_clean, format = "html", escape= FALSE)%>%
+      column_spec(1,width= "20em")%>%
+      column_spec(2:4, width= "5em")%>%
+      column_spec(5, width= "20em")%>%
+      column_spec(6, width= "5em")%>%
+      column_spec(7, width= "20em")%>%
       kable_styling(font_size = 12,
                     bootstrap_options = c( "hover", "condensed")
       )
