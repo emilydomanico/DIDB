@@ -2889,6 +2889,16 @@ server <- function(input, output) {
     DIDB_clean <- DIDB%>%
       mutate(Metric = metric)%>%
       select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
+      arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
+      mutate(change_test = cell_spec(change_test, "html", color= ifelse(change_test == "Yes", "red", "black"), 
+                                     bold = ifelse(change_test == "Yes", TRUE, FALSE)),
+             impact_test = cell_spec(impact_test, "html", color= ifelse(impact_test == "Yes", "red", "black"),
+                                     bold = ifelse(impact_test == "Yes", TRUE, FALSE)),
+             instance = cell_spec(instance, "html", color= ifelse(instance== "Yes", "red", "black"),
+                                  bold = ifelse(instance == "Yes", TRUE, FALSE)),
+             DB = cell_spec(DB, "html", color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
+                            bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
+             ) %>%
       rename("Population Group" = poptype)%>%
       rename("Uncertainty Test" = change_test)%>%
       rename("Adverse Impact Test"= impact_test)%>%
@@ -2897,18 +2907,10 @@ server <- function(input, output) {
       rename("Reason"= DB_reason)
     
     
-    kable(DIDB_clean)%>%
+    kable(DIDB_clean, format = "html", escape= FALSE)%>%
       kable_styling(font_size = 12,
                     bootstrap_options = c( "hover", "condensed")
                     )
-    # formattable(DIDB_clean,
-    #             align= c("l", "c", "c", "l"),
-    #             list(
-    #               `DIDB`= formatter("span", 
-    #                                 style = x ~ ifelse(x == "Yes", style(color= "red", font.weight= "bold"), style(color="green"))
-    #               ) 
-    #               
-    #             ))
   })
   # DIDB count table Env###########################################  
   output$DIDBEnv <- output$DIDBEnv2 <-  renderText({
@@ -3189,6 +3191,16 @@ server <- function(input, output) {
     DIDB_clean <- DIDB%>%
       mutate(Metric = metric)%>%
       select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
+      arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
+      mutate(change_test = cell_spec(change_test, "html", color= ifelse(change_test == "Yes", "red", "black"), 
+                                     bold = ifelse(change_test == "Yes", TRUE, FALSE)),
+             impact_test = cell_spec(impact_test, "html", color= ifelse(impact_test == "Yes", "red", "black"),
+                                     bold = ifelse(impact_test == "Yes", TRUE, FALSE)),
+             instance = cell_spec(instance, "html", color= ifelse(instance== "Yes", "red", "black"),
+                                  bold = ifelse(instance == "Yes", TRUE, FALSE)),
+             DB = cell_spec(DB, "html", color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
+                            bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
+      ) %>%
       rename("Population Group" = poptype)%>%
       rename("Uncertainty Test" = change_test)%>%
       rename("Adverse Impact Test"= impact_test)%>%
@@ -3196,7 +3208,8 @@ server <- function(input, output) {
       rename("DIDB" = instance) %>%
       rename("Reason"= DB_reason)
     
-    kable(DIDB_clean)%>%
+    
+    kable(DIDB_clean, format = "html", escape= FALSE)%>%
       kable_styling(font_size = 12,
                     bootstrap_options = c( "hover", "condensed")
       )
@@ -3481,6 +3494,16 @@ server <- function(input, output) {
     DIDB_clean <- DIDB%>%
       mutate(Metric = metric)%>%
       select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
+      arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
+      mutate(change_test = cell_spec(change_test, "html", color= ifelse(change_test == "Yes", "red", "black"), 
+                                     bold = ifelse(change_test == "Yes", TRUE, FALSE)),
+             impact_test = cell_spec(impact_test, "html", color= ifelse(impact_test == "Yes", "red", "black"),
+                                     bold = ifelse(impact_test == "Yes", TRUE, FALSE)),
+             instance = cell_spec(instance, "html", color= ifelse(instance== "Yes", "red", "black"),
+                                  bold = ifelse(instance == "Yes", TRUE, FALSE)),
+             DB = cell_spec(DB, "html", color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
+                            bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
+      ) %>%
       rename("Population Group" = poptype)%>%
       rename("Uncertainty Test" = change_test)%>%
       rename("Adverse Impact Test"= impact_test)%>%
@@ -3489,7 +3512,7 @@ server <- function(input, output) {
       rename("Reason"= DB_reason)
     
     
-    kable(DIDB_clean)%>%
+    kable(DIDB_clean, format = "html", escape= FALSE)%>%
       kable_styling(font_size = 12,
                     bootstrap_options = c( "hover", "condensed")
       )
