@@ -425,70 +425,71 @@ ui <- fluidPage(
                             htmlOutput("DIDBMob2"),
                             p("Note: I = Low-income and Non-low-income pair. M = Minority and Non-minority pair."),
                             
-                            ),
-                   tabPanel("Change by TAZ", 
-                            br(),
-                            selectInput("metric_map", "Metric:",
-                                        choices = list(
-                                          Accessibility= c("Access to retail amenities by transit", "Access to higher education by transit","Access to healthcare facilities by transit", "Access to jobs by transit"),
-                                          Environmental= c("Congested vehicle miles traveled","Carbon monoxide emissions"),
-                                          Mobility= c("Average attraction - highway travel time", "Average production - highway travel time","Average attraction - transit travel time",
-                                                      "Average production - transit travel time")
-                                        ), selected = "Carbon monoxide emissions"),
-                            column(width = 6,
-                                   h5("Filter with histogram") ,
-                                   br(),
-                                   br(),
-                                   plotOutput("TAZ_hist", brush= brushOpts(id= "plot_brush", fill= "#c47d47", direction= "x"),
-                                              height= 350), 
-                                   #verbatimTextOutput("plotbrush_raw"),
-                                   htmlOutput("plotbrush_txt")
-                            ),
-                            column(width= 6, 
-                                   # plotOutput("TAZ_hist_diff", brush= brushOpts(id= "plot_brush_dif", fill="#88bfaf", direction= "x"),
-                                   #            height= 350),
-                                   radioButtons("pct_taz", "Percent of TAZ's included in selection:",
-                                                c("50 %"= 50,
-                                                  "60 %"= 60,
-                                                  "70 %"= 70,
-                                                  "80 %"= 80,
-                                                  "90 %"= 90,
-                                                  "95 %"= 95,
-                                                  "97 %"= 97,
-                                                  "98 %"= 98,
-                                                  "99 %"= 99),
-                                                selected= 98,
-                                                inline= TRUE),
-                                   # selectInput("pct_taz", "Percent of TAZ's included in selection:",
-                                   #             choices= c(50, 60, 70, 80, 95,97,98, 99),
-                                   #             
-                                   #             selected= 98),
-                                   plotOutput("TAZ_hist_diff",
-                                              height= 350),
-                                   #NOTE: plotbrust_txt_dif used as select input reactive text for pct_taz selection
-                                   htmlOutput("plotbrush_txt_dif"),
-                                   p("Note: Selected range is inclusive.")
-                            ),
-                            #textOutput("plotbrush_txt"),
-                            #textOutput("plotbrush_txt_dif"),
-                            br(),
-                            column(width=8,
-                                   h5("Traffic Analysis Zones"),
-                                   h6("To zoom, select a region on the map below"),
-                                   p("Purple regions have a model output of 0 for the No-Build scenario and cannot be calculated as a percent difference"),
-                                   plotOutput(outputId = "TAZ_map",
-                                              height = 550,
-                                              brush= brushOpts(
-                                                id="plot2_brush",
-                                                resetOnNew = TRUE
-                                              ))
-                            ),
-                            column(width= 4, 
-                                   h5(""),
-                                   plotOutput(outputId = "TAZ_map2",
-                                              height = 600)
                             )
-                   )
+#,
+                   # tabPanel("Change by TAZ", 
+                   #          br(),
+                   #          selectInput("metric_map", "Metric:",
+                   #                      choices = list(
+                   #                        Accessibility= c("Access to retail amenities by transit", "Access to higher education by transit","Access to healthcare facilities by transit", "Access to jobs by transit"),
+                   #                        Environmental= c("Congested vehicle miles traveled","Carbon monoxide emissions"),
+                   #                        Mobility= c("Average attraction - highway travel time", "Average production - highway travel time","Average attraction - transit travel time",
+                   #                                    "Average production - transit travel time")
+                   #                      ), selected = "Carbon monoxide emissions"),
+                   #          column(width = 6,
+                   #                 h5("Filter with histogram") ,
+                   #                 br(),
+                   #                 br(),
+                   #                 plotOutput("TAZ_hist", brush= brushOpts(id= "plot_brush", fill= "#c47d47", direction= "x"),
+                   #                            height= 350), 
+                   #                 #verbatimTextOutput("plotbrush_raw"),
+                   #                 htmlOutput("plotbrush_txt")
+                   #          ),
+                   #          column(width= 6, 
+                   #                 # plotOutput("TAZ_hist_diff", brush= brushOpts(id= "plot_brush_dif", fill="#88bfaf", direction= "x"),
+                   #                 #            height= 350),
+                   #                 radioButtons("pct_taz", "Percent of TAZ's included in selection:",
+                   #                              c("50 %"= 50,
+                   #                                "60 %"= 60,
+                   #                                "70 %"= 70,
+                   #                                "80 %"= 80,
+                   #                                "90 %"= 90,
+                   #                                "95 %"= 95,
+                   #                                "97 %"= 97,
+                   #                                "98 %"= 98,
+                   #                                "99 %"= 99),
+                   #                              selected= 98,
+                   #                              inline= TRUE),
+                   #                 # selectInput("pct_taz", "Percent of TAZ's included in selection:",
+                   #                 #             choices= c(50, 60, 70, 80, 95,97,98, 99),
+                   #                 #             
+                   #                 #             selected= 98),
+                   #                 plotOutput("TAZ_hist_diff",
+                   #                            height= 350),
+                   #                 #NOTE: plotbrust_txt_dif used as select input reactive text for pct_taz selection
+                   #                 htmlOutput("plotbrush_txt_dif"),
+                   #                 p("Note: Selected range is inclusive.")
+                   #          ),
+                   #          #textOutput("plotbrush_txt"),
+                   #          #textOutput("plotbrush_txt_dif"),
+                   #          br(),
+                   #          column(width=8,
+                   #                 h5("Traffic Analysis Zones"),
+                   #                 h6("To zoom, select a region on the map below"),
+                   #                 p("Purple regions have a model output of 0 for the No-Build scenario and cannot be calculated as a percent difference"),
+                   #                 plotOutput(outputId = "TAZ_map",
+                   #                            height = 550,
+                   #                            brush= brushOpts(
+                   #                              id="plot2_brush",
+                   #                              resetOnNew = TRUE
+                   #                            ))
+                   #          ),
+                   #          column(width= 4, 
+                   #                 h5(""),
+                   #                 plotOutput(outputId = "TAZ_map2",
+                   #                            height = 600)
+                   #          )
+                   # )
                    #,
 #                    tabPanel("DIDB Rules",
 #                             br(),
@@ -518,387 +519,387 @@ ui <- fluidPage(
 
 server <- function(input, output) {
 # Histogram of TAZ mr ##################################
-  output$TAZ_hist <- renderPlot({
-    
-    metric_filter <- input$metric_map
-    met_int <- met_list %>%
-      filter(metric_name== metric_filter)
-    met <- met_int$metric
-    pct_met <- paste0("pct_", met)
-    mrs_filtered <- mrs%>%
-      select(TAZ_ID, the_metric= pct_met)
-    
-    mrs_filtered <- mrs_filtered %>%
-      filter(is.infinite(the_metric)== FALSE)
-    
-    sd <- sd(mrs_filtered$the_metric, na.rm = TRUE)
-    mean <- mean(mrs_filtered$the_metric, na.rm = TRUE)
-    median <- median(mrs_filtered$the_metric, na.rm= TRUE)
-    
-    sd_rnd <- round(sd, digits = 3)
-    mean_rnd <- round(mean, digits = 3)
-    med_rnd <- round(median, digits = 3)
-    
-    
-    ggplot(mrs_filtered, aes(x= the_metric))+
-      geom_point(aes(y=1), shape= 20, alpha= .5)+
-      geom_histogram(alpha= .5)+
-      geom_vline(aes(xintercept = mean, color="mean", linetype= "mean"), alpha= .75)+
-      geom_vline(aes(xintercept = mean-sd, color= "std_dev",linetype= "std_dev"), alpha= .5)+
-      geom_vline(aes(xintercept = mean+sd, color= "std_dev",linetype= "std_dev"), alpha= .5)+
-      geom_vline(aes(xintercept = mean-2*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
-      geom_vline(aes(xintercept = mean+2*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
-      geom_vline(aes(xintercept = mean-3*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
-      geom_vline(aes(xintercept = mean+3*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
-      geom_vline(aes(xintercept = median, color= "median", linetype= "median"), alpha= .75)+
-      scale_color_manual(name= "Statistics", values= c(mean= "black", std_dev= "black", median= "black"),
-                         labels= c(mean= paste0("Mean: ", mean_rnd),
-                                   std_dev= paste0("Standard \nDeviation: +/-", sd_rnd),
-                                   median= paste0("Median: ", med_rnd)))+
-      scale_linetype_manual(name= "Statistics", values= c(mean= 1, std_dev= 2, median= 3),
-                            labels= c(mean= paste0("Mean: ", mean_rnd),
-                                      std_dev= paste0("Standard \nDeviation: +/-", sd_rnd),
-                                      median= paste0("Median: ", med_rnd)))+
-      scale_x_continuous(labels = (function(x) (paste0(format(x*100, big.mark= ","), " %"))))+
-      scale_y_continuous(trans= "log10")+ #  minor_breaks = mb   labels = scales::percent
-      theme_minimal()+
-      labs(x= paste("% change", str_to_lower(met_int$metric_name)),
-           y= "Count")+
-      theme(legend.text = element_text(size= 12),
-            legend.position = c(.95, .95),
-            legend.justification = c(1,1),
-            axis.text.x = element_text(size=11.5))
-  })
-  
-  output$TAZ_hist_diff <- renderPlot({
-    metric_filter <- input$metric_map
-    pct_in_selection <- as.numeric(input$pct_taz)/100
-    
-    met_int <- met_list %>%
-      filter(metric_name== metric_filter)
-    
-    met <- met_int$metric
-    
-    dif_met <- paste0("dif_", met)
-    
-    mrs_filtered_dif <- mrs_diff%>%
-      select(TAZ_ID, the_metric=dif_met)
-    
-    
-    #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
-    
-    mrs_filtered_dif <- mrs_filtered_dif %>%
-      filter(is.infinite(the_metric)== FALSE)
-    
-    sd <- sd(mrs_filtered_dif$the_metric, na.rm = TRUE)
-    mean <- mean(mrs_filtered_dif$the_metric, na.rm = TRUE)
-    median <- median(mrs_filtered_dif$the_metric, na.rm = TRUE)
-    
-    sd_rnd <- round(sd, digits = 3)
-    mean_rnd <- round(mean, digits = 3)
-    med_rnd <- round(median, digits = 3)
-    
-    quants <- quantile(mrs_filtered_dif$the_metric, probs= c(.005,.01,.015, .025, .05, .1, .15, .2, .25,.75,.8, .85,.9, .95, .975,.985, .99,.995))
-    
-    #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
-    
-    
-    q_up<- paste0(((.5 + pct_in_selection/2) *100), "%")
-    q_low <- paste0(((.5 - pct_in_selection/2) *100), "%")
-    
-    # filter_q <-mrs_filtered_dif%>%
-    #   filter(the_metric > quants[[q_low]] & the_metric < quants[[q_up]])
-    # 
-    
-    #mb <- as.numeric(1:10 %o% 10 ^ (0:4))
-    
-    
-    xmin <- quants[[q_low]]
-    xmax <- quants[[q_up]]
-    
-    ggplot(mrs_filtered_dif, aes(x= the_metric))+
-      #geom_rug(alpha=.5, color= "dark gray")+
-      geom_histogram(alpha= .5)+
-      geom_vline(aes(xintercept = mean, color="mean", linetype= "mean"), alpha= .75)+
-      geom_vline(aes(xintercept = mean-sd, color= "std_dev",linetype= "std_dev"), alpha= .5)+
-      #geom_vline(aes(xintercept = xmin), color= "pink")+
-      #geom_vline(aes(xintercept = xmax), color = "purple")+
-      geom_vline(aes(xintercept = mean+sd, color= "std_dev",linetype= "std_dev"), alpha= .5)+
-      # geom_vline(aes(xintercept = mean-2*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
-      # geom_vline(aes(xintercept = mean+2*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
-      # geom_vline(aes(xintercept = mean-3*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
-      # geom_vline(aes(xintercept = mean+3*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
-      geom_vline(aes(xintercept = median, color= "median", linetype= "median"), alpha= .75)+
-      annotate("rect", xmin=xmin , xmax=xmax, ymin = 1, ymax = Inf, alpha= 0.35, color ="#88bfaf", fill= "#88bfaf")+
-      geom_point(aes(y=1), shape= 20, alpha= .5)+
-      scale_color_manual(name= "Statistics", values= c(mean= "black", std_dev= "black", median= "black"),
-                         labels= c(mean= paste0("Mean: ", mean_rnd),
-                                   std_dev= paste0("Standard \nDeviation: +/-", sd_rnd),
-                                   median= paste0("Median: ", med_rnd)
-                         ))+
-      scale_linetype_manual(name= "Statistics", values= c(mean= 1, std_dev= 2, median= 3),
-                            labels= c(mean= paste0("Mean: ", mean_rnd),
-                                      std_dev= paste0("Standard \nDeviation: +/-", sd_rnd),
-                                      median= paste0("Median: ", med_rnd)
-                            ))+
-      #scale_x_log10()+
-      #scale_x_continuous(trans= "log10", labels= scales::percent, minor_breaks = mb)+
-      scale_x_continuous(labels = (function(x) format(x,big.mark= ",")))+
-      scale_y_continuous(trans= "log10")+ #  minor_breaks = mb   labels = scales::percent
-      theme_minimal()+
-      #coord_flip()+
-      labs(x= paste("Absolute change", str_to_lower(met_int$metric_name)),
-           y= "Count")+
-      theme(legend.text = element_text(size= 12),
-            legend.position = c(.35, .95),
-            legend.justification = c(1,1),
-            axis.text.x = element_text(size=11.5))
-  })
-
-  output$plotbrush_txt <- renderText({
-    metric_filter <- input$metric_map
-    met_int <- met_list %>%
-      filter(metric_name== metric_filter)
-    met <- met_int$metric
-    pct_met <- paste0("pct_", met)
-    mrs_filtered <- mrs%>%
-      select(TAZ_ID, the_metric= pct_met)
-    
-    mrs_filtered <- mrs_filtered %>%
-      filter(is.infinite(the_metric)== FALSE)
-    
-    filter <- brushedPoints(mrs_filtered, input$plot_brush)
-    
-    pop_total <-  pop_mpo%>%
-      summarise(sum(Population))
-    pop_total_num <- pop_total$`sum(Population)`[1]
-
-    pop_selected <- pop_mpo%>%
-      right_join(filter)%>%
-      summarise(sum(Population))
-    pop_selected_num <- pop_selected$`sum(Population)`[1]
-
-    pop_selected_pct <- round(pop_selected_num/ pop_total_num *100, 2)
-
-    pop_notselected_num <- pop_total_num - pop_selected_num
-    pop_notselected_pct <- round(pop_notselected_num/pop_total_num *100, 2)
-    
-    taz_selected <-  if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{nrow(filter)}
-    pct_taz_selected <- if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{round(nrow(filter)/1901*100, 2)}
-    pct_taz_unselected <- if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{round((1901-nrow(filter))/1901*100, 2)}
-
-    pop_txt<- paste("MPO Population Included in Selection:", pop_selected_pct, "%", "<br>MPO Popluation Outside of Selection:", pop_notselected_pct, "%")
-    brushtext_min <- if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{round(input$plot_brush$xmin,digits = 3)}
-    brushtext_max <- if(is.null(input$plot_brush$xmax) == TRUE) {NA} else{round(input$plot_brush$xmax,digits = 3)}
-    range_txt<- paste("Selected Range:", brushtext_min, "% to", brushtext_max, "%")
-    taz_count <- paste("Count of selected TAZ's: ", taz_selected)
-    taz_pct <- paste("TAZ's Included in Selection:", pct_taz_selected, "%", "<br>", "TAZ's Outside of Selection:", pct_taz_unselected, "%")
-    print(paste(range_txt,"<br>",pop_txt, "<br>", taz_count, "<br>", taz_pct))
-
-  })
-  
-  
-  # output$plotbrush_raw <- renderPrint({
-  #   metric_filter <- input$metric_map
-  #   met_int <- met_list %>%
-  #     filter(metric_name== metric_filter)
-  #   met <- met_int$metric
-  #   pct_met <- paste0("pct_", met)
-  #   mrs_filtered <- mrs%>%
-  #     select(TAZ_ID, the_metric= pct_met)
-  #   
-  #   mrs_filtered <- mrs_filtered %>%
-  #     filter(is.infinite(the_metric)== FALSE)
-  #   
-  #   brushedPoints(mrs_filtered, input$plot_brush)
-  #   
-  # })
-
-  output$plotbrush_txt_dif <- renderText({
-    metric_filter <- input$metric_map
-    pct_in_selection <- as.numeric(input$pct_taz)/100
-    
-    met_int <- met_list %>%
-      filter(metric_name== metric_filter)
-    met <- met_int$metric
-    dif_met <- paste0("dif_", met)
-    mrs_filtered_dif <- mrs_diff%>%
-      select(TAZ_ID, the_metric=dif_met)
-    
-    
-    #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
-    #pct_in_selection <- as.numeric(input$pct_taz)/100
-    quants <- quantile(mrs_filtered_dif$the_metric, probs= c(.005,.01,.015, .025, .05, .1, .15, .2, .25,.75,.8, .85,.9, .95, .975,.985, .99,.995))
-    
-    #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
-    
-    #pct_in_selection <- as.numeric(input$pct_pop)/100
-    q_up<- paste0(((.5 + pct_in_selection/2) *100), "%")
-    q_low <- paste0(((.5 - pct_in_selection/2) *100), "%")
-    
-    filter_dif <-mrs_filtered_dif%>%
-      filter(the_metric >= quants[[q_low]] & the_metric <= quants[[q_up]])
-    
-    
-    pop_total <-  pop_mpo%>%
-      summarise(sum(Population))
-    pop_total_num <- pop_total$`sum(Population)`[1]
-    
-    pop_selected <- pop_mpo%>%
-      right_join(filter_dif)%>%
-      summarise(sum(Population))
-    pop_selected_num <- pop_selected$`sum(Population)`[1]
-    
-    pop_selected_pct <- round(pop_selected_num/ pop_total_num *100, 2)
-    
-    pop_notselected_num <- pop_total_num - pop_selected_num
-    pop_notselected_pct <- round(pop_notselected_num/pop_total_num *100, 2)
-    
-    # taz_selected <-  if(is.null(input$plot_brush_dif$xmin) ==TRUE){NA} else{nrow(filter_dif)}
-    # pct_taz_selected <- if(is.null(input$plot_brush_dif$xmin) ==TRUE){NA} else{round(nrow(filter_dif)/1901*100, 2)}
-    # pct_taz_unselected <- if(is.null(input$plot_brush_dif$xmin) ==TRUE){NA} else{round((1901-nrow(filter_dif))/1901*100, 2)}
-    taz_selected <-  nrow(filter_dif)
-    pct_taz_selected <- round(nrow(filter_dif)/1901*100, 2)
-    pct_taz_unselected <- round((1901-nrow(filter_dif))/1901*100, 2)
-    
-    pop_txt<- paste("MPO Population Included in Selection:", pop_selected_pct, "%", "<br>MPO Popluation Outside of Selection:", pop_notselected_pct, "%")
-    
-    pop_txt<- paste("MPO Population Included in Selection:", pop_selected_pct, "%", "<br>MPO Popluation Outside of Selection:", pop_notselected_pct, "%")
-    # brushtext_min <- if(is.null(input$plot_brush_dif$xmin) ==TRUE){NA} else{round(input$plot_brush_dif$xmin,digits = 3)}
-    # brushtext_max <- if(is.null(input$plot_brush_dif$xmax) == TRUE) {NA} else{round(input$plot_brush_dif$xmax,digits = 3)}
-    # brushtext_min <-round(input$plot_brush_dif$xmin,digits = 3)
-    # brushtext_max <- round(input$plot_brush_dif$xmax,digits = 3)
-    # range_txt<- paste("Selected Range:", brushtext_min, " to", brushtext_max)
-    selected_min <- round(quants[[q_low]], 3)
-    selected_max <- round(quants[[q_up]], 3)
-    range_txt<- paste("Selected Range:", selected_min, " to", selected_max)
-    taz_count <- paste("Count of selected TAZ's: ", taz_selected)
-    taz_pct <- paste("TAZ's Included in Selection:", pct_taz_selected, "%", "<br>", "TAZ's Outside of Selection:", pct_taz_unselected, "%")
-    print(paste(range_txt,"<br>",pop_txt, "<br>", taz_count, "<br>", taz_pct))
-  })
-
-# Taz map ############################################## 
-#testing to print out brush output
-
-  
-  output$TAZ_map <- renderPlot({
-    metric_filter <- input$metric_map
-    met_int <- met_list %>%
-      filter(metric_name== metric_filter)
-    met <- met_int$metric
-    pct_met <- paste0("pct_", met)
-    dif_met <- paste0("dif_", met)
-    mrs_filtered <- mrs%>%
-      select(TAZ_ID, the_metric= pct_met)
-    mrs_na <- mrs_filtered %>%
-      filter(is.na(the_metric)==TRUE | is.infinite(the_metric)== TRUE)
-    mrs_filtered_dif <- mrs_diff%>%
-      select(TAZ_ID, the_metric=dif_met)
-    
-    
-    filter <- brushedPoints(mrs_filtered, input$plot_brush)
-    
-    pct_in_selection <- as.numeric(input$pct_taz)/100
-    quants <- quantile(mrs_filtered_dif$the_metric, probs= c(.005,.01,.015, .025, .05, .1, .15, .2, .25,.75,.8, .85,.9, .95, .975,.985, .99,.995))
-    
-    #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
-    
-    #pct_in_selection <- as.numeric(input$pct_pop)/100
-    q_up<- paste0(((.5 + pct_in_selection/2) *100), "%")
-    q_low <- paste0(((.5 - pct_in_selection/2) *100), "%")
-    
-    filter_dif <-mrs_filtered_dif%>%
-      filter(the_metric >= quants[[q_low]] & the_metric <= quants[[q_up]])
-    # map
-    #read in shapefile
-    taz <- st_read("data/CTPS_TAZ_simplified.shp")%>%
-      st_transform(2249)
-    taz_mrs <- taz %>%
-      inner_join(mrs, by= c("TAZ"= "TAZ_ID"))
-
-    taz_filtered <- taz_mrs%>%
-      right_join(filter, by= c("TAZ"= "TAZ_ID"))
-    
-    taz_na <- taz%>%
-      inner_join(mrs_na, by= c("TAZ"= "TAZ_ID"))
-    
-    taz_filtered_dif <- taz_mrs %>%
-      right_join(filter_dif, by = c("TAZ"= "TAZ_ID"))
-
-    #plot map
-    ggplot()+
-      geom_sf(data=taz_mrs, size=.15, color= "dark gray", fill= "dark gray", alpha= .25)+
-      geom_sf(data=taz_na, size=.15, color= "#6b5069", fill= "#946f91", alpha= .5)+
-      geom_sf(data= taz_filtered, size= .15, color= "#b84f00", fill= "#d95f02", alpha= .5)+
-      geom_sf(data= taz_filtered_dif, size= .15, color= "#44947c", fill= "#5fcfad", alpha= .35)+
-      coord_sf()+
-      theme_map()
-      
-  })
-  
-  ranges <- reactiveValues(x=NULL, y=NULL)
-  output$TAZ_map2<-renderPlot({
-    metric_filter <- input$metric_map
-    met_int <- met_list %>%
-       filter(metric_name== metric_filter)
-    met <- met_int$metric
-    pct_met <- paste0("pct_", met)
-    dif_met <- paste0("dif_", met)
-    mrs_filtered <- mrs%>%
-      select(TAZ_ID, the_metric= pct_met)
-    mrs_na <- mrs_filtered %>%
-      filter(is.na(the_metric)==TRUE | is.infinite(the_metric)== TRUE)
-    mrs_filtered_dif <- mrs_diff%>%
-      select(TAZ_ID, the_metric = dif_met)
-    
-    filter <- brushedPoints(mrs_filtered, input$plot_brush)
-    pct_in_selection <- as.numeric(input$pct_taz)/100
-    quants <- quantile(mrs_filtered_dif$the_metric, probs= c(.005,.01,.015, .025, .05, .1, .15, .2, .25,.75,.8, .85,.9, .95, .975,.985, .99,.995))
-    
-    #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
-    
-    #pct_in_selection <- as.numeric(input$pct_pop)/100
-    q_up<- paste0(((.5 + pct_in_selection/2) *100), "%")
-    q_low <- paste0(((.5 - pct_in_selection/2) *100), "%")
-    
-    filter_dif <-mrs_filtered_dif%>%
-      filter(the_metric >= quants[[q_low]] & the_metric <= quants[[q_up]])
-    # map
-    #read in shapefile
-    taz <- st_read("data/CTPS_TAZ_simplified.shp")%>%
-      st_transform(2249)
-    taz_mrs <- taz %>%
-      inner_join(mrs, by= c("TAZ"= "TAZ_ID"))
-    
-    taz_filtered <- taz_mrs%>%
-      right_join(filter, by= c("TAZ"= "TAZ_ID"))
-    
-    taz_na <- taz%>%
-      inner_join(mrs_na, by= c("TAZ"= "TAZ_ID"))
-    
-    taz_filtered_dif <- taz_mrs %>%
-      right_join(filter_dif, by = c("TAZ"= "TAZ_ID"))
-    
-    #plot map
-    ggplot()+
-      geom_sf(data=taz_mrs, size=.15, color= "dark gray", fill= "dark gray", alpha= .25)+
-      geom_sf(data=taz_na, size=.15, color= "#6b5069", fill= "#946f91", alpha= .5)+
-      geom_sf(data= taz_filtered, size= .15, color= "#b84f00", fill= "#d95f02", alpha= .5)+
-      geom_sf(data= taz_filtered_dif, size= .15, color= "#44947c", fill= "#5fcfad", alpha= .35)+
-      coord_sf(xlim=ranges$x, ylim=ranges$y, expand= TRUE)+
-      theme_map()
-  })
-  
-  observe({
-    brush<- input$plot2_brush
-    if(!is.null(brush)){
-      ranges$x <- c(brush$xmin, brush$xmax)
-      ranges$y <- c(brush$ymin, brush$ymax)
-    } else {
-      ranges$x <- NULL
-      ranges$y <- NULL
-    }
-  })
+#   output$TAZ_hist <- renderPlot({
+#     
+#     metric_filter <- input$metric_map
+#     met_int <- met_list %>%
+#       filter(metric_name== metric_filter)
+#     met <- met_int$metric
+#     pct_met <- paste0("pct_", met)
+#     mrs_filtered <- mrs%>%
+#       select(TAZ_ID, the_metric= pct_met)
+#     
+#     mrs_filtered <- mrs_filtered %>%
+#       filter(is.infinite(the_metric)== FALSE)
+#     
+#     sd <- sd(mrs_filtered$the_metric, na.rm = TRUE)
+#     mean <- mean(mrs_filtered$the_metric, na.rm = TRUE)
+#     median <- median(mrs_filtered$the_metric, na.rm= TRUE)
+#     
+#     sd_rnd <- round(sd, digits = 3)
+#     mean_rnd <- round(mean, digits = 3)
+#     med_rnd <- round(median, digits = 3)
+#     
+#     
+#     ggplot(mrs_filtered, aes(x= the_metric))+
+#       geom_point(aes(y=1), shape= 20, alpha= .5)+
+#       geom_histogram(alpha= .5)+
+#       geom_vline(aes(xintercept = mean, color="mean", linetype= "mean"), alpha= .75)+
+#       geom_vline(aes(xintercept = mean-sd, color= "std_dev",linetype= "std_dev"), alpha= .5)+
+#       geom_vline(aes(xintercept = mean+sd, color= "std_dev",linetype= "std_dev"), alpha= .5)+
+#       geom_vline(aes(xintercept = mean-2*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
+#       geom_vline(aes(xintercept = mean+2*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
+#       geom_vline(aes(xintercept = mean-3*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
+#       geom_vline(aes(xintercept = mean+3*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
+#       geom_vline(aes(xintercept = median, color= "median", linetype= "median"), alpha= .75)+
+#       scale_color_manual(name= "Statistics", values= c(mean= "black", std_dev= "black", median= "black"),
+#                          labels= c(mean= paste0("Mean: ", mean_rnd),
+#                                    std_dev= paste0("Standard \nDeviation: +/-", sd_rnd),
+#                                    median= paste0("Median: ", med_rnd)))+
+#       scale_linetype_manual(name= "Statistics", values= c(mean= 1, std_dev= 2, median= 3),
+#                             labels= c(mean= paste0("Mean: ", mean_rnd),
+#                                       std_dev= paste0("Standard \nDeviation: +/-", sd_rnd),
+#                                       median= paste0("Median: ", med_rnd)))+
+#       scale_x_continuous(labels = (function(x) (paste0(format(x*100, big.mark= ","), " %"))))+
+#       scale_y_continuous(trans= "log10")+ #  minor_breaks = mb   labels = scales::percent
+#       theme_minimal()+
+#       labs(x= paste("% change", str_to_lower(met_int$metric_name)),
+#            y= "Count")+
+#       theme(legend.text = element_text(size= 12),
+#             legend.position = c(.95, .95),
+#             legend.justification = c(1,1),
+#             axis.text.x = element_text(size=11.5))
+#   })
+#   
+#   output$TAZ_hist_diff <- renderPlot({
+#     metric_filter <- input$metric_map
+#     pct_in_selection <- as.numeric(input$pct_taz)/100
+#     
+#     met_int <- met_list %>%
+#       filter(metric_name== metric_filter)
+#     
+#     met <- met_int$metric
+#     
+#     dif_met <- paste0("dif_", met)
+#     
+#     mrs_filtered_dif <- mrs_diff%>%
+#       select(TAZ_ID, the_metric=dif_met)
+#     
+#     
+#     #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
+#     
+#     mrs_filtered_dif <- mrs_filtered_dif %>%
+#       filter(is.infinite(the_metric)== FALSE)
+#     
+#     sd <- sd(mrs_filtered_dif$the_metric, na.rm = TRUE)
+#     mean <- mean(mrs_filtered_dif$the_metric, na.rm = TRUE)
+#     median <- median(mrs_filtered_dif$the_metric, na.rm = TRUE)
+#     
+#     sd_rnd <- round(sd, digits = 3)
+#     mean_rnd <- round(mean, digits = 3)
+#     med_rnd <- round(median, digits = 3)
+#     
+#     quants <- quantile(mrs_filtered_dif$the_metric, probs= c(.005,.01,.015, .025, .05, .1, .15, .2, .25,.75,.8, .85,.9, .95, .975,.985, .99,.995))
+#     
+#     #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
+#     
+#     
+#     q_up<- paste0(((.5 + pct_in_selection/2) *100), "%")
+#     q_low <- paste0(((.5 - pct_in_selection/2) *100), "%")
+#     
+#     # filter_q <-mrs_filtered_dif%>%
+#     #   filter(the_metric > quants[[q_low]] & the_metric < quants[[q_up]])
+#     # 
+#     
+#     #mb <- as.numeric(1:10 %o% 10 ^ (0:4))
+#     
+#     
+#     xmin <- quants[[q_low]]
+#     xmax <- quants[[q_up]]
+#     
+#     ggplot(mrs_filtered_dif, aes(x= the_metric))+
+#       #geom_rug(alpha=.5, color= "dark gray")+
+#       geom_histogram(alpha= .5)+
+#       geom_vline(aes(xintercept = mean, color="mean", linetype= "mean"), alpha= .75)+
+#       geom_vline(aes(xintercept = mean-sd, color= "std_dev",linetype= "std_dev"), alpha= .5)+
+#       #geom_vline(aes(xintercept = xmin), color= "pink")+
+#       #geom_vline(aes(xintercept = xmax), color = "purple")+
+#       geom_vline(aes(xintercept = mean+sd, color= "std_dev",linetype= "std_dev"), alpha= .5)+
+#       # geom_vline(aes(xintercept = mean-2*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
+#       # geom_vline(aes(xintercept = mean+2*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
+#       # geom_vline(aes(xintercept = mean-3*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
+#       # geom_vline(aes(xintercept = mean+3*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
+#       geom_vline(aes(xintercept = median, color= "median", linetype= "median"), alpha= .75)+
+#       annotate("rect", xmin=xmin , xmax=xmax, ymin = 1, ymax = Inf, alpha= 0.35, color ="#88bfaf", fill= "#88bfaf")+
+#       geom_point(aes(y=1), shape= 20, alpha= .5)+
+#       scale_color_manual(name= "Statistics", values= c(mean= "black", std_dev= "black", median= "black"),
+#                          labels= c(mean= paste0("Mean: ", mean_rnd),
+#                                    std_dev= paste0("Standard \nDeviation: +/-", sd_rnd),
+#                                    median= paste0("Median: ", med_rnd)
+#                          ))+
+#       scale_linetype_manual(name= "Statistics", values= c(mean= 1, std_dev= 2, median= 3),
+#                             labels= c(mean= paste0("Mean: ", mean_rnd),
+#                                       std_dev= paste0("Standard \nDeviation: +/-", sd_rnd),
+#                                       median= paste0("Median: ", med_rnd)
+#                             ))+
+#       #scale_x_log10()+
+#       #scale_x_continuous(trans= "log10", labels= scales::percent, minor_breaks = mb)+
+#       scale_x_continuous(labels = (function(x) format(x,big.mark= ",")))+
+#       scale_y_continuous(trans= "log10")+ #  minor_breaks = mb   labels = scales::percent
+#       theme_minimal()+
+#       #coord_flip()+
+#       labs(x= paste("Absolute change", str_to_lower(met_int$metric_name)),
+#            y= "Count")+
+#       theme(legend.text = element_text(size= 12),
+#             legend.position = c(.35, .95),
+#             legend.justification = c(1,1),
+#             axis.text.x = element_text(size=11.5))
+#   })
+# 
+#   output$plotbrush_txt <- renderText({
+#     metric_filter <- input$metric_map
+#     met_int <- met_list %>%
+#       filter(metric_name== metric_filter)
+#     met <- met_int$metric
+#     pct_met <- paste0("pct_", met)
+#     mrs_filtered <- mrs%>%
+#       select(TAZ_ID, the_metric= pct_met)
+#     
+#     mrs_filtered <- mrs_filtered %>%
+#       filter(is.infinite(the_metric)== FALSE)
+#     
+#     filter <- brushedPoints(mrs_filtered, input$plot_brush)
+#     
+#     pop_total <-  pop_mpo%>%
+#       summarise(sum(Population))
+#     pop_total_num <- pop_total$`sum(Population)`[1]
+# 
+#     pop_selected <- pop_mpo%>%
+#       right_join(filter)%>%
+#       summarise(sum(Population))
+#     pop_selected_num <- pop_selected$`sum(Population)`[1]
+# 
+#     pop_selected_pct <- round(pop_selected_num/ pop_total_num *100, 2)
+# 
+#     pop_notselected_num <- pop_total_num - pop_selected_num
+#     pop_notselected_pct <- round(pop_notselected_num/pop_total_num *100, 2)
+#     
+#     taz_selected <-  if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{nrow(filter)}
+#     pct_taz_selected <- if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{round(nrow(filter)/1901*100, 2)}
+#     pct_taz_unselected <- if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{round((1901-nrow(filter))/1901*100, 2)}
+# 
+#     pop_txt<- paste("MPO Population Included in Selection:", pop_selected_pct, "%", "<br>MPO Popluation Outside of Selection:", pop_notselected_pct, "%")
+#     brushtext_min <- if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{round(input$plot_brush$xmin,digits = 3)}
+#     brushtext_max <- if(is.null(input$plot_brush$xmax) == TRUE) {NA} else{round(input$plot_brush$xmax,digits = 3)}
+#     range_txt<- paste("Selected Range:", brushtext_min, "% to", brushtext_max, "%")
+#     taz_count <- paste("Count of selected TAZ's: ", taz_selected)
+#     taz_pct <- paste("TAZ's Included in Selection:", pct_taz_selected, "%", "<br>", "TAZ's Outside of Selection:", pct_taz_unselected, "%")
+#     print(paste(range_txt,"<br>",pop_txt, "<br>", taz_count, "<br>", taz_pct))
+# 
+#   })
+#   
+#   
+#   # output$plotbrush_raw <- renderPrint({
+#   #   metric_filter <- input$metric_map
+#   #   met_int <- met_list %>%
+#   #     filter(metric_name== metric_filter)
+#   #   met <- met_int$metric
+#   #   pct_met <- paste0("pct_", met)
+#   #   mrs_filtered <- mrs%>%
+#   #     select(TAZ_ID, the_metric= pct_met)
+#   #   
+#   #   mrs_filtered <- mrs_filtered %>%
+#   #     filter(is.infinite(the_metric)== FALSE)
+#   #   
+#   #   brushedPoints(mrs_filtered, input$plot_brush)
+#   #   
+#   # })
+# 
+#   output$plotbrush_txt_dif <- renderText({
+#     metric_filter <- input$metric_map
+#     pct_in_selection <- as.numeric(input$pct_taz)/100
+#     
+#     met_int <- met_list %>%
+#       filter(metric_name== metric_filter)
+#     met <- met_int$metric
+#     dif_met <- paste0("dif_", met)
+#     mrs_filtered_dif <- mrs_diff%>%
+#       select(TAZ_ID, the_metric=dif_met)
+#     
+#     
+#     #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
+#     #pct_in_selection <- as.numeric(input$pct_taz)/100
+#     quants <- quantile(mrs_filtered_dif$the_metric, probs= c(.005,.01,.015, .025, .05, .1, .15, .2, .25,.75,.8, .85,.9, .95, .975,.985, .99,.995))
+#     
+#     #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
+#     
+#     #pct_in_selection <- as.numeric(input$pct_pop)/100
+#     q_up<- paste0(((.5 + pct_in_selection/2) *100), "%")
+#     q_low <- paste0(((.5 - pct_in_selection/2) *100), "%")
+#     
+#     filter_dif <-mrs_filtered_dif%>%
+#       filter(the_metric >= quants[[q_low]] & the_metric <= quants[[q_up]])
+#     
+#     
+#     pop_total <-  pop_mpo%>%
+#       summarise(sum(Population))
+#     pop_total_num <- pop_total$`sum(Population)`[1]
+#     
+#     pop_selected <- pop_mpo%>%
+#       right_join(filter_dif)%>%
+#       summarise(sum(Population))
+#     pop_selected_num <- pop_selected$`sum(Population)`[1]
+#     
+#     pop_selected_pct <- round(pop_selected_num/ pop_total_num *100, 2)
+#     
+#     pop_notselected_num <- pop_total_num - pop_selected_num
+#     pop_notselected_pct <- round(pop_notselected_num/pop_total_num *100, 2)
+#     
+#     # taz_selected <-  if(is.null(input$plot_brush_dif$xmin) ==TRUE){NA} else{nrow(filter_dif)}
+#     # pct_taz_selected <- if(is.null(input$plot_brush_dif$xmin) ==TRUE){NA} else{round(nrow(filter_dif)/1901*100, 2)}
+#     # pct_taz_unselected <- if(is.null(input$plot_brush_dif$xmin) ==TRUE){NA} else{round((1901-nrow(filter_dif))/1901*100, 2)}
+#     taz_selected <-  nrow(filter_dif)
+#     pct_taz_selected <- round(nrow(filter_dif)/1901*100, 2)
+#     pct_taz_unselected <- round((1901-nrow(filter_dif))/1901*100, 2)
+#     
+#     pop_txt<- paste("MPO Population Included in Selection:", pop_selected_pct, "%", "<br>MPO Popluation Outside of Selection:", pop_notselected_pct, "%")
+#     
+#     pop_txt<- paste("MPO Population Included in Selection:", pop_selected_pct, "%", "<br>MPO Popluation Outside of Selection:", pop_notselected_pct, "%")
+#     # brushtext_min <- if(is.null(input$plot_brush_dif$xmin) ==TRUE){NA} else{round(input$plot_brush_dif$xmin,digits = 3)}
+#     # brushtext_max <- if(is.null(input$plot_brush_dif$xmax) == TRUE) {NA} else{round(input$plot_brush_dif$xmax,digits = 3)}
+#     # brushtext_min <-round(input$plot_brush_dif$xmin,digits = 3)
+#     # brushtext_max <- round(input$plot_brush_dif$xmax,digits = 3)
+#     # range_txt<- paste("Selected Range:", brushtext_min, " to", brushtext_max)
+#     selected_min <- round(quants[[q_low]], 3)
+#     selected_max <- round(quants[[q_up]], 3)
+#     range_txt<- paste("Selected Range:", selected_min, " to", selected_max)
+#     taz_count <- paste("Count of selected TAZ's: ", taz_selected)
+#     taz_pct <- paste("TAZ's Included in Selection:", pct_taz_selected, "%", "<br>", "TAZ's Outside of Selection:", pct_taz_unselected, "%")
+#     print(paste(range_txt,"<br>",pop_txt, "<br>", taz_count, "<br>", taz_pct))
+#   })
+# 
+# # Taz map ############################################## 
+# #testing to print out brush output
+# 
+#   
+#   output$TAZ_map <- renderPlot({
+#     metric_filter <- input$metric_map
+#     met_int <- met_list %>%
+#       filter(metric_name== metric_filter)
+#     met <- met_int$metric
+#     pct_met <- paste0("pct_", met)
+#     dif_met <- paste0("dif_", met)
+#     mrs_filtered <- mrs%>%
+#       select(TAZ_ID, the_metric= pct_met)
+#     mrs_na <- mrs_filtered %>%
+#       filter(is.na(the_metric)==TRUE | is.infinite(the_metric)== TRUE)
+#     mrs_filtered_dif <- mrs_diff%>%
+#       select(TAZ_ID, the_metric=dif_met)
+#     
+#     
+#     filter <- brushedPoints(mrs_filtered, input$plot_brush)
+#     
+#     pct_in_selection <- as.numeric(input$pct_taz)/100
+#     quants <- quantile(mrs_filtered_dif$the_metric, probs= c(.005,.01,.015, .025, .05, .1, .15, .2, .25,.75,.8, .85,.9, .95, .975,.985, .99,.995))
+#     
+#     #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
+#     
+#     #pct_in_selection <- as.numeric(input$pct_pop)/100
+#     q_up<- paste0(((.5 + pct_in_selection/2) *100), "%")
+#     q_low <- paste0(((.5 - pct_in_selection/2) *100), "%")
+#     
+#     filter_dif <-mrs_filtered_dif%>%
+#       filter(the_metric >= quants[[q_low]] & the_metric <= quants[[q_up]])
+#     # map
+#     #read in shapefile
+#     taz <- st_read("data/CTPS_TAZ_simplified.shp")%>%
+#       st_transform(2249)
+#     taz_mrs <- taz %>%
+#       inner_join(mrs, by= c("TAZ"= "TAZ_ID"))
+# 
+#     taz_filtered <- taz_mrs%>%
+#       right_join(filter, by= c("TAZ"= "TAZ_ID"))
+#     
+#     taz_na <- taz%>%
+#       inner_join(mrs_na, by= c("TAZ"= "TAZ_ID"))
+#     
+#     taz_filtered_dif <- taz_mrs %>%
+#       right_join(filter_dif, by = c("TAZ"= "TAZ_ID"))
+# 
+#     #plot map
+#     ggplot()+
+#       geom_sf(data=taz_mrs, size=.15, color= "dark gray", fill= "dark gray", alpha= .25)+
+#       geom_sf(data=taz_na, size=.15, color= "#6b5069", fill= "#946f91", alpha= .5)+
+#       geom_sf(data= taz_filtered, size= .15, color= "#b84f00", fill= "#d95f02", alpha= .5)+
+#       geom_sf(data= taz_filtered_dif, size= .15, color= "#44947c", fill= "#5fcfad", alpha= .35)+
+#       coord_sf()+
+#       theme_map()
+#       
+#   })
+#   
+#   ranges <- reactiveValues(x=NULL, y=NULL)
+#   output$TAZ_map2<-renderPlot({
+#     metric_filter <- input$metric_map
+#     met_int <- met_list %>%
+#        filter(metric_name== metric_filter)
+#     met <- met_int$metric
+#     pct_met <- paste0("pct_", met)
+#     dif_met <- paste0("dif_", met)
+#     mrs_filtered <- mrs%>%
+#       select(TAZ_ID, the_metric= pct_met)
+#     mrs_na <- mrs_filtered %>%
+#       filter(is.na(the_metric)==TRUE | is.infinite(the_metric)== TRUE)
+#     mrs_filtered_dif <- mrs_diff%>%
+#       select(TAZ_ID, the_metric = dif_met)
+#     
+#     filter <- brushedPoints(mrs_filtered, input$plot_brush)
+#     pct_in_selection <- as.numeric(input$pct_taz)/100
+#     quants <- quantile(mrs_filtered_dif$the_metric, probs= c(.005,.01,.015, .025, .05, .1, .15, .2, .25,.75,.8, .85,.9, .95, .975,.985, .99,.995))
+#     
+#     #filter_dif <- brushedPoints(mrs_filtered_dif, input$plot_brush_dif)
+#     
+#     #pct_in_selection <- as.numeric(input$pct_pop)/100
+#     q_up<- paste0(((.5 + pct_in_selection/2) *100), "%")
+#     q_low <- paste0(((.5 - pct_in_selection/2) *100), "%")
+#     
+#     filter_dif <-mrs_filtered_dif%>%
+#       filter(the_metric >= quants[[q_low]] & the_metric <= quants[[q_up]])
+#     # map
+#     #read in shapefile
+#     taz <- st_read("data/CTPS_TAZ_simplified.shp")%>%
+#       st_transform(2249)
+#     taz_mrs <- taz %>%
+#       inner_join(mrs, by= c("TAZ"= "TAZ_ID"))
+#     
+#     taz_filtered <- taz_mrs%>%
+#       right_join(filter, by= c("TAZ"= "TAZ_ID"))
+#     
+#     taz_na <- taz%>%
+#       inner_join(mrs_na, by= c("TAZ"= "TAZ_ID"))
+#     
+#     taz_filtered_dif <- taz_mrs %>%
+#       right_join(filter_dif, by = c("TAZ"= "TAZ_ID"))
+#     
+#     #plot map
+#     ggplot()+
+#       geom_sf(data=taz_mrs, size=.15, color= "dark gray", fill= "dark gray", alpha= .25)+
+#       geom_sf(data=taz_na, size=.15, color= "#6b5069", fill= "#946f91", alpha= .5)+
+#       geom_sf(data= taz_filtered, size= .15, color= "#b84f00", fill= "#d95f02", alpha= .5)+
+#       geom_sf(data= taz_filtered_dif, size= .15, color= "#44947c", fill= "#5fcfad", alpha= .35)+
+#       coord_sf(xlim=ranges$x, ylim=ranges$y, expand= TRUE)+
+#       theme_map()
+#   })
+#   
+#   observe({
+#     brush<- input$plot2_brush
+#     if(!is.null(brush)){
+#       ranges$x <- c(brush$xmin, brush$xmax)
+#       ranges$y <- c(brush$ymin, brush$ymax)
+#     } else {
+#       ranges$x <- NULL
+#       ranges$y <- NULL
+#     }
+#   })
 # Slider text  ####################################
   output$AccText <- renderText({
     dim1 <- as.numeric(input$Dim1Acc)
