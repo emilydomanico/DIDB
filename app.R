@@ -11,11 +11,13 @@ library(kableExtra)
 
 
 
+
+
 #prep for non-map related tasks
 #read metric result data
 alldata <- read_csv("data/data.csv")
 data <- alldata 
-#clean data so no hyphens
+#clean data so no hyphens anymore
 data[data=="no-build"] <- "no_build"
 data[data=="Low-income"] <- "Low_income"
 data[data=="Non-low-income"] <- "Non_low_income"
