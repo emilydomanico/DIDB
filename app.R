@@ -2371,13 +2371,16 @@ server <- function(input, output) {
       mutate(Metric = metric)%>%
       select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
       #arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
-      mutate(change_test = cell_spec(change_test, "html", color= ifelse(change_test == "Yes", "red", "black"), 
+      mutate(change_test = cell_spec(change_test, "html", 
+                                     #color= ifelse(change_test == "Yes", "red", "black"), 
                                      bold = ifelse(change_test == "Yes", TRUE, FALSE)),
-             impact_test = cell_spec(impact_test, "html", color= ifelse(impact_test == "Yes", "red", "black"),
+             impact_test = cell_spec(impact_test, "html", 
+                                     #color= ifelse(impact_test == "Yes", "red", "black"),
                                      bold = ifelse(impact_test == "Yes", TRUE, FALSE)),
              instance = cell_spec(instance, "html", color= ifelse(instance== "Yes", "red", "black"),
                                   bold = ifelse(instance == "Yes", TRUE, FALSE)),
-             DB = cell_spec(DB, "html", color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
+             DB = cell_spec(DB, "html", 
+                            #color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
              ) %>%
       rename("Population Group" = poptype)%>%
@@ -2678,13 +2681,17 @@ server <- function(input, output) {
       mutate(Metric = metric)%>%
       select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
       #arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
-      mutate(change_test = cell_spec(change_test, "html", color= ifelse(change_test == "Yes", "red", "black"), 
+      mutate(change_test = cell_spec(change_test, "html", 
+                                     #color= ifelse(change_test == "Yes", "red", "black"), 
                                      bold = ifelse(change_test == "Yes", TRUE, FALSE)),
-             impact_test = cell_spec(impact_test, "html", color= ifelse(impact_test == "Yes", "red", "black"),
+             impact_test = cell_spec(impact_test, "html", 
+                                     #color= ifelse(impact_test == "Yes", "red", "black"),
                                      bold = ifelse(impact_test == "Yes", TRUE, FALSE)),
-             instance = cell_spec(instance, "html", color= ifelse(instance== "Yes", "red", "black"),
+             instance = cell_spec(instance, "html", 
+                                  color= ifelse(instance== "Yes", "red", "black"),
                                   bold = ifelse(instance == "Yes", TRUE, FALSE)),
-             DB = cell_spec(DB, "html", color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
+             DB = cell_spec(DB, "html", 
+                            #color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
       ) %>%
       rename("Population Group" = poptype)%>%
@@ -2986,13 +2993,16 @@ server <- function(input, output) {
       mutate(Metric = metric)%>%
       select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
       #arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
-      mutate(change_test = cell_spec(change_test, "html", color= ifelse(change_test == "Yes", "red", "black"), 
+      mutate(change_test = cell_spec(change_test, "html", 
+                                     #color= ifelse(change_test == "Yes", "red", "black"), 
                                      bold = ifelse(change_test == "Yes", TRUE, FALSE)),
-             impact_test = cell_spec(impact_test, "html", color= ifelse(impact_test == "Yes", "red", "black"),
+             impact_test = cell_spec(impact_test, "html", 
+                                     #color= ifelse(impact_test == "Yes", "red", "black"),
                                      bold = ifelse(impact_test == "Yes", TRUE, FALSE)),
              instance = cell_spec(instance, "html", color= ifelse(instance== "Yes", "red", "black"),
                                   bold = ifelse(instance == "Yes", TRUE, FALSE)),
-             DB = cell_spec(DB, "html", color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
+             DB = cell_spec(DB, "html", 
+                            #color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
       ) %>%
       rename("Population Group" = poptype)%>%
