@@ -92,24 +92,24 @@ ui <- fluidPage(
       #hr(),
       
       #Sliders to toggle sensitivity
-      #Confidence Interval input option 1
-      # radioButtons("Dim1", "Forecasting Error Confidence Interval Threshold",
+      #confidence level input option 1
+      # radioButtons("Dim1", "Forecasting Error confidence level Threshold",
       #              c("0 %"=0,
       #                "10 %"= 10,
       #                "90 %"=90,
       #                "95 %"= 95),
       #              selected= 10,
       #              inline= TRUE),
-      #Confidence Interval input option 2
-      # selectInput("Dim1", "Forecasting Error Confidence Interval Threshold",
+      #confidence level input option 2
+      # selectInput("Dim1", "Forecasting Error confidence level Threshold",
       #           choices = c(0, 10, 90, 95),
       #           selected = 10
       #             ),
-      #Confidence Interval input option 3
+      #confidence level input option 3
       # shinyWidgets::sliderTextInput(inputId = "Dim1", 
-      #                               label = "Forecasting Error Confidence Interval Threshold", 
+      #                               label = "Forecasting Error confidence level Threshold", 
       #                               choices = c(0,10,90,95,100),grid=TRUE,width=110, dragRange = TRUE, post = " %"),
-      #sliderInput("Dim1", label = "Step 1: Forecasting Error Confidence Interval Threshold", min = 0, max = 100, post= " %", value = 10, step = 1),
+      #sliderInput("Dim1", label = "Step 1: Forecasting Error confidence level Threshold", min = 0, max = 100, post= " %", value = 10, step = 1),
     
       #br(),
       
@@ -127,7 +127,7 @@ ui <- fluidPage(
       p("Disproportionality is calculated as a ratio, comparing the absolute value of the percent change for the protected population (from the second step) to the absolute value of the percent change non-protected population."),
      br(), 
      h5("Baseline Uncertainty Confidence Level"),
-      p("This threshold sets set the sensitivity for detecting the likelihood of the model outputs for the build and no-build scenarios. The radio buttons represent confidence intervals - a higher percentage would result in a greater range of likely values — as indicated by the blue and red bars — and less of a chance of identifying a likely impact to the population groups.")
+      p("This threshold sets set the sensitivity for detecting the likelihood of the model outputs for the build and no-build scenarios. The radio buttons represent confidence levels - a higher percentage would result in a greater range of likely values — as indicated by the blue and red bars — and less of a chance of identifying a likely impact to the population groups.")
      
      ),
 # Main Panel UI ######################################################    
@@ -226,7 +226,7 @@ ui <- fluidPage(
                    #                            height = 750)
                    #          )
                    # ),
-#                    tabPanel("DIDB Rules",
+#                    tabPanel("DI/DB Rules",
 #                             br(),
 #                             p("Definitions:"),
 #                             p("A disparate impact is a facially neutral policy or practice that disproportionately affects
@@ -279,7 +279,7 @@ ui <- fluidPage(
                                    p("Where a likely impact is indicated, is the impact meaningful for each population?"),
                                    plotOutput("impact_plotAcc"),
                                    br(),
-                                   #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DIDB.")
+                                   #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DI/DB.")
                             ),
                             column(width = 6,
                                    #h5("Disproportionality Threshold"),
@@ -297,7 +297,7 @@ ui <- fluidPage(
                             column(width = 12,
                             h5("Baseline Uncertainty Test"),
                             p("If a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Impact Threshold."),
-                            radioButtons("Dim1Acc", "I want to set the confidence interval to:",
+                            radioButtons("Dim1Acc", "I want to set the confidence level to:",
                                          c("No uncertainty"=0,
                                            "Low uncertainty"=10,
                                            "Moderate uncertainty"= 50,
@@ -330,7 +330,7 @@ ui <- fluidPage(
                                    p("Where a likely impact is indicated, is the impact meaningful for each population?"),
                                    plotOutput("impact_plotEnv"),
                                    br(),
-                                   #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DIDB.")
+                                   #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DI/DB.")
                             ),
                             column(width = 6,
                                    #h5("Disproportionality Threshold"),
@@ -348,7 +348,7 @@ ui <- fluidPage(
                             column(width = 12,
                                    h5("Baseline Uncertainty Test"),
                                    p("If a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Impact Threshold."),
-                                   radioButtons("Dim1Env", "I want to set the confidence interval to:",
+                                   radioButtons("Dim1Env", "I want to set the confidence level to:",
                                                 c("No uncertainty"=0,
                                                   "Low uncertainty"=10,
                                                   "Moderate uncertainty"= 50,
@@ -381,7 +381,7 @@ ui <- fluidPage(
                                    p("Where a likely impact is indicated, is the impact meaningful for each population?"),
                                    plotOutput("impact_plotMob"),
                                    br(),
-                                   #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DIDB.")
+                                   #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DI/DB.")
                             ),
                             column(width = 6,
                                    #h5("Disproportionality Threshold"),
@@ -399,7 +399,7 @@ ui <- fluidPage(
                             column(width = 12,
                                    h5("Baseline Uncertainty Test"),
                                    p("If a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Impact Threshold."),
-                                   radioButtons("Dim1Mob", "I want to set the confidence interval to:",
+                                   radioButtons("Dim1Mob", "I want to set the confidence level to:",
                                                 c("No uncertainty"=0,
                                                   "Low uncertainty"=10,
                                                   "Moderate uncertainty"= 50,
@@ -419,7 +419,7 @@ ui <- fluidPage(
                    tabPanel("Results for all Metrics",
                             br(),
                             #textOutput("DIDB_count"),
-                            p("The table below will show instances of DIDB for the current threshold settings accross all metrics."),
+                            p("The table below will show instances of DI/DB for the current threshold settings accross all metrics."),
                             htmlOutput("DIDBAcc2"),
                             htmlOutput("DIDBEnv2"),
                             htmlOutput("DIDBMob2"),
@@ -491,7 +491,7 @@ ui <- fluidPage(
                    #          )
                    # )
                    #,
-#                    tabPanel("DIDB Rules",
+#                    tabPanel("DI/DB Rules",
 #                             br(),
 #                             p("Definitions:"),
 #                             p("A disparate impact is a facially neutral policy or practice that disproportionately affects
@@ -939,7 +939,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(metric == metric_filter)%>%
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       mutate(error_b = build*error_aug) %>%
       mutate(error_nb =no_build*error_aug) %>%
@@ -953,8 +953,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1026,7 +1026,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(metric == metric_filter)%>%
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       mutate(error_b = build*error_aug) %>%
       mutate(error_nb =no_build*error_aug) %>%
@@ -1040,8 +1040,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1113,7 +1113,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(metric == metric_filter)%>%
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       mutate(error_b = build*error_aug) %>%
       mutate(error_nb =no_build*error_aug) %>%
@@ -1127,8 +1127,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1200,7 +1200,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(metric == metric_filter)%>%
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
@@ -1215,8 +1215,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1252,7 +1252,7 @@ server <- function(input, output) {
     income_change <- change$change_type[ change$poptype=="i"]
     min_change <- change$change_type [ change$poptype=="m"]
     
-    paste("For the metric ", tolower(metric_filter), "at the confidence interval of ", input$Dim1, "%, ", "there is projected to be ", tolower(income_change), " in the income population group, and there is projected to be ", tolower(min_change), " in the minority population group." )
+    paste("For the metric ", tolower(metric_filter), "at the confidence level of ", input$Dim1, "%, ", "there is projected to be ", tolower(income_change), " in the income population group, and there is projected to be ", tolower(min_change), " in the minority population group." )
     
   })
 # Impact plot #####################################################  
@@ -1269,7 +1269,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(metric == metric_filter)%>%
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
@@ -1284,8 +1284,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1349,7 +1349,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(metric == metric_filter)%>%
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
@@ -1364,8 +1364,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1429,7 +1429,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(metric == metric_filter)%>%
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
@@ -1444,8 +1444,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1509,7 +1509,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(metric== metric_filter) %>% 
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
@@ -1524,8 +1524,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1549,8 +1549,8 @@ server <- function(input, output) {
       arrange(factor(poptype)) %>%
       spread(population, real_change) %>%
       mutate(change_type = case_when( 
-        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Exceeds uncertainty for both",
-        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No likely impact for either",
+        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Potential impact",
+        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No potential impact",
         (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only exceeds uncertainty for protected population",
         (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only exceeds uncertainty for non-protected population",
         TRUE ~ "something else happened")) %>%
@@ -1708,7 +1708,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(metric== metric_filter) %>% 
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
@@ -1723,8 +1723,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1748,8 +1748,8 @@ server <- function(input, output) {
       arrange(factor(poptype)) %>%
       spread(population, real_change) %>%
       mutate(change_type = case_when( 
-        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Exceeds uncertainty for both",
-        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No likely impact for either",
+        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Potential impact",
+        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No potential impact",
         (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only exceeds uncertainty for protected population",
         (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only exceeds uncertainty for non-protected population",
         TRUE ~ "something else happened")) %>%
@@ -1907,7 +1907,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(metric== metric_filter) %>% 
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
@@ -1922,8 +1922,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -1947,8 +1947,8 @@ server <- function(input, output) {
       arrange(factor(poptype)) %>%
       spread(population, real_change) %>%
       mutate(change_type = case_when( 
-        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Exceeds uncertainty for both",
-        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No likely impact for either",
+        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Potential impact",
+        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No potential impact",
         (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only exceeds uncertainty for protected population",
         (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only exceeds uncertainty for non-protected population",
         TRUE ~ "something else happened")) %>%
@@ -2104,7 +2104,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(category==cat)%>%
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
@@ -2119,8 +2119,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -2144,8 +2144,8 @@ server <- function(input, output) {
       arrange(factor(poptype)) %>%
       spread(population, real_change) %>%
       mutate(change_type = case_when( 
-        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Exceeds uncertainty for both",
-        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No likely impact for either",
+        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Potential impact",
+        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No potential impact",
         (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only exceeds uncertainty for protected population",
         (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only exceeds uncertainty for non-protected population",
         TRUE ~ "something else happened")) %>%
@@ -2266,7 +2266,7 @@ server <- function(input, output) {
     DIDB <- dispro %>%
       select(metric, poptype, ratio, change_type,change_test, impact_type, impact_test,impact_class, DB) %>%
       mutate(instance = case_when (
-        (change_type == "No likely impact for either") ~ "No",
+        (change_type == "No potential impact for either") ~ "No",
         
         (impact_type == "Benefit for both") & (DB == "Protected population benefits more") ~ "No",
         (impact_type == "Benefit for both") & (DB == "Non-protected population benefits more") ~ "Yes",
@@ -2315,7 +2315,7 @@ server <- function(input, output) {
         
         TRUE ~ "something elese happend, problem!"))%>%
       mutate(DB_reason = case_when (
-        (change_type == "No likely impact for either") ~ "No likely impact for either population",
+        (change_type == "No potential impact for either") ~ "No potential impact for either population",
         
         (impact_type == "Benefit for both") & (DB == "Protected population benefits more") ~ "Exceeds the disproportionality threshold, but no adverse impact for protected population",
         (impact_type == "Benefit for both") & (DB == "Non-protected population benefits more") ~ "Exceeds the disproportionality threshold",
@@ -2370,7 +2370,7 @@ server <- function(input, output) {
     DIDB_clean <- DIDB%>%
       mutate(Metric = metric)%>%
       select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
-      arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
+      #arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
       mutate(change_test = cell_spec(change_test, "html", color= ifelse(change_test == "Yes", "red", "black"), 
                                      bold = ifelse(change_test == "Yes", TRUE, FALSE)),
              impact_test = cell_spec(impact_test, "html", color= ifelse(impact_test == "Yes", "red", "black"),
@@ -2382,9 +2382,9 @@ server <- function(input, output) {
              ) %>%
       rename("Population Group" = poptype)%>%
       rename("Uncertainty Test" = change_test)%>%
-      rename("Adverse Impact Test"= impact_test)%>%
+      rename("Practical Impact Test"= impact_test)%>%
       rename("Disproportionality Test"= DB)%>%
-      rename("DIDB" = instance) %>%
+      rename("DI/DB" = instance) %>%
       rename("Reason"= DB_reason)
     
     
@@ -2411,7 +2411,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(category==cat)%>%
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
@@ -2426,8 +2426,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -2451,8 +2451,8 @@ server <- function(input, output) {
       arrange(factor(poptype)) %>%
       spread(population, real_change) %>%
       mutate(change_type = case_when( 
-        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Exceeds uncertainty for both",
-        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No likely impact for either",
+        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Potential impact for both populations",
+        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No potential impact for either",
         (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only exceeds uncertainty for protected population",
         (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only exceeds uncertainty for non-protected population",
         TRUE ~ "something else happened")) %>%
@@ -2573,7 +2573,7 @@ server <- function(input, output) {
     DIDB <- dispro %>%
       select(metric, poptype, ratio, change_type,change_test, impact_type, impact_test,impact_class, DB) %>%
       mutate(instance = case_when (
-        (change_type == "No likely impact for either") ~ "No",
+        (change_type == "No potential impact for either") ~ "No",
         
         (impact_type == "Benefit for both") & (DB == "Protected population benefits more") ~ "No",
         (impact_type == "Benefit for both") & (DB == "Non-protected population benefits more") ~ "Yes",
@@ -2622,7 +2622,7 @@ server <- function(input, output) {
         
         TRUE ~ "something elese happend, problem!"))%>%
       mutate(DB_reason = case_when (
-        (change_type == "No likely impact for either") ~ "No likely impact for either population",
+        (change_type == "No potential impact for either") ~ "No potential impact for either population",
         
         (impact_type == "Benefit for both") & (DB == "Protected population benefits more") ~ "Exceeds the disproportionality threshold, but no adverse impact for protected population",
         (impact_type == "Benefit for both") & (DB == "Non-protected population benefits more") ~ "Exceeds the disproportionality threshold",
@@ -2677,7 +2677,7 @@ server <- function(input, output) {
     DIDB_clean <- DIDB%>%
       mutate(Metric = metric)%>%
       select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
-      arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
+      #arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
       mutate(change_test = cell_spec(change_test, "html", color= ifelse(change_test == "Yes", "red", "black"), 
                                      bold = ifelse(change_test == "Yes", TRUE, FALSE)),
              impact_test = cell_spec(impact_test, "html", color= ifelse(impact_test == "Yes", "red", "black"),
@@ -2689,9 +2689,9 @@ server <- function(input, output) {
       ) %>%
       rename("Population Group" = poptype)%>%
       rename("Uncertainty Test" = change_test)%>%
-      rename("Adverse Impact Test"= impact_test)%>%
+      rename("Practical Impact Test"= impact_test)%>%
       rename("Disproportionality Test"= DB)%>%
-      rename("DIDB" = instance) %>%
+      rename("DI/DB" = instance) %>%
       rename("Reason"= DB_reason)
     
     
@@ -2719,7 +2719,7 @@ server <- function(input, output) {
     
     data <- data %>%
       filter(category==cat)%>%
-      #slider1 sets confidence interval, use this to control error
+      #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
@@ -2734,8 +2734,8 @@ server <- function(input, output) {
         TRUE ~ FALSE
       ))%>%
       mutate(change_label = case_when(
-        real_change == TRUE ~ "Exceeds baseline \nuncertainty",
-        real_change == FALSE ~ "No likely impact"
+        real_change == TRUE ~ "Potential impact",
+        real_change == FALSE ~ "No potential impact"
       )) %>%
       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
       #im_th_amt "impact threshold amount"
@@ -2759,8 +2759,8 @@ server <- function(input, output) {
       arrange(factor(poptype)) %>%
       spread(population, real_change) %>%
       mutate(change_type = case_when( 
-        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Exceeds uncertainty for both",
-        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No likely impact for either",
+        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Potential impact for both",
+        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No potential impact for either",
         (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only exceeds uncertainty for protected population",
         (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only exceeds uncertainty for non-protected population",
         TRUE ~ "something else happened")) %>%
@@ -2881,7 +2881,7 @@ server <- function(input, output) {
     DIDB <- dispro %>%
       select(metric, poptype, ratio, change_type,change_test, impact_type, impact_test,impact_class, DB) %>%
       mutate(instance = case_when (
-        (change_type == "No likely impact for either") ~ "No",
+        (change_type == "No potential impact for either") ~ "No",
         
         (impact_type == "Benefit for both") & (DB == "Protected population benefits more") ~ "No",
         (impact_type == "Benefit for both") & (DB == "Non-protected population benefits more") ~ "Yes",
@@ -2930,7 +2930,7 @@ server <- function(input, output) {
         
         TRUE ~ "something elese happend, problem!"))%>%
       mutate(DB_reason = case_when (
-        (change_type == "No likely impact for either") ~ "No likely impact for either population",
+        (change_type == "No potential impact for either") ~ "No potential impact for either population",
         
         (impact_type == "Benefit for both") & (DB == "Protected population benefits more") ~ "Exceeds the disproportionality threshold, but no adverse impact for protected population",
         (impact_type == "Benefit for both") & (DB == "Non-protected population benefits more") ~ "Exceeds the disproportionality threshold",
@@ -2985,7 +2985,7 @@ server <- function(input, output) {
     DIDB_clean <- DIDB%>%
       mutate(Metric = metric)%>%
       select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
-      arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
+      #arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
       mutate(change_test = cell_spec(change_test, "html", color= ifelse(change_test == "Yes", "red", "black"), 
                                      bold = ifelse(change_test == "Yes", TRUE, FALSE)),
              impact_test = cell_spec(impact_test, "html", color= ifelse(impact_test == "Yes", "red", "black"),
@@ -2997,9 +2997,9 @@ server <- function(input, output) {
       ) %>%
       rename("Population Group" = poptype)%>%
       rename("Uncertainty Test" = change_test)%>%
-      rename("Adverse Impact Test"= impact_test)%>%
+      rename("Practical Impact Test"= impact_test)%>%
       rename("Disproportionality Test"= DB)%>%
-      rename("DIDB" = instance) %>%
+      rename("DI/DB" = instance) %>%
       rename("Reason"= DB_reason)
     
     
