@@ -537,9 +537,9 @@ server <- function(input, output) {
     mean <- mean(mrs_filtered$the_metric, na.rm = TRUE)
     median <- median(mrs_filtered$the_metric, na.rm= TRUE)
     
-    sd_rnd <- round(sd, digits = 3)
-    mean_rnd <- round(mean, digits = 3)
-    med_rnd <- round(median, digits = 3)
+    sd_rnd <- round(sd, digits = 3)*100
+    mean_rnd <- round(mean, digits = 3)*100
+    med_rnd <- round(median, digits = 3)*100
     
     
     ggplot(mrs_filtered, aes(x= the_metric))+
@@ -554,13 +554,13 @@ server <- function(input, output) {
       geom_vline(aes(xintercept = mean+3*sd, color= "std_dev",linetype= "std_dev"), alpha= .25)+
       geom_vline(aes(xintercept = median, color= "median", linetype= "median"), alpha= .75)+
       scale_color_manual(name= "Statistics", values= c(mean= "black", std_dev= "black", median= "black"),
-                         labels= c(mean= paste0("Mean: ", mean_rnd),
-                                   std_dev= paste0("Standard \nDeviation: +/-", sd_rnd),
-                                   median= paste0("Median: ", med_rnd)))+
+                         labels= c(mean= paste0("Mean: ", mean_rnd, "%"),
+                                   std_dev= paste0("Standard \nDeviation: +/-", sd_rnd, "%"),
+                                   median= paste0("Median: ", med_rnd, "%")))+
       scale_linetype_manual(name= "Statistics", values= c(mean= 1, std_dev= 2, median= 3),
-                            labels= c(mean= paste0("Mean: ", mean_rnd),
-                                      std_dev= paste0("Standard \nDeviation: +/-", sd_rnd),
-                                      median= paste0("Median: ", med_rnd)))+
+                            labels= c(mean= paste0("Mean: ", mean_rnd, "%"),
+                                      std_dev= paste0("Standard \nDeviation: +/-", sd_rnd,"%"),
+                                      median= paste0("Median: ", med_rnd, "%")))+
       scale_x_continuous(labels = (function(x) (paste0(format(x*100, big.mark= ","), " %"))))+
       scale_y_continuous(trans= "log10")+ #  minor_breaks = mb   labels = scales::percent
       theme_minimal()+
