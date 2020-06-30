@@ -692,7 +692,7 @@ server <- function(input, output) {
     pop_txt<- paste("MPO Population Included in Selection:", pop_selected_pct, "%", "<br>MPO Popluation Outside of Selection:", pop_notselected_pct, "%")
     brushtext_min <- if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{round(input$plot_brush$xmin,digits = 3)}
     brushtext_max <- if(is.null(input$plot_brush$xmax) == TRUE) {NA} else{round(input$plot_brush$xmax,digits = 3)}
-    range_txt<- paste("Selected Range:", brushtext_min, "% to", brushtext_max, "%")
+    range_txt<- paste("Selected Range:", brushtext_min*100, "% to", brushtext_max*100, "%")
     taz_count <- paste("Count of selected TAZ's: ", taz_selected)
     taz_pct <- paste("TAZ's Included in Selection:", pct_taz_selected, "%", "<br>", "TAZ's Outside of Selection:", pct_taz_unselected, "%")
     print(paste(range_txt,"<br>",pop_txt, "<br>", taz_count, "<br>", taz_pct))
