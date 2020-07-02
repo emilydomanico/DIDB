@@ -2,8 +2,6 @@
 library(shiny)
 library(shinyWidgets)
 library(tidyverse)
-library(hrbrthemes)
-library(readr)
 library(shinyBS)
 #library(sf)
 library(ggthemes)
@@ -30,7 +28,7 @@ data <- data %>%
 
 #prep for map tasks
 mrs <- read_csv("data/pct_change_by_TAZ.csv")
-mrs_list <- mrs%>%
+mrs_list <- mrs %>%
   select(TAZ_ID)
 
 mrs_pop <- read_csv("data/pct_change_by_TAZ_pop.csv")
@@ -41,7 +39,7 @@ mrs_diff<- read_csv("data/mr_diff2.csv")
 met_list <- read_csv("data/metric_category.csv")
 
 taz_pop <- read_csv("data/pop_by_TAZ_2040.csv")
-pop_mpo <- taz_pop%>%
+pop_mpo <- taz_pop %>%
   right_join(mrs_list)
 
 # UI ####################################################
@@ -69,63 +67,20 @@ ui <- fluidPage(
     sidebarPanel(width= 3,
       h2("DI/DB Thresholds"),
       br(),
-      # h5("Threshold Summary"),
-      # h6("Accessibility Metrics:"),
-      # htmlOutput("AccText"), 
-      # br(),
-      # h6("Enviornmental Metrics:"),
-      # htmlOutput("EnvText"),
-      # br(),
-      # h6("Mobility Metrics:"),
-      # htmlOutput("MobText"),
       br(),
-      #to fix side panel position
-      #style = "position: fixed; width:inherit;",
-      # selectInput("metric", "Metric:",
-      #             choices = list(
-      #               Accessibility= c("Access to retail amenities by transit", "Access to higher education by transit","Access to healthcare facilities by transit", "Access to jobs by transit"),
-      #               Environmental= c("Congested vehicle miles traveled","Carbon monoxide emissions"),
-      #               Mobility= c("Average attraction - highway travel time", "Average production - highway travel time","Average attraction - transit travel time",
-      #                           "Average production - transit travel time")
-      #             ), selected = "Carbon monoxide emissions"),
-      
-      #hr(),
-      
-      #Sliders to toggle sensitivity
-      #confidence level input option 1
-      # radioButtons("Dim1", "Forecasting Error confidence level Threshold",
-      #              c("0 %"=0,
-      #                "10 %"= 10,
-      #                "90 %"=90,
-      #                "95 %"= 95),
-      #              selected= 10,
-      #              inline= TRUE),
-      #confidence level input option 2
-      # selectInput("Dim1", "Forecasting Error confidence level Threshold",
-      #           choices = c(0, 10, 90, 95),
-      #           selected = 10
-      #             ),
-      #confidence level input option 3
-      # shinyWidgets::sliderTextInput(inputId = "Dim1", 
-      #                               label = "Forecasting Error confidence level Threshold", 
-      #                               choices = c(0,10,90,95,100),grid=TRUE,width=110, dragRange = TRUE, post = " %"),
-      #sliderInput("Dim1", label = "Step 1: Forecasting Error confidence level Threshold", min = 0, max = 100, post= " %", value = 10, step = 1),
-    
-      #br(),
-      
-      sliderInput("Dim2", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
+      sliderInput("Dim2", label = "Practical Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
      #h5("Impact Threshold"), 
-     p("This threshold sets the sensitivity for determining if the impacts of implementing the build-scenario would be meaningful. The slider represents a percent change. At 0%, any change between the build and no-build scenario would be considered a meaningful impact. As the threshold increase, the likelihood of identifying an adverse effect decreases. The impact is calculated as the percent change between scenarios:"),
+     p("This threshold sets the sensitivity for determining if the impacts of implementing the build-scenario would be practically significant. The slider represents a percent change. At 0%, any change between the build and no-build scenario would be considered a practically significant impact. As the threshold increases, the likelihood of identifying an adverse effect decreases. The impact is calculated as the percent change between scenarios:"),
       withMathJax("$$\\scriptsize\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build}} \\cdot 100$$"),
       p(" "),
       p("If an impact is found, it is categorized as a benefit or a burden based on the directionality of the metric. (For example, an increase in carbon monoxide emissions is a burden, while an increase in access to jobs is a benefit."),
       br(),
      #h5("Disproportionality Threshold"), 
       sliderInput("Dim3", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
-      p("This threshold determines if the impacts found in the previous step disproportionately affect the minority or low-income population more than the nonminority or non-low-income population."),
+      p("This threshold determines if the impacts found in the previous step would disproportionately affect the minority or low-income population more than the nonminority or non-low-income population."),
       p("Disproportionality is calculated as a ratio, comparing the absolute value of the percent change for the protected population (from the second step) to the absolute value of the percent change non-protected population."),
      br(), 
-     h5("Baseline Uncertainty Confidence Level"),
+     h5("Baseline Uncertainty Threshold"),
      radioButtons("Dim1", "I want to set the confidence level to:",
                   c("No uncertainty"=0,
                     "Low uncertainty"=10,
@@ -134,7 +89,7 @@ ui <- fluidPage(
                     "High uncertainty"= 95),
                   selected= 10,
                   inline= TRUE),
-      p("This threshold sets set the sensitivity for detecting the likelihood of the model outputs for the build and no-build scenarios. The radio buttons represent confidence levels - a higher percentage would result in a greater range of likely values — as indicated by the blue and red bars — and less of a chance of identifying a likely impact to the population groups.")
+      p("This threshold sets set the sensitivity for detecting the likelihood of the model outputs for the build and no-build scenarios. The radio buttons represent confidence levels - how confident we feel that the model outputs represent the potential reality. For example, moderate uncertainty means that we are somewhat confident that the model results represent the impacts of the transportation system in 2040. Higher uncertainty would result in a greater range of likely values - as indicated by the blue and red bars - and less of a change of identifying a potential impact.")
      
      ),
 # Main Panel UI ######################################################    
@@ -148,7 +103,7 @@ ui <- fluidPage(
                               The first test asks whether an impact is likely, which is necessary since the model inputs 
                               contain some uncertainty and because it is projecting impacts twenty years into the future. 
                               For each population group, the first test determines if the impact for each metric exceeds the 
-                              model’s baseline uncertainty.  The second test asks if the impact is meaningful for each of the four population groups. 
+                              model’s baseline uncertainty.  The second test asks if the impact is practically significant for each of the four population groups. 
                               The third test asks whether the minority or low-income populations would be disproportionately 
                               affected compared to the nonminority and non-low-income populations, respectively. 
                               The DI/DB Threshold Application allows users to pair a tolerance threshold with each test in 
@@ -199,9 +154,9 @@ level for their family size."),
                             #        #textOutput("change"),
                             # ),
                             column(width = 6,
-                                   h5("Impact Threshold"),
+                                   h5("Practical Impact Threshold"),
                                    #sliderInput("Dim2Acc", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                   p("Where a likely impact is indicated, is the impact meaningful for each population?"),
+                                   p("Where a potential impact is indicated, is the impact practically significant for each population?"),
                                    plotOutput("impact_plotAcc"),
                                    br(),
                                    #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DI/DB.")
@@ -209,7 +164,7 @@ level for their family size."),
                             column(width = 6,
                                    h5("Disproportionality Threshold"),
                                    #sliderInput("Dim3Acc", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
-                                   p("Where there is a likely meaningful impact, would the minority or low-income populations be disproportionately affected?"),
+                                   p("Where there is a likely practically significant impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotAcc"),
                                    br(),
                                    #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work across all metric in the next tab.")
@@ -221,8 +176,8 @@ level for their family size."),
                                    br(),
                                    ),
                             column(width = 12,
-                            h5("Baseline Uncertainty Test"),
-                            p("If a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Impact Threshold."),
+                            h5("Baseline Uncertainty Threshold"),
+                            p("If there is a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Practical Impact Threshold."),
                             # radioButtons("Dim1Acc", "I want to set the confidence level to:",
                             #              c("No uncertainty"=0,
                             #                "Low uncertainty"=10,
@@ -251,9 +206,9 @@ level for their family size."),
                                      #sliderInput("Dim3Env", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1)
                             ),
                             column(width = 6,
-                                   h5("Impact Threshold"),
+                                   h5("Practical Impact Threshold"),
                                    # sliderInput("Dim2Env", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                   p("Where a likely impact is indicated, is the impact meaningful for each population?"),
+                                   p("Where a potential impact is indicated, is the impact practically significant for each population?"),
                                    plotOutput("impact_plotEnv"),
                                    br(),
                                    #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DI/DB.")
@@ -261,7 +216,7 @@ level for their family size."),
                             column(width = 6,
                                    h5("Disproportionality Threshold"),
                                    # sliderInput("Dim3Env", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
-                                   p("Where there is a likely meaningful impact, would the minority or low-income populations be disproportionately affected?"),
+                                   p("Where there is a likely practically significant impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotEnv"),
                                    br(),
                                    #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work accross all metric in the next tab.")
@@ -273,8 +228,8 @@ level for their family size."),
                                    br(),
                             ),
                             column(width = 12,
-                                   h5("Baseline Uncertainty Test"),
-                                   p("If a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Impact Threshold."),
+                                   h5("Baseline Uncertainty Threshold"),
+                                   p("If there is a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Practical Impact Threshold."),
                                    # radioButtons("Dim1Env", "I want to set the confidence level to:",
                                    #              c("No uncertainty"=0,
                                    #                "Low uncertainty"=10,
@@ -303,9 +258,9 @@ level for their family size."),
                                      #sliderInput("Dim3Mob", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1)
                             ),
                             column(width = 6,
-                                   h5("Impact Threshold"),
+                                   h5("Practical Impact Threshold"),
                                    # sliderInput("Dim2Mob", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                   p("Where a likely impact is indicated, is the impact meaningful for each population?"),
+                                   p("Where a potential impact is indicated, is the impact practically significant for each population?"),
                                    plotOutput("impact_plotMob"),
                                    br(),
                                    #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DI/DB.")
@@ -313,7 +268,7 @@ level for their family size."),
                             column(width = 6,
                                    h5("Disproportionality Threshold"),
                                    # sliderInput("Dim3Mob", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
-                                   p("Where there is a likely meaningful impact, would the minority or low-income populations be disproportionately affected?"),
+                                   p("Where there is a likely practically significant impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotMob"),
                                    br(),
                                    #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work accross all metric in the next tab.")
@@ -325,8 +280,8 @@ level for their family size."),
                                    br(),
                             ),
                             column(width = 12,
-                                   h5("Baseline Uncertainty Test"),
-                                   p("If a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Impact Threshold."),
+                                   h5("Baseline Uncertainty Threshold"),
+                                   p("If there is a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Practical Impact Threshold."),
                                    # radioButtons("Dim1Mob", "I want to set the confidence level to:",
                                    #              c("No uncertainty"=0,
                                    #                "Low uncertainty"=10,
@@ -1848,11 +1803,11 @@ server <- function(input, output) {
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
       ) %>%
       rename("Population Group" = poptype)%>%
-      rename("Uncertainty Test" = change_test)%>%
-      rename("Practical Impact Test"= impact_test)%>%
-      rename("Disproportionality Test"= DB)%>%
-      rename("DI/DB" = instance) %>%
-      rename("Reason"= DB_reason)
+      rename("Passes Uncertainty Test?" = change_test)%>%
+      rename("Passes Practical Impact Test?"= impact_test)%>%
+      rename("Disproportionality Test Result"= DB)%>%
+      rename("DI or DB?" = instance) %>%
+      rename("Reason for DI/DB Result"= DB_reason)
     
     
     kable(DIDB_clean, format = "html", escape= FALSE)%>%
@@ -2158,11 +2113,11 @@ server <- function(input, output) {
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
              ) %>%
       rename("Population Group" = poptype)%>%
-      rename("Uncertainty Test" = change_test)%>%
-      rename("Practical Impact Test"= impact_test)%>%
-      rename("Disproportionality Test"= DB)%>%
-      rename("DI/DB" = instance) %>%
-      rename("Reason"= DB_reason)
+      rename("Passes Uncertainty Test?" = change_test)%>%
+      rename("Passes Practical Impact Test?"= impact_test)%>%
+      rename("Disproportionality Test Result"= DB)%>%
+      rename("DI or DB?" = instance) %>%
+      rename("Reason for DI/DB Result"= DB_reason)
     
     
     kable(DIDB_clean, format = "html", escape= FALSE)%>%
@@ -2469,11 +2424,11 @@ server <- function(input, output) {
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
       ) %>%
       rename("Population Group" = poptype)%>%
-      rename("Uncertainty Test" = change_test)%>%
-      rename("Practical Impact Test"= impact_test)%>%
-      rename("Disproportionality Test"= DB)%>%
-      rename("DI/DB" = instance) %>%
-      rename("Reason"= DB_reason)
+      rename("Passes Uncertainty Test?" = change_test)%>%
+      rename("Passes Practical Impact Test?"= impact_test)%>%
+      rename("Disproportionality Test Result"= DB)%>%
+      rename("DI or DB?" = instance) %>%
+      rename("Reason for DI/DB Result"= DB_reason)
     
     
     kable(DIDB_clean, format = "html", escape= FALSE)%>%
@@ -2780,11 +2735,11 @@ server <- function(input, output) {
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
       ) %>%
       rename("Population Group" = poptype)%>%
-      rename("Uncertainty Test" = change_test)%>%
-      rename("Practical Impact Test"= impact_test)%>%
-      rename("Disproportionality Test"= DB)%>%
-      rename("DI/DB" = instance) %>%
-      rename("Reason"= DB_reason)
+      rename("Passes Uncertainty Test?" = change_test)%>%
+      rename("Passes Practical Impact Test?"= impact_test)%>%
+      rename("Disproportionality Test Result"= DB)%>%
+      rename("DI or DB?" = instance) %>%
+      rename("Reason for DI/DB Result"= DB_reason)
     
     
     kable(DIDB_clean, format = "html", escape= FALSE)%>%
@@ -3091,11 +3046,11 @@ server <- function(input, output) {
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
       ) %>%
       rename("Population Group" = poptype)%>%
-      rename("Uncertainty Test" = change_test)%>%
-      rename("Practical Impact Test"= impact_test)%>%
-      rename("Disproportionality Test"= DB)%>%
-      rename("DI/DB" = instance) %>%
-      rename("Reason"= DB_reason)
+      rename("Passes Uncertainty Test?" = change_test)%>%
+      rename("Passes Practical Impact Test?"= impact_test)%>%
+      rename("Disproportionality Test Result"= DB)%>%
+      rename("DI or DB?" = instance) %>%
+      rename("Reason for DI/DB Result"= DB_reason)
     
     
     kable(DIDB_clean, format = "html", escape= FALSE)%>%
@@ -3401,11 +3356,11 @@ server <- function(input, output) {
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
       ) %>%
       rename("Population Group" = poptype)%>%
-      rename("Uncertainty Test" = change_test)%>%
-      rename("Practical Impact Test"= impact_test)%>%
-      rename("Disproportionality Test"= DB)%>%
-      rename("DI/DB" = instance) %>%
-      rename("Reason"= DB_reason)
+      rename("Passes Uncertainty Test?" = change_test)%>%
+      rename("Passes Practical Impact Test?"= impact_test)%>%
+      rename("Disproportionality Test Result"= DB)%>%
+      rename("DI or DB?" = instance) %>%
+      rename("Reason for DI/DB Result"= DB_reason)
     
     
     kable(DIDB_clean, format = "html", escape= FALSE)%>%
