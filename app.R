@@ -2407,36 +2407,36 @@ server <- function(input, output) {
     DIDB[DIDB== "i"] <- "I"
     DIDB[DIDB== "m"] <- "M"
     
-    DIDB_clean <- DIDB%>%
-      mutate(Metric = metric)%>%
-      select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
-      #arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
+    DIDB_clean <- DIDB %>%
+      mutate(Metric = metric) %>%
+      select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason) %>%
+      #arrange(desc(instance), DB, desc(impact_test), desc(change_test)) %>%
       mutate(change_test = cell_spec(change_test, "html", 
                                      #color= ifelse(change_test == "Yes", "red", "black"), 
                                      bold = ifelse(change_test == "Yes", TRUE, FALSE)),
              impact_test = cell_spec(impact_test, "html", 
                                      #color= ifelse(impact_test == "Yes", "red", "black"),
                                      bold = ifelse(impact_test == "Yes", TRUE, FALSE)),
-             instance = cell_spec(instance, "html", color= ifelse(instance== "Yes", "red", "black"),
+             instance = cell_spec(instance, "html", color = ifelse(instance == "Yes", "red", "black"),
                                   bold = ifelse(instance == "Yes", TRUE, FALSE)),
              DB = cell_spec(DB, "html", 
                             #color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
       ) %>%
-      rename("Population Group" = poptype)%>%
-      rename("Passes Uncertainty Test?" = change_test)%>%
-      rename("Passes Practical Impact Test?"= impact_test)%>%
-      rename("Disproportionality Test Result"= DB)%>%
+      rename("Population Group" = poptype) %>%
+      rename("Passes Uncertainty Test?" = change_test) %>%
+      rename("Passes Practical Impact Test?"= impact_test) %>%
+      rename("Disproportionality Test Result"= DB) %>%
       rename("DI or DB?" = instance) %>%
       rename("Reason for DI/DB Result"= DB_reason)
     
     
-    kable(DIDB_clean, format = "html", escape= FALSE)%>%
-      column_spec(1,width= "20em")%>%
-      column_spec(2:4, width= "5em")%>%
-      column_spec(5, width= "20em")%>%
-      column_spec(6, width= "5em")%>%
-      column_spec(7, width= "20em")%>%
+    kable(DIDB_clean, format = "html", escape= FALSE) %>%
+      column_spec(1,width= "20em") %>%
+      column_spec(2:4, width= "5em") %>%
+      column_spec(5, width= "20em") %>%
+      column_spec(6, width= "5em") %>%
+      column_spec(7, width= "20em") %>%
       kable_styling(font_size = 12,
                     bootstrap_options = c( "hover", "condensed")
       )
@@ -2453,21 +2453,21 @@ server <- function(input, output) {
     cat <- "Environmental"
     
     data <- data %>%
-      filter(category==cat)%>%
+      filter(category==cat) %>%
       #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
       mutate(error_b = build*error_aug) %>%
-      mutate(error_nb =no_build*error_aug) %>%
+      mutate(error_nb = no_build*error_aug) %>%
       mutate(LB_b = build-error_b) %>%
       mutate(UB_b = build+error_b) %>%
-      mutate(LB_nb = no_build - error_nb)%>%
-      mutate(UB_nb = no_build + error_nb)%>%
+      mutate(LB_nb = no_build - error_nb) %>%
+      mutate(UB_nb = no_build + error_nb) %>%
       # check if b range distinct from nb
       mutate(real_change = case_when(
         (UB_b < LB_nb) | (UB_nb < LB_b) ~ TRUE,
         TRUE ~ FALSE
-      ))%>%
+      )) %>%
       mutate(change_label = case_when(
         real_change == TRUE ~ "Potential impact",
         real_change == FALSE ~ "No potential impact"
@@ -2487,7 +2487,7 @@ server <- function(input, output) {
                                  TRUE ~ "Error"))
     
     change_results <- data %>%
-      select( metric, population,real_change)%>%
+      select( metric, population,real_change) %>%
       mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                    str_detect(population, ".ncome") ~ "i",
                                    TRUE ~ "NA")) %>%
@@ -2504,12 +2504,12 @@ server <- function(input, output) {
         (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No",
         (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Yes",
         (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Yes",
-      ))%>%
+      )) %>%
       select(metric, poptype, change_type, change_test)
     
     #make an impact table, bring together all impact options by population in a table
     impact_table <- data %>%
-      select( metric,population,delta, no_build,real_change, impact)%>%
+      select( metric,population,delta, no_build,real_change, impact) %>%
       mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                    str_detect(population, ".ncome") ~ "i",
                                    TRUE ~ "NA")) %>%
@@ -2594,7 +2594,7 @@ server <- function(input, output) {
         (Minority == "Burden" & Non_minority == "Burden within threshold") | (Low_income == "Burden" & Non_low_income == "Burden within threshold") ~ "Burden",
         (Minority == "Burden" & Non_minority  == "Burden") | (Low_income == "Burden" & Non_low_income == "Burden") ~ "Burden",
         TRUE ~ "something else happend"
-      ))%>%
+      )) %>%
       select(metric, poptype, impact_type, impact_test, impact_class)
     
     dispro <- diff %>%
@@ -2717,10 +2717,10 @@ server <- function(input, output) {
     DIDB[DIDB== "i"] <- "I"
     DIDB[DIDB== "m"] <- "M"
     
-    DIDB_clean <- DIDB%>%
-      mutate(Metric = metric)%>%
-      select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
-      #arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
+    DIDB_clean <- DIDB %>%
+      mutate(Metric = metric) %>%
+      select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason) %>%
+      #arrange(desc(instance), DB, desc(impact_test), desc(change_test)) %>%
       mutate(change_test = cell_spec(change_test, "html", 
                                      #color= ifelse(change_test == "Yes", "red", "black"), 
                                      bold = ifelse(change_test == "Yes", TRUE, FALSE)),
@@ -2734,20 +2734,20 @@ server <- function(input, output) {
                             #color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
       ) %>%
-      rename("Population Group" = poptype)%>%
-      rename("Passes Uncertainty Test?" = change_test)%>%
-      rename("Passes Practical Impact Test?"= impact_test)%>%
-      rename("Disproportionality Test Result"= DB)%>%
+      rename("Population Group" = poptype) %>%
+      rename("Passes Uncertainty Test?" = change_test) %>%
+      rename("Passes Practical Impact Test?"= impact_test) %>%
+      rename("Disproportionality Test Result"= DB) %>%
       rename("DI or DB?" = instance) %>%
       rename("Reason for DI/DB Result"= DB_reason)
     
     
-    kable(DIDB_clean, format = "html", escape= FALSE)%>%
-      column_spec(1,width= "20em")%>%
-      column_spec(2:4, width= "5em")%>%
-      column_spec(5, width= "20em")%>%
-      column_spec(6, width= "5em")%>%
-      column_spec(7, width= "20em")%>%
+    kable(DIDB_clean, format = "html", escape= FALSE) %>%
+      column_spec(1,width= "20em") %>%
+      column_spec(2:4, width= "5em") %>%
+      column_spec(5, width= "20em") %>%
+      column_spec(6, width= "5em") %>%
+      column_spec(7, width= "20em") %>%
       kable_styling(font_size = 12,
                     bootstrap_options = c( "hover", "condensed")
       )
@@ -2765,7 +2765,7 @@ server <- function(input, output) {
     
     data <- data %>%
       #filter(category==cat)%>%
-      filter(metric== metric_filter)%>%
+      filter(metric== metric_filter) %>%
       #slider1 sets confidence level, use this to control error
       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
       #mutate(delta = build - no_build) %>%
@@ -2773,13 +2773,13 @@ server <- function(input, output) {
       mutate(error_nb =no_build*error_aug) %>%
       mutate(LB_b = build-error_b) %>%
       mutate(UB_b = build+error_b) %>%
-      mutate(LB_nb = no_build - error_nb)%>%
-      mutate(UB_nb = no_build + error_nb)%>%
+      mutate(LB_nb = no_build - error_nb) %>%
+      mutate(UB_nb = no_build + error_nb) %>%
       # check if b range distinct from nb
       mutate(real_change = case_when(
         (UB_b < LB_nb) | (UB_nb < LB_b) ~ TRUE,
         TRUE ~ FALSE
-      ))%>%
+      )) %>%
       mutate(change_label = case_when(
         real_change == TRUE ~ "Potential impact",
         real_change == FALSE ~ "No potential impact"
@@ -2816,12 +2816,12 @@ server <- function(input, output) {
         (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No",
         (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Yes",
         (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Yes",
-      ))%>%
+      )) %>%
       select(metric, poptype, change_type, change_test)
     
     #make an impact table, bring together all impact options by population in a table
     impact_table <- data %>%
-      select( metric,population,delta, no_build,real_change, impact)%>%
+      select( metric,population,delta, no_build,real_change, impact) %>%
       mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
                                    str_detect(population, ".ncome") ~ "i",
                                    TRUE ~ "NA")) %>%
@@ -2906,7 +2906,7 @@ server <- function(input, output) {
         (Minority == "Burden" & Non_minority == "Burden within threshold") | (Low_income == "Burden" & Non_low_income == "Burden within threshold") ~ "Burden",
         (Minority == "Burden" & Non_minority  == "Burden") | (Low_income == "Burden" & Non_low_income == "Burden") ~ "Burden",
         TRUE ~ "something else happend"
-      ))%>%
+      )) %>%
       select(metric, poptype, impact_type, impact_test, impact_class)
     
     dispro <- diff %>%
@@ -2975,7 +2975,7 @@ server <- function(input, output) {
         (impact_type == "Burden for both") & (DB == "Non-protected population burdened more") ~ "No",
         (impact_type == "Burden for both") & (DB == "Disproportionality within threshold") ~ "No",
         
-        TRUE ~ "something elese happend, problem!"))%>%
+        TRUE ~ "something elese happend, problem!")) %>%
       mutate(DB_reason = case_when (
         (change_type == "No potential impact for either") ~ "No potential impact for either population",
         
@@ -3029,10 +3029,10 @@ server <- function(input, output) {
     DIDB[DIDB== "i"] <- "I"
     DIDB[DIDB== "m"] <- "M"
     
-    DIDB_clean <- DIDB%>%
-      mutate(Metric = metric)%>%
-      select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason)%>%
-      #arrange(desc(instance), DB, desc(impact_test), desc(change_test))%>%
+    DIDB_clean <- DIDB %>%
+      mutate(Metric = metric) %>%
+      select(Metric, poptype, change_test, impact_test, DB, instance, DB_reason) %>%
+      #arrange(desc(instance), DB, desc(impact_test), desc(change_test)) %>%
       mutate(change_test = cell_spec(change_test, "html", 
                                      #color= ifelse(change_test == "Yes", "red", "black"), 
                                      bold = ifelse(change_test == "Yes", TRUE, FALSE)),
@@ -3045,20 +3045,20 @@ server <- function(input, output) {
                             #color = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", "red", "black"),
                             bold = ifelse(DB == "Protected population burdened more" | DB == "Non-protected population benefits more", TRUE, FALSE))
       ) %>%
-      rename("Population Group" = poptype)%>%
-      rename("Passes Uncertainty Test?" = change_test)%>%
-      rename("Passes Practical Impact Test?"= impact_test)%>%
-      rename("Disproportionality Test Result"= DB)%>%
+      rename("Population Group" = poptype) %>%
+      rename("Passes Uncertainty Test?" = change_test) %>%
+      rename("Passes Practical Impact Test?"= impact_test) %>%
+      rename("Disproportionality Test Result"= DB) %>%
       rename("DI or DB?" = instance) %>%
       rename("Reason for DI/DB Result"= DB_reason)
     
     
-    kable(DIDB_clean, format = "html", escape= FALSE)%>%
-      column_spec(1,width= "20em")%>%
-      column_spec(2:4, width= "5em")%>%
-      column_spec(5, width= "20em")%>%
-      column_spec(6, width= "5em")%>%
-      column_spec(7, width= "20em")%>%
+    kable(DIDB_clean, format = "html", escape= FALSE) %>%
+      column_spec(1,width= "20em") %>%
+      column_spec(2:4, width= "5em") %>%
+      column_spec(5, width= "20em") %>%
+      column_spec(6, width= "5em") %>%
+      column_spec(7, width= "20em") %>%
       kable_styling(font_size = 12,
                     bootstrap_options = c( "hover", "condensed")
       )
