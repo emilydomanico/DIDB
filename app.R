@@ -526,74 +526,7 @@ server <- function(input, output) {
     print(metric_plot)
     
   })
-# # Dynamic text for metric plot #################################
-#   output$change <- renderText({
-#     
-#     #user inputs
-#     #metric selected from selectInput dropdown
-#     metric_filter <- input$metric 
-#     # percentage threshold set by slider
-#     dim1 <- as.numeric(input$Dim1)*0.01
-#     dim2 <- input$Dim2*0.01
-#     dim3 <- input$Dim3*0.01
-#     
-#     data <- data %>%
-#       filter(metric == metric_filter)%>%
-#       #slider1 sets confidence level, use this to control error
-#       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
-#       #mutate(delta = build - no_build) %>%
-#       mutate(error_b = build*error_aug) %>%
-#       mutate(error_nb =no_build*error_aug) %>%
-#       mutate(LB_b = build-error_b) %>%
-#       mutate(UB_b = build+error_b) %>%
-#       mutate(LB_nb = no_build - error_nb)%>%
-#       mutate(UB_nb = no_build + error_nb)%>%
-#       # check if b range distinct from nb
-#       mutate(real_change = case_when(
-#         (UB_b < LB_nb) | (UB_nb < LB_b) ~ TRUE,
-#         TRUE ~ FALSE
-#       ))%>%
-#       mutate(change_label = case_when(
-#         real_change == TRUE ~ "Potential impact",
-#         real_change == FALSE ~ "No potential impact"
-#       )) %>%
-#       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
-#       #im_th_amt "impact threshold amount"
-#       mutate(im_th_amt = no_build*dim2) %>%
-#       #compares delta to impact threshold amount
-#       mutate(impact = case_when (abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit",
-#                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
-#                                  abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
-#                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
-#                                  abs(delta) < abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit within threshold",
-#                                  abs(delta) < abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit within threshold",
-#                                  abs(delta) < abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden within threshold",
-#                                  abs(delta) < abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden within threshold",
-#                                  TRUE ~ "Error"))
-#     
-#     change_type <- data %>%
-#       select( population,real_change)%>%
-#       mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
-#                                    str_detect(population, ".ncome") ~ "i",
-#                                    TRUE ~ "NA")) %>%
-#       arrange(factor(poptype)) %>%
-#       spread(population, real_change) %>%
-#       mutate(change_type = case_when( 
-#         (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Real change for both populations",
-#         (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No real change for both populations",
-#         (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only real change for the protected population",
-#         (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only real change for the non-protected population",
-#         TRUE ~ "something else happend")) %>%
-#       select(poptype, change_type)
-#     
-#     change <- change_type
-#     
-#     income_change <- change$change_type[ change$poptype=="i"]
-#     min_change <- change$change_type [ change$poptype=="m"]
-#     
-#     paste("For the metric ", tolower(metric_filter), "at the confidence level of ", input$Dim1, "%, ", "there is projected to be ", tolower(income_change), " in the income population group, and there is projected to be ", tolower(min_change), " in the minority population group." )
-#     
-#   })
+
 # Impact plot #####################################################  
   # Impact plot Acc #########################################################
   output$impact_plotAcc <- renderPlot({
