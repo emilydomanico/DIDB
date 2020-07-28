@@ -73,12 +73,12 @@ ui <- fluidPage(
      p("This threshold sets the sensitivity for determining if the impacts of implementing the build scenario would be practically significant. The slider represents a percent change. At 0%, any change between the build and no-build scenario would be considered a practically significant impact. As the threshold increases, the likelihood of identifying an adverse effect decreases. The impact is calculated as the percent change between scenarios:"),
       withMathJax("$$\\scriptsize\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build}} \\cdot 100$$"),
       p(" "),
-      p("If an impact is found, it is categorized as a benefit or a burden based on the directionality of the metric. (For example, an increase in carbon monoxide emissions is a burden, while an increase in access to jobs is a benefit."),
+      p("If an impact is found, it is categorized as a benefit or a burden based on the directionality of the metric. (For example, an increase in carbon monoxide emissions is a burden, while an increase in access to jobs is a benefit.)"),
       br(),
      #h5("Disproportionality Threshold"), 
       sliderInput("Dim3", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
-      p("This threshold determines if the impacts found in the previous step would disproportionately affect the minority or low-income population more than the nonminority or non-low-income population."),
-      p("Disproportionality is calculated as a ratio, comparing the absolute value of the percent change for the protected population (from the second step) to the absolute value of the percent change non-protected population."),
+      p("This threshold determines if the impacts found in the previous step would disproportionately affect the minority or low-income population compared to the nonminority or non-low-income population."),
+      p("Disproportionality is calculated as a ratio, comparing the absolute value of the percent change for the protected population (from the second step) to the absolute value of the percent change for the non-protected population."),
      br(), 
      h5("Baseline Uncertainty Threshold"),
      radioButtons("Dim1", "I want to set the confidence level to:",
@@ -89,7 +89,7 @@ ui <- fluidPage(
                     "High uncertainty"= 95),
                   selected= 10,
                   inline= TRUE),
-      p("This threshold sets set the sensitivity for detecting the likelihood of the model outputs for the build and no-build scenarios. The radio buttons represent confidence levels - how confident we feel that the model outputs represent the potential reality. For example, moderate uncertainty means that we are somewhat confident that the model results represent the impacts of the transportation system in 2040. Higher uncertainty would result in a greater range of likely values - as indicated by the blue and red bars - and less of a change of identifying a potential impact.")
+      p("This threshold sets the sensitivity for detecting the likelihood of the model outputs for the build and no-build scenarios. The radio buttons represent confidence levels - how confident we feel that the model outputs represent the potential reality. For example, moderate uncertainty means that we are somewhat confident that the model results represent the impacts of the transportation system in 2040. Higher uncertainty would result in a greater range of likely values - as indicated by the blue and orange bars - and less of a change of identifying a potential impact.")
      
      ),
 # Main Panel UI ######################################################    
@@ -101,16 +101,16 @@ ui <- fluidPage(
                             p("The Boston Region Metropolitan Planning Organization (MPO) staff have developed this application
                               to help staff and interested stakeholders better visualize how setting the three different thresholds
                               within the MPO’s Disparate Impact and Disproportionate Burden (DI/DB) Policy would affect the likelihood
-                              of identifying potential, future disparate impacts and disproportionate burdens. "),
-                            p("The DI/DB Policy helps the MPO to meet the federal requirement of identifying potential, future disparate
+                              of identifying potential future disparate impacts and disproportionate burdens. "),
+                            p("The DI/DB Policy helps the MPO meet the federal requirement to identify potential, future disparate
                               impacts on minority populations, and disproportionate burdens on low-income populations that may result from
                               MPO investments, in the aggregate, that are funded in its Long-Range Transportation Plan (LRTP).
                               (One of the roles of the LRTP is to dedicate funding over the next twenty years to regionally significant
-                              transportation projects. To see the results from MPO’s latest LRTP, ", em("Destination 2040"),", ",
-                            a("click here", href= "https://www.bostonmpo.org/data/pdf/plans/LRTP/destination/Destination-2040-LRTP-20191030.pdf#page=243", target="_blank"),
-                            ".) To do so, the MPO uses a regional travel demand model to identify probable impacts on minority, low-income,
+                              transportation projects.) To do so, the MPO uses a regional travel demand model to identify probable impacts on minority, low-income,
                             nonminority, and non-low-income populations. In ", em("Destination 2040"), ", these impacts were analyzed for
-                            a suite of ten metrics, which are also used in this application."),
+                            a suite of ten metrics, which are also used in this application. To see the results from the analysis of the MPO’s latest LRTP, ", em("Destination 2040"),", ",
+                            a("click here", href= "https://www.bostonmpo.org/data/pdf/plans/LRTP/destination/Destination-2040-LRTP-20191030.pdf#page=243", target="_blank"),
+                            ". "),
                             p("This application uses the model’s results for each metric analyzed in ", em("Destination 2040")," to demonstrate the
                               role each of the three thresholds within the DI/DB Policy, help stakeholders better understand and provide input into
                               the DI/DB Policy, and assist MPO staff with setting these thresholds. To be considered a disparate impact or
@@ -138,8 +138,8 @@ American; American Indian or Alaskan Native; Asian; Native Hawaiian or other Pac
 Islander; and/or Hispanic or Latino/a/x."),
                             p("A disproportionate burden is a neutral policy or practice that disproportionately affects
 low-income populations more than non-low income populations. The MPO considers a
-person as low income as one whose family income is at or below 200% of the poverty
-level for their family size."),
+person whose family income is at or below 200% of the poverty
+level for their family size as low income."),
                    ),
                    #UI by Acc #######################################
                    tabPanel("Accessibility Metrics",
