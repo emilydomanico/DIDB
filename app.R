@@ -68,6 +68,17 @@ ui <- fluidPage(
       h2("DI/DB Thresholds"),
       br(),
       br(),
+      h5("Baseline Uncertainty Threshold"),
+      radioButtons("Dim1", "I want to set the confidence level to:",
+                   c("No uncertainty"=0,
+                     "Low uncertainty"=10,
+                     "Moderate uncertainty"= 50,
+                     #"90 %"=90,
+                     "High uncertainty"= 95),
+                   selected= 10,
+                   inline= TRUE),
+      p("This threshold sets the sensitivity for detecting the likelihood of the model outputs for the build and no-build scenarios. The radio buttons represent confidence levels - how confident we feel that the model outputs represent the potential reality. For example, moderate uncertainty means that we are somewhat confident that the model results represent the impacts of the transportation system in 2040. Higher uncertainty would result in a greater range of likely values - as indicated by the blue and orange bars - and less of a change of identifying a potential impact."),
+      br(),
       sliderInput("Dim2", label = "Practical Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
      #h5("Impact Threshold"), 
      p("This threshold sets the sensitivity for determining if the impacts of implementing the build scenario would be practically significant. The slider represents a percent change. At 0%, any change between the build and no-build scenario would be considered a practically significant impact. As the threshold increases, the likelihood of identifying an adverse effect decreases. The impact is calculated as the percent change between scenarios:"),
@@ -79,18 +90,7 @@ ui <- fluidPage(
       sliderInput("Dim3", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
       p("This threshold determines if the impacts found in the previous step would disproportionately affect the minority or low-income population compared to the nonminority or non-low-income population."),
       p("Disproportionality is calculated as a ratio, comparing the absolute value of the percent change for the protected population (from the second step) to the absolute value of the percent change for the non-protected population."),
-     br(), 
-     h5("Baseline Uncertainty Threshold"),
-     radioButtons("Dim1", "I want to set the confidence level to:",
-                  c("No uncertainty"=0,
-                    "Low uncertainty"=10,
-                    "Moderate uncertainty"= 50,
-                    #"90 %"=90,
-                    "High uncertainty"= 95),
-                  selected= 10,
-                  inline= TRUE),
-      p("This threshold sets the sensitivity for detecting the likelihood of the model outputs for the build and no-build scenarios. The radio buttons represent confidence levels - how confident we feel that the model outputs represent the potential reality. For example, moderate uncertainty means that we are somewhat confident that the model results represent the impacts of the transportation system in 2040. Higher uncertainty would result in a greater range of likely values - as indicated by the blue and orange bars - and less of a change of identifying a potential impact.")
-     
+     br()
      ),
 # Main Panel UI ######################################################    
     mainPanel(
@@ -152,67 +152,31 @@ level for their family size as low income."),
                                                                     "Access to healthcare facilities by transit", 
                                                                     "Access to jobs by transit")),
                                                   selected = "Access to retail opportunities by transit"),
-                                     #sliderInput("Dim2Acc", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                     #sliderInput("Dim3Acc", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1)
                             ),
-                            # column(width = 6,
-                            #        #h5("Baseline Uncertainty Test"),
-                            #        radioButtons("Dim1Acc", "Baseline Uncertainty Level:",
-                            #                     c("No uncertainty"=0,
-                            #                       "Low"=10,
-                            #                       "Moderate"= 50,
-                            #                       #"90 %"=90,
-                            #                       "High uncertainty"= 95),
-                            #                     selected= 10,
-                            #                     inline= TRUE),
-                            #        p("If a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Impact Threshold."),
-                            #        plotOutput(outputId = "metric_plotAcc"),
-                            #        #textOutput(), note:
-                            #        #tableOutput("change_result"),
-                            #        br(),
-                            #        #formattableOutput("DIDBAcc"),
-                            #        #textOutput("change"),
-                            # ),
+                            
+                            column(width = 12,
+                                   h5("Baseline Uncertainty Threshold"),
+                                   p("If there is a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Practical Impact Threshold."),
+                                   plotOutput(outputId = "metric_plotAcc"),
+                                   br(),
+                            ),
                             column(width = 6,
                                    h5("Practical Impact Threshold"),
-                                   #sliderInput("Dim2Acc", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
                                    p("Where a potential impact is indicated, is the impact practically significant for each population?"),
                                    plotOutput("impact_plotAcc"),
                                    br(),
-                                   #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DI/DB.")
                             ),
                             column(width = 6,
                                    h5("Disproportionality Threshold"),
-                                   #sliderInput("Dim3Acc", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
                                    p("Where there is a potential practically significant impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotAcc"),
                                    br(),
-                                   #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work across all metric in the next tab.")
-                            
                                    ),
                             column(width = 12,
                                    htmlOutput(outputId = "DIDBAcc_met"),
                                    p("Note: I = Low-income and Non-low-income pair. M = Minority and Non-minority pair."),
                                    br(),
-                                   ),
-                            column(width = 12,
-                            h5("Baseline Uncertainty Threshold"),
-                            p("If there is a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Practical Impact Threshold."),
-                            # radioButtons("Dim1Acc", "I want to set the confidence level to:",
-                            #              c("No uncertainty"=0,
-                            #                "Low uncertainty"=10,
-                            #                "Moderate uncertainty"= 50,
-                            #                #"90 %"=90,
-                            #                "High uncertainty"= 95),
-                            #              selected= 10,
-                            #              inline= TRUE),
-                            plotOutput(outputId = "metric_plotAcc"),
-                            #textOutput(), note:
-                            #tableOutput("change_result"),
-                            br(),
-                            #formattableOutput("DIDBAcc"),
-                            #textOutput("change"),
-                            )
+                                   )
                             ),
                    #UI by Env ###############################################
                    tabPanel("Environmental Metrics",
@@ -222,48 +186,29 @@ level for their family size as low income."),
                                                  choices = list(
                                                    Environmental= c("Congested vehicle miles traveled","Carbon monoxide emissions")),
                                                  selected = "Carbon monoxide emissions"),
-                                     #sliderInput("Dim2Env", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                     #sliderInput("Dim3Env", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1)
+                            ),
+                            column(width = 12,
+                                   h5("Baseline Uncertainty Threshold"),
+                                   p("If there is a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Practical Impact Threshold."),
+                                   plotOutput(outputId = "metric_plotEnv"),
+                                   br(),
                             ),
                             column(width = 6,
                                    h5("Practical Impact Threshold"),
-                                   # sliderInput("Dim2Env", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
                                    p("Where a potential impact is indicated, is the impact practically significant for each population?"),
                                    plotOutput("impact_plotEnv"),
                                    br(),
-                                   #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DI/DB.")
                             ),
                             column(width = 6,
                                    h5("Disproportionality Threshold"),
-                                   # sliderInput("Dim3Env", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
                                    p("Where there is a potential practically significant impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotEnv"),
                                    br(),
-                                   #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work accross all metric in the next tab.")
-                                   
                             ),
                             column(width = 12,
                                    htmlOutput(outputId = "DIDBEnv_met"),
                                    p("Note: I = Low-income and Non-low-income pair. M = Minority and Non-minority pair."),
                                    br(),
-                            ),
-                            column(width = 12,
-                                   h5("Baseline Uncertainty Threshold"),
-                                   p("If there is a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Practical Impact Threshold."),
-                                   # radioButtons("Dim1Env", "I want to set the confidence level to:",
-                                   #              c("No uncertainty"=0,
-                                   #                "Low uncertainty"=10,
-                                   #                "Moderate uncertainty"= 50,
-                                   #                #"90 %"=90,
-                                   #                "High uncertainty"= 95),
-                                   #              selected= 10,
-                                   #              inline= TRUE),
-                                   plotOutput(outputId = "metric_plotEnv"),
-                                   #textOutput(), note:
-                                   #tableOutput("change_result"),
-                                   br(),
-                                   #formattableOutput("DIDBEnv")
-                                   #textOutput("change"),
                             )
                    ),
                    #UI by Mob ###########################
@@ -274,54 +219,35 @@ level for their family size as low income."),
                                                  choices = list(Mobility= c("Average attraction - highway travel time", "Average production - highway travel time","Average attraction - transit travel time",
                                                                             "Average production - transit travel time")),
                                                  selected = "Average production - transit travel time"),
-                                     #sliderInput("Dim2Mob", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                     #sliderInput("Dim3Mob", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1)
+                            ),
+                            column(width = 12,
+                                   h5("Baseline Uncertainty Threshold"),
+                                   p("If there is a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Practical Impact Threshold."),
+                                 
+                                   plotOutput(outputId = "metric_plotMob"),
+                                   br(),
                             ),
                             column(width = 6,
                                    h5("Practical Impact Threshold"),
-                                   # sliderInput("Dim2Mob", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
                                    p("Where a potential impact is indicated, is the impact practically significant for each population?"),
                                    plotOutput("impact_plotMob"),
                                    br(),
-                                   #p("Reactive text indicating if there is a impact that exceeds the threshold set. If so proceed to next step. Or default DI/DB.")
                             ),
                             column(width = 6,
                                    h5("Disproportionality Threshold"),
-                                   # sliderInput("Dim3Mob", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
                                    p("Where there is a potential practically significant impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotMob"),
                                    br(),
-                                   #p("Reactive text indicating if there is a disproportionate burden. Prompt to see how slider inputs work across all metric in the next tab.")
-                                   
                             ),
                             column(width = 12,
                                    htmlOutput(outputId = "DIDBMob_met"),
                                    p("Note: I = Low-income and Non-low-income pair. M = Minority and Non-minority pair."),
                                    br(),
-                            ),
-                            column(width = 12,
-                                   h5("Baseline Uncertainty Threshold"),
-                                   p("If there is a change between the build and no-build scenario for either the protected or non-protected populations, proceed to the Practical Impact Threshold."),
-                                   # radioButtons("Dim1Mob", "I want to set the confidence level to:",
-                                   #              c("No uncertainty"=0,
-                                   #                "Low uncertainty"=10,
-                                   #                "Moderate uncertainty"= 50,
-                                   #                #"90 %"=90,
-                                   #                "High uncertainty"= 95),
-                                   #              selected= 10,
-                                   #              inline= TRUE),
-                                   plotOutput(outputId = "metric_plotMob"),
-                                   #textOutput(), note:
-                                   #tableOutput("change_result"),
-                                   br(),
-                                   #formattableOutput("DIDBMob")
-                                   #textOutput("change"),
                             )
                    ),
                    # Results for all metrics ##############################
                    tabPanel("Results for all Metrics",
                             br(),
-                            #textOutput("DIDB_count"),
                             p("The table below will show instances of DI/DB for the current threshold settings accross all metrics."),
                             htmlOutput("DIDBAcc"),
                             htmlOutput("DIDBEnv"),
@@ -338,31 +264,6 @@ level for their family size as low income."),
 # Server##########################################
 
 server <- function(input, output) {
-# # Slider text  ####################################
-#   output$AccText <- renderText({
-#     dim1 <- as.numeric(input$Dim1Acc)
-#     dim2 <- input$Dim2Acc
-#     dim3 <- input$Dim3Acc
-#     
-#     text1<- paste("Impact threshold:", dim2, "%", "<br>Disproportionality threshold:", dim3, "%")
-#     print(text1)
-#   })
-#   output$EnvText <- renderText({
-#     dim1 <- as.numeric(input$Dim1Env)
-#     dim2 <- input$Dim2Env
-#     dim3 <- input$Dim3Env
-#     
-#     text2<- paste("Impact threshold:", dim2, "%", "<br>Disproportionality threshold:", dim3, "%")
-#     print(text2)
-#   })
-#   output$MobText <- renderText({
-#     dim1 <- as.numeric(input$Dim1Mob)
-#     dim2 <- input$Dim2Mob
-#     dim3 <- input$Dim3Mob
-#     
-#     text3<- paste("Impact threshold:", dim2, "%", "<br>Disproportionality threshold:", dim3, "%")
-#     print(text3)
-#   })
 
   # Metric Plot Acc #######################################################
   output$metric_plotAcc <- renderPlot({
@@ -625,74 +526,74 @@ server <- function(input, output) {
     print(metric_plot)
     
   })
-# Dynamic text for metric plot #################################
-  output$change <- renderText({
-    
-    #user inputs
-    #metric selected from selectInput dropdown
-    metric_filter <- input$metric 
-    # percentage threshold set by slider
-    dim1 <- as.numeric(input$Dim1)*0.01
-    dim2 <- input$Dim2*0.01
-    dim3 <- input$Dim3*0.01
-    
-    data <- data %>%
-      filter(metric == metric_filter)%>%
-      #slider1 sets confidence level, use this to control error
-      mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
-      #mutate(delta = build - no_build) %>%
-      mutate(error_b = build*error_aug) %>%
-      mutate(error_nb =no_build*error_aug) %>%
-      mutate(LB_b = build-error_b) %>%
-      mutate(UB_b = build+error_b) %>%
-      mutate(LB_nb = no_build - error_nb)%>%
-      mutate(UB_nb = no_build + error_nb)%>%
-      # check if b range distinct from nb
-      mutate(real_change = case_when(
-        (UB_b < LB_nb) | (UB_nb < LB_b) ~ TRUE,
-        TRUE ~ FALSE
-      ))%>%
-      mutate(change_label = case_when(
-        real_change == TRUE ~ "Potential impact",
-        real_change == FALSE ~ "No potential impact"
-      )) %>%
-      #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
-      #im_th_amt "impact threshold amount"
-      mutate(im_th_amt = no_build*dim2) %>%
-      #compares delta to impact threshold amount
-      mutate(impact = case_when (abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit",
-                                 abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
-                                 abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
-                                 abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
-                                 abs(delta) < abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit within threshold",
-                                 abs(delta) < abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit within threshold",
-                                 abs(delta) < abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden within threshold",
-                                 abs(delta) < abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden within threshold",
-                                 TRUE ~ "Error"))
-    
-    change_type <- data %>%
-      select( population,real_change)%>%
-      mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
-                                   str_detect(population, ".ncome") ~ "i",
-                                   TRUE ~ "NA")) %>%
-      arrange(factor(poptype)) %>%
-      spread(population, real_change) %>%
-      mutate(change_type = case_when( 
-        (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Real change for both populations",
-        (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No real change for both populations",
-        (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only real change for the protected population",
-        (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only real change for the non-protected population",
-        TRUE ~ "something else happend")) %>%
-      select(poptype, change_type)
-    
-    change <- change_type
-    
-    income_change <- change$change_type[ change$poptype=="i"]
-    min_change <- change$change_type [ change$poptype=="m"]
-    
-    paste("For the metric ", tolower(metric_filter), "at the confidence level of ", input$Dim1, "%, ", "there is projected to be ", tolower(income_change), " in the income population group, and there is projected to be ", tolower(min_change), " in the minority population group." )
-    
-  })
+# # Dynamic text for metric plot #################################
+#   output$change <- renderText({
+#     
+#     #user inputs
+#     #metric selected from selectInput dropdown
+#     metric_filter <- input$metric 
+#     # percentage threshold set by slider
+#     dim1 <- as.numeric(input$Dim1)*0.01
+#     dim2 <- input$Dim2*0.01
+#     dim3 <- input$Dim3*0.01
+#     
+#     data <- data %>%
+#       filter(metric == metric_filter)%>%
+#       #slider1 sets confidence level, use this to control error
+#       mutate(error_aug = for_error/ 1.96*qnorm(1-(1-dim1)/2)) %>%
+#       #mutate(delta = build - no_build) %>%
+#       mutate(error_b = build*error_aug) %>%
+#       mutate(error_nb =no_build*error_aug) %>%
+#       mutate(LB_b = build-error_b) %>%
+#       mutate(UB_b = build+error_b) %>%
+#       mutate(LB_nb = no_build - error_nb)%>%
+#       mutate(UB_nb = no_build + error_nb)%>%
+#       # check if b range distinct from nb
+#       mutate(real_change = case_when(
+#         (UB_b < LB_nb) | (UB_nb < LB_b) ~ TRUE,
+#         TRUE ~ FALSE
+#       ))%>%
+#       mutate(change_label = case_when(
+#         real_change == TRUE ~ "Potential impact",
+#         real_change == FALSE ~ "No potential impact"
+#       )) %>%
+#       #slider2 sets percent amount to consider from no build model result to establish if impact is large enough to consider
+#       #im_th_amt "impact threshold amount"
+#       mutate(im_th_amt = no_build*dim2) %>%
+#       #compares delta to impact threshold amount
+#       mutate(impact = case_when (abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit",
+#                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit",
+#                                  abs(delta) > abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden",
+#                                  abs(delta) > abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden",
+#                                  abs(delta) < abs(im_th_amt) & (category == "Accessibility" & delta > 0 ) ~ "Benefit within threshold",
+#                                  abs(delta) < abs(im_th_amt) & (category != "Accessibility" & delta < 0 ) ~ "Benefit within threshold",
+#                                  abs(delta) < abs(im_th_amt) & (category == "Accessibility" & delta < 0 ) ~ "Burden within threshold",
+#                                  abs(delta) < abs(im_th_amt) & (category != "Accessibility" & delta > 0 ) ~ "Burden within threshold",
+#                                  TRUE ~ "Error"))
+#     
+#     change_type <- data %>%
+#       select( population,real_change)%>%
+#       mutate( poptype = case_when (str_detect(population, ".inority") ~ "m",
+#                                    str_detect(population, ".ncome") ~ "i",
+#                                    TRUE ~ "NA")) %>%
+#       arrange(factor(poptype)) %>%
+#       spread(population, real_change) %>%
+#       mutate(change_type = case_when( 
+#         (Minority == TRUE & Non_minority  == TRUE) | (Low_income == TRUE & Non_low_income == TRUE) ~ "Real change for both populations",
+#         (Minority == FALSE & Non_minority  == FALSE) | (Low_income == FALSE & Non_low_income == FALSE) ~ "No real change for both populations",
+#         (Minority == TRUE & Non_minority == FALSE) | (Low_income == TRUE & Non_low_income == FALSE) ~ "Only real change for the protected population",
+#         (Minority == FALSE & Non_minority == TRUE) | (Low_income == FALSE & Non_low_income == TRUE) ~ "Only real change for the non-protected population",
+#         TRUE ~ "something else happend")) %>%
+#       select(poptype, change_type)
+#     
+#     change <- change_type
+#     
+#     income_change <- change$change_type[ change$poptype=="i"]
+#     min_change <- change$change_type [ change$poptype=="m"]
+#     
+#     paste("For the metric ", tolower(metric_filter), "at the confidence level of ", input$Dim1, "%, ", "there is projected to be ", tolower(income_change), " in the income population group, and there is projected to be ", tolower(min_change), " in the minority population group." )
+#     
+#   })
 # Impact plot #####################################################  
   # Impact plot Acc #########################################################
   output$impact_plotAcc <- renderPlot({
