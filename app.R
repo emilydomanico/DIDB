@@ -101,17 +101,17 @@ ui <- fluidPage(
                             p("The Boston Region Metropolitan Planning Organization (MPO) staff have developed this application
                               to help staff and interested stakeholders better visualize how setting the three different thresholds
                               within the MPO’s Disparate Impact and Disproportionate Burden (DI/DB) Policy would affect the likelihood
-                              of identifying potential future disparate impacts and disproportionate burdens. "),
+                              of identifying potential, future disparate impacts and disproportionate burdens. "),
                             p("The DI/DB Policy helps the MPO meet the federal requirement to identify potential, future disparate
                               impacts on minority populations, and disproportionate burdens on low-income populations that may result from
                               MPO investments, in the aggregate, that are funded in its Long-Range Transportation Plan (LRTP).
                               (One of the roles of the LRTP is to dedicate funding over the next twenty years to regionally significant
                               transportation projects.) To do so, the MPO uses a regional travel demand model to identify probable impacts on minority, low-income,
-                            nonminority, and non-low-income populations. In ", em("Destination 2040"), ", these impacts were analyzed for
-                            a suite of ten metrics, which are also used in this application. To see the results from the analysis of the MPO’s latest LRTP, ", em("Destination 2040"),", ",
+                            nonminority, and non-low-income populations. In", em("Destination 2040,")," these impacts were analyzed for
+                            a suite of ten metrics, which are also used in this application. To see the results from the analysis of the MPO’s latest LRTP,", em("Destination 2040,"),
                             a("click here", href= "https://www.bostonmpo.org/data/pdf/plans/LRTP/destination/Destination-2040-LRTP-20191030.pdf#page=243", target="_blank"),
                             ". "),
-                            p("This application uses the model’s results for each metric analyzed in ", em("Destination 2040")," to demonstrate the
+                            p("This application uses the model’s results for each metric analyzed in", em("Destination 2040"),"to demonstrate the
                               role each of the three thresholds within the DI/DB Policy, help stakeholders better understand and provide input into
                               the DI/DB Policy, and assist MPO staff with setting these thresholds. To be considered a disparate impact or
                               disproportionate burden, any expected impact must pass each of the three thresholds—or ", em("tests"), "—in order, as described below."),
