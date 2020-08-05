@@ -1,12 +1,12 @@
 category,for_error,metric,metric_unit,population,scenario,model_result
-Accessibility,0.091,Access to retail opportunities by transit,"proxy: retail jobs, count",Minority,no-build,52609.48627
-Accessibility,0.091,Access to retail opportunities by transit,"proxy: retail jobs, count",Minority,build,52297.12077
-Accessibility,0.166,Access to retail opportunities by transit,"proxy: retail jobs, count",Non-minority,no-build,29522.1297
-Accessibility,0.166,Access to retail opportunities by transit,"proxy: retail jobs, count",Non-minority,build,29358.54593
-Accessibility,0.102,Access to retail opportunities by transit,"proxy: retail jobs, count",Low-income,no-build,44513.24858
-Accessibility,0.102,Access to retail opportunities by transit,"proxy: retail jobs, count",Low-income,build,44244.29358
-Accessibility,0.137,Access to retail opportunities by transit,"proxy: retail jobs, count",Non-low-income,no-build,33809.63395
-Accessibility,0.137,Access to retail opportunities by transit,"proxy: retail jobs, count",Non-low-income,build,33618.23352
+Accessibility,0.091,Access to retail opportunities by transit,"represented by count of retail jobs",Minority,no-build,52609.48627
+Accessibility,0.091,Access to retail opportunities by transit,"represented by count of retail jobs",Minority,build,52297.12077
+Accessibility,0.166,Access to retail opportunities by transit,"represented by count of retail jobs",Non-minority,no-build,29522.1297
+Accessibility,0.166,Access to retail opportunities by transit,"represented by count of retail jobs",Non-minority,build,29358.54593
+Accessibility,0.102,Access to retail opportunities by transit,"represented by count of retail jobs",Low-income,no-build,44513.24858
+Accessibility,0.102,Access to retail opportunities by transit,"represented by count of retail jobs",Low-income,build,44244.29358
+Accessibility,0.137,Access to retail opportunities by transit,"represented by count of retail jobs",Non-low-income,no-build,33809.63395
+Accessibility,0.137,Access to retail opportunities by transit,"represented by count of retail jobs",Non-low-income,build,33618.23352
 Accessibility,0.035,Access to higher education by transit,count,Minority,no-build,50776.48877
 Accessibility,0.035,Access to higher education by transit,count,Minority,build,50670.9771
 Accessibility,0.06,Access to higher education by transit,count,Non-minority,no-build,29372.19979
