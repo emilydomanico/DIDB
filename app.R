@@ -48,6 +48,10 @@ ui <- fluidPage(
 #css #######################################
   tags$head(
     tags$style(HTML("
+    #sidebar {
+            background-color: #808285;
+
+        }
     p {
     font-size: 13px;
     }
@@ -64,7 +68,7 @@ ui <- fluidPage(
   chooseSliderSkin("Flat"),
 # SideBar Panel UI ######################################
   sidebarLayout(
-    sidebarPanel(width= 3,
+    sidebarPanel(id= "sidebar",width= 3,
       h2("DI/DB Thresholds"),
       br(),
       br(),
