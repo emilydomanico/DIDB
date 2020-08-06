@@ -63,7 +63,7 @@ ui <- fluidPage(
     color: #58595b; 
     }
     p {
-    font-size: 13px;
+    font-size: 14px;
     }
     h4 {
     font-weight: bold;
@@ -187,6 +187,7 @@ level for their family size as low income."),
                             column(width = 6,
                                    h5("Practical Impact Threshold"),
                                    p("Where a potential impact is indicated, is the impact practically significant for each population?"),
+                                   br(),
                                    plotOutput("impact_plotAcc"),
                                    br(),
                             ),
@@ -232,6 +233,7 @@ level for their family size as low income."),
                                    br(),
                             ),
                             column(width = 12,
+                                   hr(),
                                    htmlOutput(outputId = "DIDBEnv_met"),
                                    p("Note: I = Low-income and Non-low-income pair. M = Minority and Nonminority pair."),
                                    br(),
@@ -251,7 +253,7 @@ level for their family size as low income."),
                                    p("If there is a change between the build and no-build scenario for either the EJ or non-EJ populations, proceed to the Practical Impact Threshold."),
                                  
                                    plotOutput(outputId = "metric_plotMob"),
-                                   br(),
+                                   hr(),
                             ),
                             column(width = 6,
                                    h5("Practical Impact Threshold"),
@@ -266,6 +268,7 @@ level for their family size as low income."),
                                    br(),
                             ),
                             column(width = 12,
+                                   hr(),
                                    htmlOutput(outputId = "DIDBMob_met"),
                                    p("Note: I = Low-income and Non-low-income pair. M = Minority and Nonminority pair."),
                                    br(),
@@ -355,22 +358,29 @@ server <- function(input, output) {
     subtitle <- data_metric$subtitle[1]
     
     ##DRAW THE PLOT
+    build_color <- "Range of likely impacts \nunder the build scenario."
+    no_build_color <- "Range of likely impacts \nunder the no-build scenario."
     
     metric_plot<- ggplot(data, aes(x=population, y= UB_nb)) +
-      geom_segment( aes(x=population, xend=population, y=LB_b, yend=UB_b, color= "Build"), alpha=.65, size= 10) +
-      geom_segment( aes(x=population, xend=population, y=LB_nb, yend=UB_nb, color = "No-build"), alpha=.5, size= 10) +
+      geom_segment( aes(x=population, xend=population, y=LB_b, yend=UB_b, color= "Build"), alpha=.65, size= 15) +
+      geom_segment( aes(x=population, xend=population, y=LB_nb, yend=UB_nb, color = "No-build"), alpha=.5, size= 15) +
       geom_point( aes(x=population, y=build, color = "Build"), shape="square", size=4) +
       geom_point( aes(x=population, y=no_build, color= "No-build"), shape="square", size=4) +
       geom_point( aes(x=population, y=build), shape=20, size=1, show.legend = TRUE)+
       geom_point( aes(x=population, y=no_build), shape=20, size=1, show.legend = TRUE)+
-      geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=change_label),hjust="inward", size= 4)+
-      scale_color_manual(name= "Scenario", values= c("Build" = "#E69F00", "No-build" = "#56B4E9"))+
+      geom_text(aes(x=as.numeric(population) +.5, y= no_build , label=change_label),hjust="inward", size= 4)+
+      scale_color_manual(name= "Scenario", labels= c("Build"= build_color, "No-build"= no_build_color), values= c("Build" = "#255F85", "No-build" = "#FFC857"))+
+      #scale_color_manual(name= "Scenario", labels= c("Build"= build_color, "No-build"= no_build_color), values= c("Build" = "#235789", "No-build" = "#A8C256"))+
+      #scale_color_manual(name= "Scenario", labels= c("Build"= build_color, "No-build"= no_build_color), values= c("Build" = "#2BB6AF", "No-build" = "#DCD104"))+
+      #scale_fill_manual(name= "Scenario", labels= c("Build"= build_color, "No-build"= no_build_color), values= c("Build" = "#E69F00", "No-build" = "#56B4E9"))+
       coord_flip()+
       theme_minimal() +
       theme(
         axis.ticks.y=element_blank(),
         #axis.text.y= element_blank()
-        plot.title = element_text(face= "bold"))+
+        plot.title = element_text(face= "bold"),
+        text= element_text(size= 14))+
+      scale_y_continuous(labels= scales::comma)+
       labs(title = paste(metric_filter, "by population"),
            subtitle = str_wrap(subtitle, width = 33))+
       ylab(paste(metric_filter, " (", metric_unit, ")"))+
@@ -450,7 +460,7 @@ server <- function(input, output) {
       geom_point( aes(x=population, y=no_build, color= "No-build"), shape="square", size=4) +
       geom_point( aes(x=population, y=build), shape=20, size=1, show.legend = TRUE)+
       geom_point( aes(x=population, y=no_build), shape=20, size=1, show.legend = TRUE)+
-      geom_text(aes(x=as.numeric(population) +.3, y= no_build , label=change_label),hjust="inward", size= 4)+
+      geom_text(aes(x=as.numeric(population) +.5, y= no_build , label=change_label),hjust="inward", size= 4)+
       scale_color_manual(name= "Scenario", values= c("Build" = "#E69F00", "No-build" = "#56B4E9"))+
       coord_flip()+
       theme_minimal() +
@@ -460,6 +470,7 @@ server <- function(input, output) {
         plot.title = element_text(face= "bold"))+
       labs(title = paste(metric_filter, "by population"),
            subtitle = str_wrap(subtitle, width = 33))+
+      scale_y_continuous(labels= scales::comma)+
       ylab(paste(metric_filter, " (", metric_unit, ")"))+
       xlab("Population")
     
@@ -547,6 +558,7 @@ server <- function(input, output) {
         plot.title = element_text(face= "bold"))+
       labs(title = paste(metric_filter, "by population"),
            subtitle = str_wrap(subtitle, width = 33))+
+      scale_y_continuous(labels= scales::comma)+
       ylab(paste(metric_filter, " (", metric_unit, ")"))+
       xlab("Population")
     
@@ -622,13 +634,13 @@ server <- function(input, output) {
       #annotate(rect, aes(x= "Low-income", xend= "Low-income", y= -dim2 ,yend= dim2))+
       #geom_segment( aes(x= 4.5, xend= 4.5, y= -dim2, yend= +dim2 ),color= "navy", size= 10)+
       geom_segment( aes(x=population, xend= population, y= 0,yend=delta/no_build, color= impact), shape=20, size=4, show.legend = FALSE)+
-      scale_colour_manual(values = c("Benefit within threshold" = "#858585","Burden within threshold"= "#858585", "Benefit" = "#4a4a4a","Burden" = "#ff6666"))+
+      scale_colour_manual(values = c("Benefit within threshold" = "#858585","Burden within threshold"= "#858585", "Benefit" = "#4a4a4a","Burden" = "#E13D45"))+
       geom_text(aes(x=as.numeric(population) +.2, y= delta/no_build ,label= impact),hjust="inward", size= 4)+
       geom_hline(aes(yintercept = 0), size= 1, color = "black")+
       scale_y_continuous(labels = scales::percent)+
       coord_flip()+
       theme_minimal()+
-      theme(legend.position = "None", plot.title = element_text(face= "bold"))+
+      theme(legend.position = "None", plot.title = element_text(face= "bold"),text= element_text(size= 14))+
       labs(title = paste("Percent change", "by population"))+
       ylab("")+
       xlab("Population")
@@ -708,7 +720,9 @@ server <- function(input, output) {
       scale_y_continuous(labels = scales::percent)+
       coord_flip()+
       theme_minimal()+
-      theme(legend.position = "None", plot.title = element_text(face= "bold"))+
+      theme(legend.position = "None", plot.title = element_text(face= "bold"),
+            #text= element_text(size= 14)
+            )+
       labs(title = paste("Percent change", "by population"))+
       ylab("")+
       xlab("Population")
@@ -973,19 +987,20 @@ server <- function(input, output) {
       #geom_hline(aes(yintercept = 1-dim3), size= .75,color = "#6e6e6e")+
       geom_segment (aes(x= poptype, xend= poptype, y= 1, yend = ratio, color = DB), size = 4, show.legend = FALSE)+
       scale_color_manual(values = c("Disproportionality within threshold"= "#858585", 
-                                    "EJ population affected more"= "#ff6666", 
-                                    "Non-EJ population affected more"= "#ff6666",
-                                    "EJ population burdened more" = "#ff6666",
+                                    "EJ population affected more"= "#E13D45", 
+                                    "Non-EJ population affected more"= "#E13D45",
+                                    "EJ population burdened more" = "#E13D45",
                                     "EJ population benefits more" = "#4a4a4a",
                                     "Non-EJ population burdened more" = "#4a4a4a",
-                                    "Non-EJ population benefits more" = "#ff6666"
+                                    "Non-EJ population benefits more" = "#E13D45"
                                     ))+
       geom_hline(aes(yintercept = 1), size= 1, color = "#5e5e5e")+
       geom_text( aes(x=as.numeric(poptype)+.2, y= ratio, label = str_wrap(DB, width = 20)), hjust= "inward", size = 4)+
       scale_x_discrete(labels= c("i"= str_wrap("Low-income / Non-low-income", width = 15), "m"= str_wrap("Minority / Nonminority",width = 12)))+
       coord_flip()+
       theme_minimal()+
-      theme(legend.position = "None", plot.title = element_text(face= "bold"))+
+      theme(legend.position = "None", plot.title = element_text(face= "bold"),
+            text= element_text(size= 14))+
       labs(title= "Ratio by population group")+
       ylab(str_wrap("Ratio,  (% change EJ population) / (% change non-EJ population)", width = 40))+
       xlab("Population group")
@@ -1677,7 +1692,7 @@ server <- function(input, output) {
              impact_test = cell_spec(impact_test, "html", 
                                      #color= ifelse(impact_test == "Yes", "red", "black"),
                                      bold = ifelse(impact_test == "Yes", TRUE, FALSE)),
-             instance = cell_spec(instance, "html", color= ifelse(instance== "Yes", "red", "black"),
+             instance = cell_spec(instance, "html", color= ifelse(instance== "Yes", "#E13D45", "black"),
                                   bold = ifelse(instance == "Yes", TRUE, FALSE)),
              DB = cell_spec(DB, "html", 
                             #color = ifelse(DB == "EJ population burdened more" | DB == "Non-EJ population benefits more", "red", "black"),
