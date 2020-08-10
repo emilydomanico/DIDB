@@ -97,7 +97,7 @@ ui <- fluidPage(
                      "High uncertainty"= 95),
                    selected= 10,
                    inline= TRUE),
-      p("The radio buttons represent confidence levels - how confident we feel that the model outputs represent future conditions. When a higher uncertainty is selected, the blue and orange bars on the Baseline Uncertainty Threshold graph will widen. The width of the bars indicate the range of likely impacts."),
+      p("The radio buttons represent confidence levels—how confident we feel that the model outputs represent future conditions. When a higher uncertainty is selected, the blue and orange bars on the Baseline Uncertainty Threshold graph will widen. The width of the bars indicate the range of likely impacts."),
       #p("This threshold sets the sensitivity for detecting the likelihood of the model outputs for the build and no-build scenarios. The radio buttons represent confidence levels - how confident we feel that the model outputs represent the potential reality. For example, moderate uncertainty means that we are somewhat confident that the model results represent the impacts of the transportation system in 2040. Higher uncertainty would result in a greater range of likely values - as indicated by the blue and orange bars - and less of a change of identifying a potential impact."),
       hr(),
       h4("Practical Impact Threshold"),
@@ -125,26 +125,23 @@ ui <- fluidPage(
                             p("The Boston Region Metropolitan Planning Organization (MPO) staff have developed this application
                               to help staff and interested stakeholders better visualize how setting the three different thresholds
                               within the MPO’s Disparate Impact and Disproportionate Burden (DI/DB) Policy would affect the likelihood
-                              of identifying potential, future disparate impacts and disproportionate burdens. "),
-                            p("The DI/DB Policy helps the MPO meet the federal requirement to identify potential, future disparate
+                              of identifying potential future DIDBs. "),
+                            p("The DI/DB Policy helps the MPO meet the federal requirement to identify potential future disparate
                               impacts on minority populations, and disproportionate burdens on low-income populations that may result from
-                              MPO investments, in the aggregate, that are funded in its Long-Range Transportation Plan (LRTP).
-                              (One of the roles of the LRTP is to dedicate funding over the next twenty years to regionally significant
-                              transportation projects.) To do so, the MPO uses a regional travel demand model to identify probable impacts on minority, low-income,
+                              MPO investments that are funded in its Long-Range Transportation Plan (LRTP). To do so, the MPO uses a regional travel demand model to identify probable impacts on minority, low-income,
                             nonminority, and non-low-income populations. In", em("Destination 2040,")," these impacts were analyzed for
-                            a suite of ten metrics, which are also used in this application. To see the results from the analysis of the MPO’s latest LRTP,", em("Destination 2040,"),
+                            a suite of ten metrics, which are also used in this application. To see the results from the analysis of ", em("Destination 2040,"),
                             a("click here", href= "https://www.bostonmpo.org/data/pdf/plans/LRTP/destination/Destination-2040-LRTP-20191030.pdf#page=243", target="_blank"),
                             ". "),
                             p("This application uses the model’s results for each metric analyzed in", em("Destination 2040"),"to demonstrate the
-                              role each of the three thresholds within the DI/DB Policy, help stakeholders better understand and provide input into
-                              the DI/DB Policy, and assist MPO staff with setting these thresholds. To be considered a disparate impact or
-                              disproportionate burden, any expected impact must pass each of the three thresholds—or ", em("tests"), "—in order, as described below."),
+                              role of the DI/DB Policy's three thresholds, to help stakeholders better understand and provide input into
+                              the DI/DB Policy, and to assist MPO staff with setting these thresholds. To be considered a DIDB, any expected impact must pass each of the three thresholds or ", em("tests"), "in order, as described below."),
                             br(),
-                            h5("Three-Test DI/DB Investigation:"),
-                            p("The investigation takes the form of three tests, 
-                              which build on one another to indicate whether there is a potential DI or DB for each metric. 
+                            h5("Three Test DI/DB Investigation:"),
+                            p("The DI/DB investigation takes the form of three tests, 
+                              which build on one another to indicate whether there is a potential DI/DB for each metric. 
                               The first test asks whether an impact is likely, which is necessary since the model inputs 
-                              contain some uncertainty and because it is projecting impacts twenty years into the future. 
+                              contain some uncertainty, and because the model is projecting impacts twenty years into the future. 
                               For each population group, the first test determines if the impact for each metric exceeds the 
                               model’s baseline uncertainty.  The second test asks if the impact is practically significant for each of the four population groups. 
                               The third test asks whether the minority or low-income populations would be disproportionately 
@@ -162,7 +159,7 @@ American; American Indian or Alaskan Native; Asian; Native Hawaiian or other Pac
 Islander; and/or Hispanic or Latino/a/x."),
                             p("A disproportionate burden is a neutral policy or practice that disproportionately affects
 low-income populations more than non-low income populations. The MPO considers a
-person whose family income is at or below 200% of the poverty
+person whose family income is at or below 200 percent of the poverty
 level for their family size as low income."),
                             p("The environmental justice (EJ) population consists of people who identify as minority or who are considered low-income."),
                    ),
@@ -202,7 +199,7 @@ level for their family size as low income."),
                             column(width = 12,
                                    hr(),
                                    htmlOutput(outputId = "DIDBAcc_met"),
-                                   p("Note: I = Low-income and Non-low-income pair. M = Minority and Nonminority pair."),
+                                   p("DI/DB = disparate impacts and disproportionate burdens. EJ = environmental justice. I = Low-income and Non-low-income pair. M = Minority and Nonminority pair."),
                                    br(),
                                    )
                             ),
@@ -212,7 +209,7 @@ level for their family size as low income."),
                             column(width=12,
                                      selectInput("metricEnv", "Select a Metric to See the Results:",
                                                  choices = list(
-                                                   Environmental= c("Congested vehicle miles traveled","Carbon monoxide emissions")),
+                                                   Environmental= c("Congested vehicle-miles-traveled","Carbon monoxide emissions")),
                                                  selected = "Carbon monoxide emissions"),
                             ),
                             column(width = 12,
@@ -236,7 +233,7 @@ level for their family size as low income."),
                             column(width = 12,
                                    hr(),
                                    htmlOutput(outputId = "DIDBEnv_met"),
-                                   p("Note: I = Low-income and Non-low-income pair. M = Minority and Nonminority pair."),
+                                   p("DI/DB = disparate impacts and disproportionate burdens. EJ = environmental justice. I = Low-income and Non-low-income pair. M = Minority and Nonminority pair."),
                                    br(),
                             )
                    ),
@@ -245,9 +242,9 @@ level for their family size as low income."),
                             br(),
                             column(width=12,
                                      selectInput("metricMob", "Select a Metric to See the Results:",
-                                                 choices = list(Mobility= c("Average attraction - highway travel time", "Average production - highway travel time","Average attraction - transit travel time",
-                                                                            "Average production - transit travel time")),
-                                                 selected = "Average production - transit travel time"),
+                                                 choices = list(Mobility= c("Average attraction: highway travel time", "Average production: highway travel time","Average attraction: transit travel time",
+                                                                            "Average production: transit travel time")),
+                                                 selected = "Average production: transit travel time"),
                             ),
                             column(width = 12,
                                    h4("Baseline Uncertainty Threshold"),
@@ -271,7 +268,7 @@ level for their family size as low income."),
                             column(width = 12,
                                    hr(),
                                    htmlOutput(outputId = "DIDBMob_met"),
-                                   p("Note: I = Low-income and Non-low-income pair. M = Minority and Nonminority pair."),
+                                   p("DI/DB = disparate impacts and disproportionate burdens. EJ = environmental justice. I = Low-income and Non-low-income pair. M = Minority and Nonminority pair."),
                                    br(),
                             )
                    ),
@@ -282,7 +279,7 @@ level for their family size as low income."),
                             htmlOutput("DIDBAcc"),
                             htmlOutput("DIDBEnv"),
                             htmlOutput("DIDBMob"),
-                            p("Note: I = Low-income and Non-low-income pair. M = Minority and Nonminority pair."),
+                            p("DI/DB = disparate impacts and disproportionate burdens. EJ = environmental justice. I = Low-income and Non-low-income pair. M = Minority and Nonminority pair."),
                             
                             )
                 

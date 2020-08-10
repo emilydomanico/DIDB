@@ -31,14 +31,14 @@ Accessibility,0.037,Access to jobs by transit,count,Low-income,no-build,404774.5
 Accessibility,0.037,Access to jobs by transit,count,Low-income,build,402208.041
 Accessibility,0.05,Access to jobs by transit,count,Non-low-income,no-build,305360.1458
 Accessibility,0.05,Access to jobs by transit,count,Non-low-income,build,303602.7354
-Environmental,0.163,Congested vehicle miles traveled,per square mile,Minority,no-build,110489.5486
-Environmental,0.163,Congested vehicle miles traveled,per square mile,Minority,build,107284.932
-Environmental,0.226,Congested vehicle miles traveled,per square mile,Non-minority,no-build,81396.45196
-Environmental,0.226,Congested vehicle miles traveled,per square mile,Non-minority,build,79315.86866
-Environmental,0.165,Congested vehicle miles traveled,per square mile,Low-income,no-build,102537.2528
-Environmental,0.165,Congested vehicle miles traveled,per square mile,Low-income,build,99854.51265
-Environmental,0.203,Congested vehicle miles traveled,per square mile,Non-low-income,no-build,92043.93524
-Environmental,0.203,Congested vehicle miles traveled,per square mile,Non-low-income,build,89295.74383
+Environmental,0.163,Congested vehicle-miles-traveled,per square mile,Minority,no-build,110489.5486
+Environmental,0.163,Congested vehicle-miles-traveled,per square mile,Minority,build,107284.932
+Environmental,0.226,Congested vehicle-miles-traveled,per square mile,Non-minority,no-build,81396.45196
+Environmental,0.226,Congested vehicle-miles-traveled,per square mile,Non-minority,build,79315.86866
+Environmental,0.165,Congested vehicle-miles-traveled,per square mile,Low-income,no-build,102537.2528
+Environmental,0.165,Congested vehicle-miles-traveled,per square mile,Low-income,build,99854.51265
+Environmental,0.203,Congested vehicle-miles-traveled,per square mile,Non-low-income,no-build,92043.93524
+Environmental,0.203,Congested vehicle-miles-traveled,per square mile,Non-low-income,build,89295.74383
 Environmental,0.119,Carbon monoxide emissions,kilograms,Minority,no-build,184.2332134
 Environmental,0.119,Carbon monoxide emissions,kilograms,Minority,build,179.4899061
 Environmental,0.172,Carbon monoxide emissions,kilograms,Non-minority,no-build,134.3042468
@@ -47,35 +47,35 @@ Environmental,0.126,Carbon monoxide emissions,kilograms,Low-income,no-build,172.
 Environmental,0.126,Carbon monoxide emissions,kilograms,Low-income,build,167.9502213
 Environmental,0.154,Carbon monoxide emissions,kilograms,Non-low-income,no-build,149.8728153
 Environmental,0.154,Carbon monoxide emissions,kilograms,Non-low-income,build,145.7813695
-Mobility,0.139,Average attraction - highway travel time,minutes,Minority,no-build,19.07682513
-Mobility,0.139,Average attraction - highway travel time,minutes,Minority,build,19.098803
-Mobility,0.131,Average attraction - highway travel time,minutes,Non-minority,no-build,19.01611379
-Mobility,0.131,Average attraction - highway travel time,minutes,Non-minority,build,19.03165468
-Mobility,0.132,Average attraction - highway travel time,minutes,Low-income,no-build,18.78804132
-Mobility,0.132,Average attraction - highway travel time,minutes,Low-income,build,18.80843919
-Mobility,0.132,Average attraction - highway travel time,minutes,Non-low-income,no-build,19.03006815
-Mobility,0.132,Average attraction - highway travel time,minutes,Non-low-income,build,19.04749985
-Mobility,0.132,Average production - highway travel time,minutes,Minority,no-build,19.0884974
-Mobility,0.132,Average production - highway travel time,minutes,Minority,build,19.10342664
-Mobility,0.132,Average production - highway travel time,minutes,Non-minority,no-build,19.02253022
-Mobility,0.132,Average production - highway travel time,minutes,Non-minority,build,19.04240936
-Mobility,0.131,Average production - highway travel time,minutes,Low-income,no-build,18.81164565
-Mobility,0.131,Average production - highway travel time,minutes,Low-income,build,18.82979448
-Mobility,0.133,Average production - highway travel time,minutes,Non-low-income,no-build,19.03597847
-Mobility,0.133,Average production - highway travel time,minutes,Non-low-income,build,19.05742071
-Mobility,0.145,Average attraction - transit travel time,minutes,Minority,no-build,47.81616892
-Mobility,0.145,Average attraction - transit travel time,minutes,Minority,build,47.78513994
-Mobility,0.125,Average attraction - transit travel time,minutes,Non-minority,no-build,51.82471759
-Mobility,0.125,Average attraction - transit travel time,minutes,Non-minority,build,51.80386186
-Mobility,0.13,Average attraction - transit travel time,minutes,Low-income,no-build,49.50181059
-Mobility,0.13,Average attraction - transit travel time,minutes,Low-income,build,49.47379845
-Mobility,0.122,Average attraction - transit travel time,minutes,Non-low-income,no-build,51.47320903
-Mobility,0.122,Average attraction - transit travel time,minutes,Non-low-income,build,51.45461467
-Mobility,0.173,Average production - transit travel time,minutes,Minority,no-build,46.86165131
-Mobility,0.173,Average production - transit travel time,minutes,Minority,build,46.84924547
-Mobility,0.155,Average production - transit travel time,minutes,Non-minority,no-build,51.36885633
-Mobility,0.155,Average production - transit travel time,minutes,Non-minority,build,51.34965031
-Mobility,0.161,Average production - transit travel time,minutes,Low-income,no-build,48.98182222
-Mobility,0.161,Average production - transit travel time,minutes,Low-income,build,48.96139622
-Mobility,0.157,Average production - transit travel time,minutes,Non-low-income,no-build,50.90777915
-Mobility,0.157,Average production - transit travel time,minutes,Non-low-income,build,50.89650717
+Mobility,0.139,Average attraction: highway travel time,minutes,Minority,no-build,19.07682513
+Mobility,0.139,Average attraction: highway travel time,minutes,Minority,build,19.098803
+Mobility,0.131,Average attraction: highway travel time,minutes,Non-minority,no-build,19.01611379
+Mobility,0.131,Average attraction: highway travel time,minutes,Non-minority,build,19.03165468
+Mobility,0.132,Average attraction: highway travel time,minutes,Low-income,no-build,18.78804132
+Mobility,0.132,Average attraction: highway travel time,minutes,Low-income,build,18.80843919
+Mobility,0.132,Average attraction: highway travel time,minutes,Non-low-income,no-build,19.03006815
+Mobility,0.132,Average attraction: highway travel time,minutes,Non-low-income,build,19.04749985
+Mobility,0.132,Average production: highway travel time,minutes,Minority,no-build,19.0884974
+Mobility,0.132,Average production: highway travel time,minutes,Minority,build,19.10342664
+Mobility,0.132,Average production: highway travel time,minutes,Non-minority,no-build,19.02253022
+Mobility,0.132,Average production: highway travel time,minutes,Non-minority,build,19.04240936
+Mobility,0.131,Average production: highway travel time,minutes,Low-income,no-build,18.81164565
+Mobility,0.131,Average production: highway travel time,minutes,Low-income,build,18.82979448
+Mobility,0.133,Average production: highway travel time,minutes,Non-low-income,no-build,19.03597847
+Mobility,0.133,Average production: highway travel time,minutes,Non-low-income,build,19.05742071
+Mobility,0.145,Average attraction: transit travel time,minutes,Minority,no-build,47.81616892
+Mobility,0.145,Average attraction: transit travel time,minutes,Minority,build,47.78513994
+Mobility,0.125,Average attraction: transit travel time,minutes,Non-minority,no-build,51.82471759
+Mobility,0.125,Average attraction: transit travel time,minutes,Non-minority,build,51.80386186
+Mobility,0.13,Average attraction: transit travel time,minutes,Low-income,no-build,49.50181059
+Mobility,0.13,Average attraction: transit travel time,minutes,Low-income,build,49.47379845
+Mobility,0.122,Average attraction: transit travel time,minutes,Non-low-income,no-build,51.47320903
+Mobility,0.122,Average attraction: transit travel time,minutes,Non-low-income,build,51.45461467
+Mobility,0.173,Average production: transit travel time,minutes,Minority,no-build,46.86165131
+Mobility,0.173,Average production: transit travel time,minutes,Minority,build,46.84924547
+Mobility,0.155,Average production: transit travel time,minutes,Non-minority,no-build,51.36885633
+Mobility,0.155,Average production: transit travel time,minutes,Non-minority,build,51.34965031
+Mobility,0.161,Average production: transit travel time,minutes,Low-income,no-build,48.98182222
+Mobility,0.161,Average production: transit travel time,minutes,Low-income,build,48.96139622
+Mobility,0.157,Average production: transit travel time,minutes,Non-low-income,no-build,50.90777915
+Mobility,0.157,Average production: transit travel time,minutes,Non-low-income,build,50.89650717
