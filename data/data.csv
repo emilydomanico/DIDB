@@ -7,22 +7,22 @@ Accessibility,0.102,Access to retail opportunities by transit,"represented by co
 Accessibility,0.102,Access to retail opportunities by transit,"represented by count of retail jobs",Low-income,build,44244.29358
 Accessibility,0.137,Access to retail opportunities by transit,"represented by count of retail jobs",Non-low-income,no-build,33809.63395
 Accessibility,0.137,Access to retail opportunities by transit,"represented by count of retail jobs",Non-low-income,build,33618.23352
-Accessibility,0.035,Access to higher education by transit,count,Minority,no-build,50776.48877
-Accessibility,0.035,Access to higher education by transit,count,Minority,build,50670.9771
-Accessibility,0.06,Access to higher education by transit,count,Non-minority,no-build,29372.19979
-Accessibility,0.06,Access to higher education by transit,count,Non-minority,build,29322.54769
-Accessibility,0.034,Access to higher education by transit,count,Low-income,no-build,44968.13072
-Accessibility,0.034,Access to higher education by transit,count,Low-income,build,44883.93182
-Accessibility,0.046,Access to higher education by transit,count,Non-low-income,no-build,33692.2341
-Accessibility,0.046,Access to higher education by transit,count,Non-low-income,build,33610.87199
-Accessibility,0.032,Access to healthcare facilities by transit,count,Minority,no-build,987.4111758
-Accessibility,0.032,Access to healthcare facilities by transit,count,Minority,build,981.8677592
-Accessibility,0.058,Access to healthcare facilities by transit,count,Non-minority,no-build,562.8386195
-Accessibility,0.058,Access to healthcare facilities by transit,count,Non-minority,build,561.789027
-Accessibility,0.033,Access to healthcare facilities by transit,count,Low-income,no-build,892.2522648
-Accessibility,0.033,Access to healthcare facilities by transit,count,Low-income,build,888.7109781
-Accessibility,0.045,Access to healthcare facilities by transit,count,Non-low-income,no-build,641.0390197
-Accessibility,0.045,Access to healthcare facilities by transit,count,Non-low-income,build,638.7018604
+Accessibility,0.035,Access to higher education by transit,"represented by count of enrolled students",Minority,no-build,50776.48877
+Accessibility,0.035,Access to higher education by transit,"represented by count of enrolled students",Minority,build,50670.9771
+Accessibility,0.06,Access to higher education by transit,"represented by count of enrolled students",Non-minority,no-build,29372.19979
+Accessibility,0.06,Access to higher education by transit,"represented by count of enrolled students",Non-minority,build,29322.54769
+Accessibility,0.034,Access to higher education by transit,"represented by count of enrolled students",Low-income,no-build,44968.13072
+Accessibility,0.034,Access to higher education by transit,"represented by count of enrolled students",Low-income,build,44883.93182
+Accessibility,0.046,Access to higher education by transit,"represented by count of enrolled students",Non-low-income,no-build,33692.2341
+Accessibility,0.046,Access to higher education by transit,"represented by count of enrolled students",Non-low-income,build,33610.87199
+Accessibility,0.032,Access to healthcare facilities by transit,"represented by count of hospital beds",Minority,no-build,987.4111758
+Accessibility,0.032,Access to healthcare facilities by transit,"represented by count of hospital beds",Minority,build,981.8677592
+Accessibility,0.058,Access to healthcare facilities by transit,"represented by count of hospital beds",Non-minority,no-build,562.8386195
+Accessibility,0.058,Access to healthcare facilities by transit,"represented by count of hospital beds",Non-minority,build,561.789027
+Accessibility,0.033,Access to healthcare facilities by transit,"represented by count of hospital beds",Low-income,no-build,892.2522648
+Accessibility,0.033,Access to healthcare facilities by transit,"represented by count of hospital beds",Low-income,build,888.7109781
+Accessibility,0.045,Access to healthcare facilities by transit,"represented by count of hospital beds",Non-low-income,no-build,641.0390197
+Accessibility,0.045,Access to healthcare facilities by transit,"represented by count of hospital beds",Non-low-income,build,638.7018604
 Accessibility,0.033,Access to jobs by transit,count,Minority,no-build,481608.1161
 Accessibility,0.033,Access to jobs by transit,count,Minority,build,478659.6499
 Accessibility,0.062,Access to jobs by transit,count,Non-minority,no-build,265441.3152
