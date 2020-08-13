@@ -95,13 +95,13 @@ ui <- fluidPage(
                      "Moderate uncertainty"= 50,
                      #"90 %"=90,
                      "High uncertainty"= 95),
-                   selected= 10,
+                   selected= 50,
                    inline= TRUE),
       p("The radio buttons represent confidence levels—how confident we feel that the model outputs represent future conditions. When a higher uncertainty is selected, the blue and orange bars on the Baseline Uncertainty Threshold graph will widen. The width of the bars indicate the range of likely impacts."),
       #p("This threshold sets the sensitivity for detecting the likelihood of the model outputs for the build and no-build scenarios. The radio buttons represent confidence levels - how confident we feel that the model outputs represent the potential reality. For example, moderate uncertainty means that we are somewhat confident that the model results represent the impacts of the transportation system in 2040. Higher uncertainty would result in a greater range of likely values - as indicated by the blue and orange bars - and less of a change of identifying a potential impact."),
       hr(),
       h4("Practical Impact Threshold"),
-      sliderInput("Dim2", label = "Use the slider below to change the threshold.", min = 0, max = 20, post= " %", value = 2, step = .1),
+      sliderInput("Dim2", label = "Use the slider below to change the threshold.", min = 0, max = 20, post= " %", value = 0, step = .1),
      p("The slider represents the percent change between the no-build and build scenarios for a given metric."),
       #p("This threshold sets the sensitivity for determining if the impacts of implementing the build scenario would be practically significant. The slider represents a percent change. At 0%, any change between the build and no-build scenario would be considered a practically significant impact. As the threshold increases, the likelihood of identifying an adverse effect decreases. The impact is calculated as the percent change between scenarios:"),
       #withMathJax("$$\\scriptsize\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build}} \\cdot 100$$"),
@@ -110,7 +110,7 @@ ui <- fluidPage(
       hr(),
      #h5("Disproportionality Threshold"), 
      h4("Disproportionality Threshold"),
-      sliderInput("Dim3", label = "Use the slider below to change the threshold.", min = 0, max = 30, value = 5, post= " %", step = 1),
+      sliderInput("Dim3", label = "Use the slider below to change the threshold.", min = 0, max = 30, value = 0, post= " %", step = 1),
       p("This threshold determines if the impacts found in the previous step would disproportionately affect the minority or low-income population compared to the nonminority or non-low-income population."),
       #p("Disproportionality is calculated as a ratio, comparing the absolute value of the percent change for the EJ population (from the second step) to the absolute value of the percent change for the non-EJ population."),
      br()
@@ -128,20 +128,20 @@ ui <- fluidPage(
                               of identifying potential future DIDBs. "),
                             p("The DI/DB Policy helps the MPO meet the federal requirement to identify potential future disparate
                               impacts on minority populations, and disproportionate burdens on low-income populations that may result from
-                              MPO investments that are funded in its Long-Range Transportation Plan (LRTP). To do so, the MPO uses a regional travel demand model to identify probable impacts on minority, low-income,
+                              MPO investments that are funded in the Long-Range Transportation Plan (LRTP). To do so, the MPO uses a regional travel demand model to identify probable impacts on minority, low-income,
                             nonminority, and non-low-income populations. In", em("Destination 2040,")," these impacts were analyzed for
-                            a suite of ten metrics, which are also used in this application. To see the results from the analysis of ", em("Destination 2040,"),
+                            a suite of 10 metrics, which are also used in this application. To see the results from the analysis of ", em("Destination 2040,"),
                             a("click here", href= "https://www.bostonmpo.org/data/pdf/plans/LRTP/destination/Destination-2040-LRTP-20191030.pdf#page=243", target="_blank"),
                             ". "),
                             p("This application uses the model’s results for each metric analyzed in", em("Destination 2040"),"to demonstrate the
-                              role of the DI/DB Policy's three thresholds, to help stakeholders better understand and provide input into
+                              role of the DI/DB Policy's three thresholds to help stakeholders better understand and provide input into
                               the DI/DB Policy, and to assist MPO staff with setting these thresholds. To be considered a DIDB, any expected impact must pass each of the three thresholds or ", em("tests"), "in order, as described below."),
                             br(),
                             h5("Three Test DI/DB Investigation:"),
                             p("The DI/DB investigation takes the form of three tests, 
                               which build on one another to indicate whether there is a potential DI/DB for each metric. 
                               The first test asks whether an impact is likely, which is necessary since the model inputs 
-                              contain some uncertainty, and because the model is projecting impacts twenty years into the future. 
+                              contain some uncertainty, and because the model is projecting impacts 20 years into the future. 
                               For each population group, the first test determines if the impact for each metric exceeds the 
                               model’s baseline uncertainty.  The second test asks if the impact is practically significant for each of the four population groups. 
                               The third test asks whether the minority or low-income populations would be disproportionately 
