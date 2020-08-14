@@ -53,6 +53,9 @@ ui <- fluidPage(
 #css #######################################
   tags$head(
     tags$style(HTML("
+    * { 
+    font-family: Arial; 
+    }
     #sidebar {
     background-color: ;
     }
@@ -128,7 +131,7 @@ ui <- fluidPage(
                               of identifying potential future DIDBs. "),
                             p("The DI/DB Policy helps the MPO meet the federal requirement to identify potential future disparate
                               impacts on minority populations, and disproportionate burdens on low-income populations that may result from
-                              MPO investments that are funded in the Long-Range Transportation Plan (LRTP). To do so, the MPO uses a regional travel demand model to identify probable impacts on minority, low-income,
+                              MPO investments that are funded in the Long-Range Transportation Plan (LRTP),", em("Destination 2040"),". To do so, the MPO uses a regional travel demand model to identify probable impacts on minority, low-income,
                             nonminority, and non-low-income populations. In", em("Destination 2040,")," these impacts were analyzed for
                             a suite of 10 metrics, which are also used in this application. To see the results from the analysis of ", em("Destination 2040,"),
                             a("click here", href= "https://www.bostonmpo.org/data/pdf/plans/LRTP/destination/Destination-2040-LRTP-20191030.pdf#page=243", target="_blank"),
