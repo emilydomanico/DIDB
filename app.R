@@ -49,15 +49,41 @@ pop_mpo <- taz_pop%>%
   right_join(mrs_list)
 
 # UI ####################################################
-
+title <- tags$a(
+  #href= "https://www.ctps.org/disparate-impact",
+  tags$img(src = "DIDB_logo.png", height = "100", width = "100"),
+  strong("DI/DB Thresholds"))
 ui <- fluidPage(
 #css #######################################
   tags$head(
     tags$style(HTML("
+     * { 
+    font-family: Arial; 
+    }
+    #sidebar {
+    background-color: ;
+    }
+    
+    a {
+    color: #7C1318;
+    }
+    a:hover { 
+    color: #58595b; 
+    }
     p {
-    font-size: 13px;
+    font-size: 12px;
+    }
+    h4 {
+    font-weight: bold;
     }
     h5 {
+    font-weight: bold;
+    }
+    control-label {
+    font-weight: normal;
+    }
+    #plotbrush_txt_dif, #plotbrush_txt {
+    font-size: 12px;
     font-weight: bold;
     }
     ")
@@ -71,7 +97,8 @@ ui <- fluidPage(
 # SideBar Panel UI ######################################
   sidebarLayout(
     sidebarPanel(width= 3,
-      h2("DI/DB Thresholds"),
+      h2(title),
+      #h2("DI/DB Thresholds"),
       br(),
       h5("Threshold Summary"),
       h6("Accessibility Metrics:"),
@@ -246,7 +273,7 @@ ui <- fluidPage(
 # level for their family size.")
 #                    ),
                    #UI by Acc #######################################
-                   tabPanel("Accessibility Metrics",
+                   tabPanel(strong("Accessibility Metrics"),
                             br(),
                             column(width=12,
                                      selectInput("metricAcc", "Metric:",
@@ -318,7 +345,7 @@ ui <- fluidPage(
                             )
                             ),
                    #UI by Env ###############################################
-                   tabPanel("Environmental Metrics",
+                   tabPanel(strong("Environmental Metrics"),
                             br(),
                             column(width=12,
                                      selectInput("metricEnv", "Metric:",
@@ -369,7 +396,7 @@ ui <- fluidPage(
                             )
                    ),
                    #UI by Mob ###########################
-                   tabPanel("Mobility Metrics",
+                   tabPanel(strong("Mobility Metrics"),
                             br(),
                             column(width=12,
                                      selectInput("metricMob", "Metric:",
@@ -420,7 +447,7 @@ ui <- fluidPage(
                             )
                    ),
                    # Results for all metrics ##############################
-                   tabPanel("Results for all Metrics",
+                   tabPanel(strong("Results for all Metrics"),
                             br(),
                             #textOutput("DIDB_count"),
                             p("The table below will show instances of DIDB for the current threshold settings accross all metrics."),
@@ -430,7 +457,7 @@ ui <- fluidPage(
                             p("Note: I = Low-income and Non-low-income pair. M = Minority and Non-minority pair."),
                             
                             ),
-                   tabPanel("Change by TAZ", 
+                   tabPanel(strong("Change by TAZ"), 
                             br(),
                             selectInput("metric_map", "Metric:",
                                         choices = list(
