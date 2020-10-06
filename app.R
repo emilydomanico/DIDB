@@ -23,6 +23,8 @@ data[data=="Low-income"] <- "Low_income"
 data[data=="Non-low-income"] <- "Non_low_income"
 data[data=="Non-minority"] <- "Non_minority"
 
+
+
 data <- data %>%
   spread( scenario, model_result, drop = TRUE)
 data <- data %>%
@@ -96,10 +98,10 @@ ui <- fluidPage(
       #Sliders to toggle sensitivity
       #Confidence Interval input option 1
       # radioButtons("Dim1", "Forecasting Error Confidence Interval Threshold",
-      #              c("0 %"=0,
-      #                "10 %"= 10,
-      #                "90 %"=90,
-      #                "95 %"= 95),
+      #              c("0%"=0,
+      #                "10%"= 10,
+      #                "90%"=90,
+      #                "95%"= 95),
       #              selected= 10,
       #              inline= TRUE),
       #Confidence Interval input option 2
@@ -110,12 +112,12 @@ ui <- fluidPage(
       #Confidence Interval input option 3
       # shinyWidgets::sliderTextInput(inputId = "Dim1", 
       #                               label = "Forecasting Error Confidence Interval Threshold", 
-      #                               choices = c(0,10,90,95,100),grid=TRUE,width=110, dragRange = TRUE, post = " %"),
-      #sliderInput("Dim1", label = "Step 1: Forecasting Error Confidence Interval Threshold", min = 0, max = 100, post= " %", value = 10, step = 1),
+      #                               choices = c(0,10,90,95,100),grid=TRUE,width=110, dragRange = TRUE, post = "%"),
+      #sliderInput("Dim1", label = "Step 1: Forecasting Error Confidence Interval Threshold", min = 0, max = 100, post= "%", value = 10, step = 1),
     
       #br(),
       
-     # sliderInput("Dim2", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
+     # sliderInput("Dim2", label = "Impact Threshold", min = 0, max = 20, post= "%", value = 2, step = .1),
      h5("Impact Threshold"), 
      p("This threshold sets the sensitivity for determining if the impacts of implementing the build-scenario would be meaningful. The slider represents a percent change. At 0%, any change between the build and no-build scenario would be considered a meaningful impact. As the threshold increase, the likelihood of identifying an adverse effect decreases. The impact is calculated as the percent change between scenarios:"),
       withMathJax("$$\\scriptsize\\frac{\\text{Build} - \\text{No-build} } {\\text{No-build}} \\cdot 100$$"),
@@ -123,7 +125,7 @@ ui <- fluidPage(
       p("If an impact is found, it is categorized as a benefit or a burden based on the directionality of the metric. (For example, an increase in carbon monoxide emissions is a burden, while an increase in access to jobs is a benefit."),
       br(),
      h5("Disproportionality Threshold"), 
-      #sliderInput("Dim3", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
+      #sliderInput("Dim3", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= "%", step = 1),
       #selectInput("dis_method", label = "Disproportionality method to visualize:", choices = c("Percent Difference", "Ratio"), selected = "Ratio")
       p("This threshold determines if the impacts found in the previous step disproportionately affect the minority or low-income population more than the nonminority or non-low-income population."),
       p("Disproportionality is calculated as a ratio, comparing the absolute value of the percent change for the protected population (from the second step) to the absolute value of the percent change non-protected population."),
@@ -156,19 +158,19 @@ ui <- fluidPage(
                    #          column(width= 6, 
                    #          # plotOutput("TAZ_hist_diff", brush= brushOpts(id= "plot_brush_dif", fill="#88bfaf", direction= "x"),
                    #          #            height= 350),
-                   #          radioButtons("pct_taz", "Percent of TAZ's included in selection:",
-                   #                       c("50 %"= 50,
-                   #                         "60 %"= 60,
-                   #                         "70 %"= 70,
-                   #                         "80 %"= 80,
-                   #                         "90 %"= 90,
-                   #                         "95 %"= 95,
-                   #                         "97 %"= 97,
-                   #                         "98 %"= 98,
-                   #                         "99 %"= 99),
+                   #          radioButtons("pct_taz", "Percent of TAZs included in selection:",
+                   #                       c("50%"= 50,
+                   #                         "60%"= 60,
+                   #                         "70%"= 70,
+                   #                         "80%"= 80,
+                   #                         "90%"= 90,
+                   #                         "95%"= 95,
+                   #                         "97%"= 97,
+                   #                         "98%"= 98,
+                   #                         "99%"= 99),
                    #                       selected= 98,
                    #                       inline= TRUE),
-                   #          # selectInput("pct_taz", "Percent of TAZ's included in selection:",
+                   #          # selectInput("pct_taz", "Percent of TAZs included in selection:",
                    #          #             choices= c(50, 60, 70, 80, 95,97,98, 99),
                    #          #             
                    #          #             selected= 98),
@@ -254,8 +256,8 @@ ui <- fluidPage(
                                                                     "Access to healthcare facilities by transit", 
                                                                     "Access to jobs by transit")),
                                                   selected = "Access to retail opportunities by transit"),
-                                     #sliderInput("Dim2Acc", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                     #sliderInput("Dim3Acc", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1)
+                                     #sliderInput("Dim2Acc", label = "Impact Threshold", min = 0, max = 20, post= "%", value = 2, step = .1),
+                                     #sliderInput("Dim3Acc", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= "%", step = 1)
                             ),
                             # column(width = 6,
                             #        #h5("Baseline Uncertainty Test"),
@@ -263,7 +265,7 @@ ui <- fluidPage(
                             #                     c("No uncertainty"=0,
                             #                       "Low"=10,
                             #                       "Moderate"= 50,
-                            #                       #"90 %"=90,
+                            #                       #"90%"=90,
                             #                       "High uncertainty"= 95),
                             #                     selected= 10,
                             #                     inline= TRUE),
@@ -277,7 +279,7 @@ ui <- fluidPage(
                             # ),
                             column(width = 6,
                                    #h5("Impact Threshold"),
-                                   sliderInput("Dim2Acc", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
+                                   sliderInput("Dim2Acc", label = "Impact Threshold", min = 0, max = 20, post= "%", value = 2, step = .1),
                                    p("Where a likely impact is indicated, is the impact meaningful for each population?"),
                                    plotOutput("impact_plotAcc"),
                                    br(),
@@ -285,7 +287,7 @@ ui <- fluidPage(
                             ),
                             column(width = 6,
                                    #h5("Disproportionality Threshold"),
-                                   sliderInput("Dim3Acc", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
+                                   sliderInput("Dim3Acc", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= "%", step = 1),
                                    p("Where there is a likely meaningful impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotAcc"),
                                    br(),
@@ -303,7 +305,7 @@ ui <- fluidPage(
                                          c("No uncertainty"=0,
                                            "Low uncertainty"=10,
                                            "Moderate uncertainty"= 50,
-                                           #"90 %"=90,
+                                           #"90%"=90,
                                            "High uncertainty"= 95),
                                          selected= 10,
                                          inline= TRUE),
@@ -323,12 +325,12 @@ ui <- fluidPage(
                                                  choices = list(
                                                    Environmental= c("Congested vehicle miles traveled","Carbon monoxide emissions")),
                                                  selected = "Carbon monoxide emissions"),
-                                     #sliderInput("Dim2Env", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                     #sliderInput("Dim3Env", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1)
+                                     #sliderInput("Dim2Env", label = "Impact Threshold", min = 0, max = 20, post= "%", value = 2, step = .1),
+                                     #sliderInput("Dim3Env", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= "%", step = 1)
                             ),
                             column(width = 6,
                                    #h5("Impact Threshold"),
-                                   sliderInput("Dim2Env", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
+                                   sliderInput("Dim2Env", label = "Impact Threshold", min = 0, max = 20, post= "%", value = 2, step = .1),
                                    p("Where a likely impact is indicated, is the impact meaningful for each population?"),
                                    plotOutput("impact_plotEnv"),
                                    br(),
@@ -336,7 +338,7 @@ ui <- fluidPage(
                             ),
                             column(width = 6,
                                    #h5("Disproportionality Threshold"),
-                                   sliderInput("Dim3Env", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
+                                   sliderInput("Dim3Env", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= "%", step = 1),
                                    p("Where there is a likely meaningful impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotEnv"),
                                    br(),
@@ -354,7 +356,7 @@ ui <- fluidPage(
                                                 c("No uncertainty"=0,
                                                   "Low uncertainty"=10,
                                                   "Moderate uncertainty"= 50,
-                                                  #"90 %"=90,
+                                                  #"90%"=90,
                                                   "High uncertainty"= 95),
                                                 selected= 10,
                                                 inline= TRUE),
@@ -374,12 +376,12 @@ ui <- fluidPage(
                                                  choices = list(Mobility= c("Average attraction - highway travel time", "Average production - highway travel time","Average attraction - transit travel time",
                                                                             "Average production - transit travel time")),
                                                  selected = "Average production - transit travel time"),
-                                     #sliderInput("Dim2Mob", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
-                                     #sliderInput("Dim3Mob", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1)
+                                     #sliderInput("Dim2Mob", label = "Impact Threshold", min = 0, max = 20, post= "%", value = 2, step = .1),
+                                     #sliderInput("Dim3Mob", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= "%", step = 1)
                             ),
                             column(width = 6,
                                    #h5("Impact Threshold"),
-                                   sliderInput("Dim2Mob", label = "Impact Threshold", min = 0, max = 20, post= " %", value = 2, step = .1),
+                                   sliderInput("Dim2Mob", label = "Impact Threshold", min = 0, max = 20, post= "%", value = 2, step = .1),
                                    p("Where a likely impact is indicated, is the impact meaningful for each population?"),
                                    plotOutput("impact_plotMob"),
                                    br(),
@@ -387,7 +389,7 @@ ui <- fluidPage(
                             ),
                             column(width = 6,
                                    #h5("Disproportionality Threshold"),
-                                   sliderInput("Dim3Mob", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= " %", step = 1),
+                                   sliderInput("Dim3Mob", label = "Disproportionality Threshold", min = 0, max = 30, value = 5, post= "%", step = 1),
                                    p("Where there is a likely meaningful impact, would the minority or low-income populations be disproportionately affected?"),
                                    plotOutput("burden_plotMob"),
                                    br(),
@@ -405,7 +407,7 @@ ui <- fluidPage(
                                                 c("No uncertainty"=0,
                                                   "Low uncertainty"=10,
                                                   "Moderate uncertainty"= 50,
-                                                  #"90 %"=90,
+                                                  #"90%"=90,
                                                   "High uncertainty"= 95),
                                                 selected= 10,
                                                 inline= TRUE),
@@ -444,30 +446,32 @@ ui <- fluidPage(
                                    plotOutput("TAZ_hist", brush= brushOpts(id= "plot_brush", fill= "#c47d47", direction= "x"),
                                               height= 350), 
                                    #verbatimTextOutput("plotbrush_raw"),
+                                   br(),
                                    htmlOutput("plotbrush_txt")
                             ),
                             column(width= 6, 
                                    # plotOutput("TAZ_hist_diff", brush= brushOpts(id= "plot_brush_dif", fill="#88bfaf", direction= "x"),
                                    #            height= 350),
-                                   radioButtons("pct_taz", "Percent of TAZ's included in selection:",
-                                                c("50 %"= 50,
-                                                  "60 %"= 60,
-                                                  "70 %"= 70,
-                                                  "80 %"= 80,
-                                                  "90 %"= 90,
-                                                  "95 %"= 95,
-                                                  "97 %"= 97,
-                                                  "98 %"= 98,
-                                                  "99 %"= 99),
+                                   radioButtons("pct_taz", "Percent of TAZs included in selection:",
+                                                c("50%"= 50,
+                                                  "60%"= 60,
+                                                  "70%"= 70,
+                                                  "80%"= 80,
+                                                  "90%"= 90,
+                                                  "95%"= 95,
+                                                  "97%"= 97,
+                                                  "98%"= 98,
+                                                  "99%"= 99),
                                                 selected= 98,
                                                 inline= TRUE),
-                                   # selectInput("pct_taz", "Percent of TAZ's included in selection:",
+                                   # selectInput("pct_taz", "Percent of TAZs included in selection:",
                                    #             choices= c(50, 60, 70, 80, 95,97,98, 99),
                                    #             
                                    #             selected= 98),
                                    plotOutput("TAZ_hist_diff",
                                               height= 350),
                                    #NOTE: plotbrust_txt_dif used as select input reactive text for pct_taz selection
+                                   br(),
                                    htmlOutput("plotbrush_txt_dif"),
                                    p("Note: Selected range is inclusive.")
                             ),
@@ -561,10 +565,10 @@ server <- function(input, output) {
                             labels= c(mean= paste0("Mean: ", mean_rnd, "%"),
                                       std_dev= paste0("Standard \nDeviation: +/-", sd_rnd,"%"),
                                       median= paste0("Median: ", med_rnd, "%")))+
-      scale_x_continuous(labels = (function(x) (paste0(format(x*100, big.mark= ","), " %"))))+
+      scale_x_continuous(labels = (function(x) (paste0(format(x*100, big.mark= ","), "%"))))+
       scale_y_continuous(trans= "log10")+ #  minor_breaks = mb   labels = scales::percent
       theme_minimal()+
-      labs(x= paste("% change", str_to_lower(met_int$metric_name)),
+      labs(x= paste("% Change", str_to_title(met_int$metric_name)),
            y= "Count")+
       theme(legend.text = element_text(size= 12),
             legend.position = c(.95, .95),
@@ -649,7 +653,7 @@ server <- function(input, output) {
       scale_y_continuous(trans= "log10")+ #  minor_breaks = mb   labels = scales::percent
       theme_minimal()+
       #coord_flip()+
-      labs(x= paste("Absolute change", str_to_lower(met_int$metric_name)),
+      labs(x= paste("Absolute Change", str_to_title(met_int$metric_name)),
            y= "Count")+
       theme(legend.text = element_text(size= 12),
             legend.position = c(.35, .95),
@@ -689,13 +693,13 @@ server <- function(input, output) {
     pct_taz_selected <- if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{round(nrow(filter)/1901*100, 2)}
     pct_taz_unselected <- if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{round((1901-nrow(filter))/1901*100, 2)}
 
-    pop_txt<- paste("MPO Population Included in Selection:", pop_selected_pct, "%", "<br>MPO Popluation Outside of Selection:", pop_notselected_pct, "%")
+    pop_txt<- paste0("MPO Population Included in Selection: ", pop_selected_pct, "% ", "<br>MPO Popluation Outside of Selection: ", pop_notselected_pct, "%")
     brushtext_min <- if(is.null(input$plot_brush$xmin) ==TRUE){NA} else{round(input$plot_brush$xmin,digits = 3)}
     brushtext_max <- if(is.null(input$plot_brush$xmax) == TRUE) {NA} else{round(input$plot_brush$xmax,digits = 3)}
-    range_txt<- paste("Selected Range:", brushtext_min*100, "% to", brushtext_max*100, "%")
-    taz_count <- paste("Count of selected TAZ's: ", taz_selected)
-    taz_pct <- paste("TAZ's Included in Selection:", pct_taz_selected, "%", "<br>", "TAZ's Outside of Selection:", pct_taz_unselected, "%")
-    print(paste(range_txt,"<br>",pop_txt, "<br>", taz_count, "<br>", taz_pct))
+    range_txt<- paste0("Selected Range: ", brushtext_min*100, "% to ", brushtext_max*100, "%")
+    taz_count <- paste0("Count of selected TAZs: ", taz_selected)
+    taz_pct <- paste0("TAZs Included in Selection: ", pct_taz_selected, "% ", "<br>", "TAZs Outside of Selection: ", pct_taz_unselected, "%")
+    print(paste0(range_txt,"<br>",pop_txt, "<br>", taz_count, "<br>", taz_pct))
 
   })
   
@@ -763,9 +767,9 @@ server <- function(input, output) {
     pct_taz_selected <- round(nrow(filter_dif)/1901*100, 2)
     pct_taz_unselected <- round((1901-nrow(filter_dif))/1901*100, 2)
     
-    pop_txt<- paste("MPO Population Included in Selection:", pop_selected_pct, "%", "<br>MPO Popluation Outside of Selection:", pop_notselected_pct, "%")
+    pop_txt<- paste0("MPO Population Included in Selection: ", pop_selected_pct, "% ", "<br>MPO Popluation Outside of Selection: ", pop_notselected_pct, "%")
     
-    pop_txt<- paste("MPO Population Included in Selection:", pop_selected_pct, "%", "<br>MPO Popluation Outside of Selection:", pop_notselected_pct, "%")
+    pop_txt<- paste0("MPO Population Included in Selection: ", pop_selected_pct, "% ", "<br>MPO Popluation Outside of Selection: ", pop_notselected_pct, "%")
     # brushtext_min <- if(is.null(input$plot_brush_dif$xmin) ==TRUE){NA} else{round(input$plot_brush_dif$xmin,digits = 3)}
     # brushtext_max <- if(is.null(input$plot_brush_dif$xmax) == TRUE) {NA} else{round(input$plot_brush_dif$xmax,digits = 3)}
     # brushtext_min <-round(input$plot_brush_dif$xmin,digits = 3)
@@ -773,10 +777,10 @@ server <- function(input, output) {
     # range_txt<- paste("Selected Range:", brushtext_min, " to", brushtext_max)
     selected_min <- round(quants[[q_low]], 3)
     selected_max <- round(quants[[q_up]], 3)
-    range_txt<- paste("Selected Range:", selected_min, " to", selected_max)
-    taz_count <- paste("Count of selected TAZ's: ", taz_selected)
-    taz_pct <- paste("TAZ's Included in Selection:", pct_taz_selected, "%", "<br>", "TAZ's Outside of Selection:", pct_taz_unselected, "%")
-    print(paste(range_txt,"<br>",pop_txt, "<br>", taz_count, "<br>", taz_pct))
+    range_txt<- paste0("Selected Range: ", selected_min, " to ", selected_max)
+    taz_count <- paste0("Count of selected TAZs: ", taz_selected)
+    taz_pct <- paste0("TAZs Included in Selection: ", pct_taz_selected, "% ", "<br>", "TAZs Outside of Selection: ", pct_taz_unselected, "%")
+    print(paste0(range_txt,"<br>",pop_txt, "<br>", taz_count, "<br>", taz_pct))
   })
 
 # Taz map ############################################## 
@@ -907,7 +911,7 @@ server <- function(input, output) {
     dim2 <- input$Dim2Acc
     dim3 <- input$Dim3Acc
     
-    text1<- paste("Impact threshold:", dim2, "%", "<br>Disproportionality threshold:", dim3, "%")
+    text1<- paste0("Impact threshold: ", dim2, "% ", "<br>Disproportionality threshold: ", dim3, "%")
     print(text1)
   })
   output$EnvText <- renderText({
@@ -915,7 +919,7 @@ server <- function(input, output) {
     dim2 <- input$Dim2Env
     dim3 <- input$Dim3Env
     
-    text2<- paste("Impact threshold:", dim2, "%", "<br>Disproportionality threshold:", dim3, "%")
+    text2<- paste0("Impact threshold: ", dim2, "% ", "<br>Disproportionality threshold: ", dim3, "%")
     print(text2)
   })
   output$MobText <- renderText({
@@ -923,7 +927,7 @@ server <- function(input, output) {
     dim2 <- input$Dim2Mob
     dim3 <- input$Dim3Mob
     
-    text3<- paste("Impact threshold:", dim2, "%", "<br>Disproportionality threshold:", dim3, "%")
+    text3<- paste0("Impact threshold: ", dim2, "% ", "<br>Disproportionality threshold: ", dim3, "%")
     print(text3)
   })
 
@@ -1006,9 +1010,9 @@ server <- function(input, output) {
         axis.ticks.y=element_blank(),
         #axis.text.y= element_blank()
         plot.title = element_text(face= "bold"))+
-      labs(title = paste(metric_filter, "by population"),
+      labs(title = paste0(metric_filter, " by population"),
            subtitle = str_wrap(subtitle, width = 33))+
-      ylab(paste(metric_filter, " (", metric_unit, ")"))+
+      ylab(paste0(metric_filter, " (", metric_unit, ")"))+
       xlab("Population")
     
     print(metric_plot)
@@ -1093,9 +1097,9 @@ server <- function(input, output) {
         axis.ticks.y=element_blank(),
         #axis.text.y= element_blank()
         plot.title = element_text(face= "bold"))+
-      labs(title = paste(metric_filter, "by population"),
+      labs(title = paste0(metric_filter, " by population"),
            subtitle = str_wrap(subtitle, width = 33))+
-      ylab(paste(metric_filter, " (", metric_unit, ")"))+
+      ylab(paste0(metric_filter, " (", metric_unit, ")"))+
       xlab("Population")
     
     print(metric_plot)
@@ -1180,9 +1184,9 @@ server <- function(input, output) {
         axis.ticks.y=element_blank(),
         #axis.text.y= element_blank()
         plot.title = element_text(face= "bold"))+
-      labs(title = paste(metric_filter, "by population"),
+      labs(title = paste0(metric_filter, " by population"),
            subtitle = str_wrap(subtitle, width = 33))+
-      ylab(paste(metric_filter, " (", metric_unit, ")"))+
+      ylab(paste0(metric_filter, " (", metric_unit, ")"))+
       xlab("Population")
     
     print(metric_plot)
@@ -1253,7 +1257,7 @@ server <- function(input, output) {
     income_change <- change$change_type[ change$poptype=="i"]
     min_change <- change$change_type [ change$poptype=="m"]
     
-    paste("For the metric ", tolower(metric_filter), "at the confidence interval of ", input$Dim1, "%, ", "there is projected to be ", tolower(income_change), " in the income population group, and there is projected to be ", tolower(min_change), " in the minority population group." )
+    paste0("For the metric ", tolower(metric_filter), " at the confidence interval of ", input$Dim1, "%, ", "there is projected to be ", tolower(income_change), " in the income population group, and there is projected to be ", tolower(min_change), " in the minority population group." )
     
   })
 # Impact plot #####################################################  
